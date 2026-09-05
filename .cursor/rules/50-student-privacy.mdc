@@ -1,0 +1,19 @@
+---
+description: Privacy-by-design controls for minors and private club information
+globs: "**/*.{ts,tsx,sql}"
+alwaysApply: false
+---
+
+# Student Privacy
+
+- Never publicly expose student emails, profiles, attendance, private rosters,
+  private club media, precise home addresses, or other student/private-club data.
+- Collect only necessary data. Use `under_13`, `age_13_17`, and `adult` governance
+  bands instead of birth dates unless legally required.
+- Keep under-13 self-registration disabled; require school-managed or
+  guardian-authorized onboarding.
+- Record and enforce relevant consent, including media consent.
+- Do not add open direct messaging between minors or arbitrary PII exports.
+- Private media is private by default and requires authorized signed access.
+- Do not claim automatic COPPA or FERPA compliance; state that institutional and
+  legal review remains required.

@@ -1,0 +1,17 @@
+---
+description: Next.js App Router, React, and server/client boundary conventions
+globs: "**/*.{ts,tsx,js,jsx,mjs,cjs}"
+alwaysApply: false
+---
+
+# Next.js and React
+
+- Use Next.js 16.3+ App Router and the Node runtime.
+- Prefer Server Components. Add `"use client"` only for browser interaction or
+  client-only APIs, and keep the client boundary small.
+- Never create `middleware.ts`; it is deprecated. Use `proxy.ts` only when request
+  interception is genuinely necessary.
+- Keep secrets and privileged data access in server-only modules.
+- Use Server Actions or route handlers with typed, Zod-validated results.
+- Implement loading, empty, success, and failure states for async experiences.
+- Optimize images, lazy-load video, avoid N+1 queries, and paginate large results.

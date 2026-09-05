@@ -1,0 +1,2 @@
+-- Development-only seed entrypoint.
+-- Add deterministic, non-production fixtures here as schemas are introduced.

@@ -1,0 +1,18 @@
+---
+description: Unit, integration, RLS, accessibility, and end-to-end test standards
+globs: "**/*.{test,spec}.{ts,tsx},e2e/**/*.ts,tests/**/*.{ts,tsx,sql}"
+alwaysApply: false
+---
+
+# Testing
+
+- Use Vitest for units/integration and Playwright for browser workflows.
+- Add tests for important success, validation, empty, failure, and authorization
+  behavior; do not test only the happy path.
+- Add database tests proving RLS ALLOW and DENY behavior, including cross-school
+  and cross-club isolation.
+- Cover every constitution-listed critical workflow as it becomes implemented.
+- Use axe in browser coverage and test keyboard operation for critical flows.
+- Fake data and mocks are allowed only in tests and explicit development seeds.
+  Never make production code depend on test fixtures.
+- Keep tests deterministic and assert persisted outcomes, not just UI clicks.

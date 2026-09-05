@@ -1,0 +1,19 @@
+---
+description: Non-negotiable repository-wide BayAreaClubs engineering policy
+alwaysApply: true
+---
+
+# Core Policy
+
+- Follow `.specify/memory/constitution.md`; it outranks other project guidance.
+- Ship production behavior only. Data may be fake only in explicit seeds or tests.
+- Every visible action must work or be clearly disabled with an explanation.
+  Never ship buttons or links that do nothing.
+- Inspect before implementing. Reuse or extend existing components and modules;
+  do not create duplicate implementations for stylistic preference.
+- Use pnpm, strict TypeScript, and the constitution-approved stack.
+- Never bypass RLS as a shortcut or expose privileged credentials to client code.
+- Derive authorization from persisted memberships and assignments. Never hard-code
+  a user's role or treat one global profile role as the full authority model.
+- Keep student and private-club information non-public by default.
+- The constitution committee consists solely of Mittansh Bhatia.

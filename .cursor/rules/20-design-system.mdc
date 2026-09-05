@@ -1,0 +1,17 @@
+---
+description: Shared UI primitives and design-token requirements
+globs: "**/*.{tsx,css}"
+alwaysApply: false
+---
+
+# Design System
+
+- Search for and reuse an existing component before adding one. Extend shared
+  primitives instead of duplicating implementations.
+- Use design tokens for color, spacing, typography, radii, shadows, and motion.
+  Do not add random one-off styling or arbitrary values without a documented need.
+- Prefer shadcn/ui and Radix primitives where appropriate; use Lucide icons.
+- Keep the visual language polished and age-neutral. Avoid generic Bootstrap
+  styling, excessive gradients, rounded-card grids, glassmorphism, and cartoons.
+- Use Motion for React sparingly and honor reduced-motion preferences.
+- Make responsive behavior intentional from 375px through large desktops.

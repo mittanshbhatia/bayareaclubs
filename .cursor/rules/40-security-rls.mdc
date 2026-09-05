@@ -1,0 +1,21 @@
+---
+description: Authorization, tenant isolation, RLS, and application security rules
+globs: "**/*.{ts,tsx,sql}"
+alwaysApply: false
+---
+
+# Security and RLS
+
+- Enable RLS on every exposed table. Define explicit SELECT, INSERT, UPDATE, and,
+  where deletion is allowed, DELETE policies.
+- Never bypass or disable RLS to make a feature work. Privileged bypass is limited
+  to narrowly justified server administration.
+- Enforce platform, school, club, and user scope in database policies; UI checks
+  are not authorization.
+- Resolve roles from persisted memberships and assignments. Never hard-code roles
+  or authorize solely from `profiles.role`.
+- Validate mutations with Zod, authenticate, authorize server-side, mutate, audit
+  when relevant, and return a typed result.
+- Use CSRF-safe mutations, secure headers/CSP, output escaping, abuse rate limits,
+  recipient allow-listing, and protected asset URLs.
+- Test both ALLOW and DENY cases, including cross-tenant access.

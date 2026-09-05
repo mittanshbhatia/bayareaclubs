@@ -1,0 +1,20 @@
+---
+description: PostgreSQL schema, migration, integrity, indexing, and audit standards
+globs: "**/*.sql,supabase/**/*.ts,**/database.types.ts"
+alwaysApply: false
+---
+
+# Database
+
+- PostgreSQL is the source of truth; core business objects cannot live only in
+  component state.
+- Represent every schema or policy change in a version-controlled Supabase
+  migration. Never edit production schema manually.
+- Regenerate and commit strict TypeScript database types after schema changes.
+- Model roles through school memberships, club memberships, and assignments;
+  never hard-code role ownership into application records.
+- Use foreign keys, constraints, tenant identifiers, and transactions to preserve
+  integrity. Add indexes for tenant filters and common query paths.
+- Keep audit events append-oriented and omit secrets, email bodies, and unnecessary
+  PII from metadata.
+- Store file metadata only; file binaries belong in Storage.

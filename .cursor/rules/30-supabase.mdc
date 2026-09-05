@@ -1,0 +1,18 @@
+---
+description: Supabase Auth, SSR, Storage, and server/client usage conventions
+globs: "**/*.{ts,tsx,sql}"
+alwaysApply: false
+---
+
+# Supabase
+
+- Use `@supabase/ssr` and constitution-approved public environment variables.
+- Browser code may use only the publishable key. Never import, serialize, log, or
+  expose service-role, S3 secret, or other privileged credentials client-side.
+- A privileged server client is exceptional, server-only, and never a substitute
+  for user-scoped access through RLS.
+- Store file metadata in PostgreSQL and binaries in Supabase Storage.
+- Keep club media and documents private; deliver protected assets with signed URLs.
+- Validate upload MIME type and size. Upload large files directly with progress and
+  resumability where practical; do not proxy entire binaries through Vercel.
+- Use Realtime only when live updates materially improve the workflow.

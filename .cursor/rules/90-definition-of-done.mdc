@@ -1,0 +1,21 @@
+---
+description: Completion gate and required implementation handoff
+globs: "**/*"
+alwaysApply: false
+---
+
+# Definition of Done
+
+A feature is complete only when applicable UI, backend, schema migration, RLS,
+validation, audit event, loading/empty/success/failure states, responsive behavior,
+accessibility, and important tests are implemented.
+
+Before completion:
+
+- confirm every visible control works or is clearly unavailable;
+- confirm no duplicate component/module, fake production data, secret exposure,
+  hard-coded authorization, or RLS bypass was introduced;
+- run relevant tests, RLS ALLOW/DENY checks, TypeScript, ESLint, and production
+  build; and
+- report IMPLEMENTED, FILES CHANGED, DATABASE CHANGES, SECURITY/RLS CHANGES,
+  TESTS ADDED, TEST RESULTS, BUILD RESULT, and KNOWN LIMITATIONS.
