@@ -39,6 +39,150 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_onboarding: {
+        Row: {
+          activated_at: string | null
+          activation_method: Database["public"]["Enums"]["account_activation_method"]
+          created_at: string
+          grade_band: Database["public"]["Enums"]["grade_band"] | null
+          guardian_authorized_at: string | null
+          guardian_user_id: string | null
+          id: string
+          requested_school_id: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["account_onboarding_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          activated_at?: string | null
+          activation_method: Database["public"]["Enums"]["account_activation_method"]
+          created_at?: string
+          grade_band?: Database["public"]["Enums"]["grade_band"] | null
+          guardian_authorized_at?: string | null
+          guardian_user_id?: string | null
+          id?: string
+          requested_school_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status: Database["public"]["Enums"]["account_onboarding_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          activated_at?: string | null
+          activation_method?: Database["public"]["Enums"]["account_activation_method"]
+          created_at?: string
+          grade_band?: Database["public"]["Enums"]["grade_band"] | null
+          guardian_authorized_at?: string | null
+          guardian_user_id?: string | null
+          id?: string
+          requested_school_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["account_onboarding_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "account_onboarding_guardian_user_id_fkey"
+            columns: ["guardian_user_id"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "account_onboarding_guardian_user_id_fkey"
+            columns: ["guardian_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "account_onboarding_requested_school_id_fkey"
+            columns: ["requested_school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "account_onboarding_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "account_onboarding_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "account_onboarding_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "account_onboarding_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      account_onboarding_internal_notes: {
+        Row: {
+          author_id: string
+          created_at: string
+          id: string
+          note: string
+          onboarding_user_id: string
+        }
+        Insert: {
+          author_id: string
+          created_at?: string
+          id?: string
+          note: string
+          onboarding_user_id: string
+        }
+        Update: {
+          author_id?: string
+          created_at?: string
+          id?: string
+          note?: string
+          onboarding_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "account_onboarding_internal_notes_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "account_onboarding_internal_notes_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "account_onboarding_internal_notes_onboarding_user_id_fkey"
+            columns: ["onboarding_user_id"]
+            isOneToOne: false
+            referencedRelation: "account_onboarding"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       analytics_daily_club: {
         Row: {
           active_members: number
@@ -222,6 +366,13 @@ export type Database = {
             foreignKeyName: "attendance_records_recorded_by_fkey"
             columns: ["recorded_by"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "attendance_records_recorded_by_fkey"
+            columns: ["recorded_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -290,6 +441,13 @@ export type Database = {
             foreignKeyName: "attendance_sessions_created_by_fkey"
             columns: ["created_by"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "attendance_sessions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -344,6 +502,13 @@ export type Database = {
           school_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "audit_logs_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
           {
             foreignKeyName: "audit_logs_actor_id_fkey"
             columns: ["actor_id"]
@@ -427,6 +592,13 @@ export type Database = {
             foreignKeyName: "club_activities_created_by_fkey"
             columns: ["created_by"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "club_activities_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -470,6 +642,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "club_charters"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_charter_reviews_reviewer_id_fkey"
+            columns: ["reviewer_id"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "club_charter_reviews_reviewer_id_fkey"
@@ -575,6 +754,13 @@ export type Database = {
             foreignKeyName: "club_charters_created_by_fkey"
             columns: ["created_by"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "club_charters_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -663,6 +849,13 @@ export type Database = {
             foreignKeyName: "club_highlights_created_by_fkey"
             columns: ["created_by"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "club_highlights_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -737,6 +930,13 @@ export type Database = {
             foreignKeyName: "club_idea_proposed_officers_proposed_user_id_fkey"
             columns: ["proposed_user_id"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "club_idea_proposed_officers_proposed_user_id_fkey"
+            columns: ["proposed_user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -787,6 +987,13 @@ export type Database = {
             foreignKeyName: "club_idea_reviews_assigned_by_fkey"
             columns: ["assigned_by"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "club_idea_reviews_assigned_by_fkey"
+            columns: ["assigned_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -796,6 +1003,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "club_ideas"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_idea_reviews_reviewer_id_fkey"
+            columns: ["reviewer_id"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "club_idea_reviews_reviewer_id_fkey"
@@ -835,6 +1049,13 @@ export type Database = {
           to_status?: Database["public"]["Enums"]["club_idea_status"]
         }
         Relationships: [
+          {
+            foreignKeyName: "club_idea_status_history_changed_by_fkey"
+            columns: ["changed_by"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
           {
             foreignKeyName: "club_idea_status_history_changed_by_fkey"
             columns: ["changed_by"]
@@ -926,6 +1147,13 @@ export type Database = {
             foreignKeyName: "club_ideas_proposed_advisor_id_fkey"
             columns: ["proposed_advisor_id"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "club_ideas_proposed_advisor_id_fkey"
+            columns: ["proposed_advisor_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -935,6 +1163,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "schools"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_ideas_submitter_id_fkey"
+            columns: ["submitter_id"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "club_ideas_submitter_id_fkey"
@@ -1007,8 +1242,22 @@ export type Database = {
             foreignKeyName: "club_memberships_invited_by_fkey"
             columns: ["invited_by"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "club_memberships_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_memberships_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "club_memberships_user_id_fkey"
@@ -1057,6 +1306,13 @@ export type Database = {
           starts_on?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "club_officer_terms_appointed_by_fkey"
+            columns: ["appointed_by"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
           {
             foreignKeyName: "club_officer_terms_appointed_by_fkey"
             columns: ["appointed_by"]
@@ -1130,6 +1386,13 @@ export type Database = {
             foreignKeyName: "club_renewal_reviews_reviewer_id_fkey"
             columns: ["reviewer_id"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "club_renewal_reviews_reviewer_id_fkey"
+            columns: ["reviewer_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1192,6 +1455,13 @@ export type Database = {
             foreignKeyName: "club_renewals_advisor_confirmed_by_fkey"
             columns: ["advisor_confirmed_by"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "club_renewals_advisor_confirmed_by_fkey"
+            columns: ["advisor_confirmed_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1215,6 +1485,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "published_clubs"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_renewals_submitted_by_fkey"
+            columns: ["submitted_by"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "club_renewals_submitted_by_fkey"
@@ -1287,6 +1564,13 @@ export type Database = {
           visibility?: Database["public"]["Enums"]["visibility_level"]
         }
         Relationships: [
+          {
+            foreignKeyName: "clubs_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
           {
             foreignKeyName: "clubs_approved_by_fkey"
             columns: ["approved_by"]
@@ -1426,6 +1710,13 @@ export type Database = {
             foreignKeyName: "course_subscriptions_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "course_subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1494,6 +1785,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "published_clubs"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "email_campaigns_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "email_campaigns_created_by_fkey"
@@ -1598,6 +1896,13 @@ export type Database = {
             foreignKeyName: "email_recipients_recipient_user_id_fkey"
             columns: ["recipient_user_id"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "email_recipients_recipient_user_id_fkey"
+            columns: ["recipient_user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1648,6 +1953,13 @@ export type Database = {
             foreignKeyName: "event_logistics_created_by_fkey"
             columns: ["created_by"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "event_logistics_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1664,6 +1976,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "published_events"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_logistics_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "event_logistics_owner_id_fkey"
@@ -1721,6 +2040,13 @@ export type Database = {
             foreignKeyName: "event_rsvps_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "event_rsvps_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1771,8 +2097,22 @@ export type Database = {
             foreignKeyName: "event_tasks_assigned_to_fkey"
             columns: ["assigned_to"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "event_tasks_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_tasks_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "event_tasks_created_by_fkey"
@@ -1878,6 +2218,13 @@ export type Database = {
             foreignKeyName: "events_approved_by_fkey"
             columns: ["approved_by"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "events_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1894,6 +2241,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "published_clubs"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_organizer_id_fkey"
+            columns: ["organizer_id"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "events_organizer_id_fkey"
@@ -1977,6 +2331,13 @@ export type Database = {
             foreignKeyName: "media_assets_approved_for_public_by_fkey"
             columns: ["approved_for_public_by"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "media_assets_approved_for_public_by_fkey"
+            columns: ["approved_for_public_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -2007,6 +2368,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "schools"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_assets_uploader_id_fkey"
+            columns: ["uploader_id"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "media_assets_uploader_id_fkey"
@@ -2082,6 +2450,13 @@ export type Database = {
             foreignKeyName: "media_consents_granted_by_fkey"
             columns: ["granted_by"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "media_consents_granted_by_fkey"
+            columns: ["granted_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -2098,6 +2473,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "published_media_assets"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_consents_subject_user_id_fkey"
+            columns: ["subject_user_id"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "media_consents_subject_user_id_fkey"
@@ -2235,6 +2617,13 @@ export type Database = {
             foreignKeyName: "newsletters_created_by_fkey"
             columns: ["created_by"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "newsletters_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -2290,6 +2679,13 @@ export type Database = {
             foreignKeyName: "notifications_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -2325,8 +2721,22 @@ export type Database = {
             foreignKeyName: "platform_role_assignments_assigned_by_fkey"
             columns: ["assigned_by"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "platform_role_assignments_assigned_by_fkey"
+            columns: ["assigned_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "platform_role_assignments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "platform_role_assignments_user_id_fkey"
@@ -2340,29 +2750,75 @@ export type Database = {
       profiles: {
         Row: {
           age_band: Database["public"]["Enums"]["age_band"]
+          avatar_asset_id: string | null
           created_at: string
+          display_format: Database["public"]["Enums"]["profile_display_format"]
           display_name: string
+          first_name: string | null
+          grade_band: Database["public"]["Enums"]["grade_band"] | null
           id: string
+          last_initial: string | null
           onboarding_completed_at: string | null
+          primary_school_id: string | null
+          show_avatar_to_club_members: boolean
+          show_school_to_club_members: boolean
           updated_at: string
         }
         Insert: {
           age_band: Database["public"]["Enums"]["age_band"]
+          avatar_asset_id?: string | null
           created_at?: string
+          display_format?: Database["public"]["Enums"]["profile_display_format"]
           display_name: string
+          first_name?: string | null
+          grade_band?: Database["public"]["Enums"]["grade_band"] | null
           id: string
+          last_initial?: string | null
           onboarding_completed_at?: string | null
+          primary_school_id?: string | null
+          show_avatar_to_club_members?: boolean
+          show_school_to_club_members?: boolean
           updated_at?: string
         }
         Update: {
           age_band?: Database["public"]["Enums"]["age_band"]
+          avatar_asset_id?: string | null
           created_at?: string
+          display_format?: Database["public"]["Enums"]["profile_display_format"]
           display_name?: string
+          first_name?: string | null
+          grade_band?: Database["public"]["Enums"]["grade_band"] | null
           id?: string
+          last_initial?: string | null
           onboarding_completed_at?: string | null
+          primary_school_id?: string | null
+          show_avatar_to_club_members?: boolean
+          show_school_to_club_members?: boolean
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_avatar_asset_id_fkey"
+            columns: ["avatar_asset_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_avatar_asset_id_fkey"
+            columns: ["avatar_asset_id"]
+            isOneToOne: false
+            referencedRelation: "published_media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_primary_school_id_fkey"
+            columns: ["primary_school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       schools: {
         Row: {
@@ -2523,6 +2979,13 @@ export type Database = {
             foreignKeyName: "stem_courses_created_by_fkey"
             columns: ["created_by"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "stem_courses_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -2655,6 +3118,13 @@ export type Database = {
             foreignKeyName: "user_guardian_relationships_guardian_user_id_fkey"
             columns: ["guardian_user_id"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "user_guardian_relationships_guardian_user_id_fkey"
+            columns: ["guardian_user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -2662,8 +3132,22 @@ export type Database = {
             foreignKeyName: "user_guardian_relationships_student_user_id_fkey"
             columns: ["student_user_id"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "user_guardian_relationships_student_user_id_fkey"
+            columns: ["student_user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_guardian_relationships_verified_by_fkey"
+            columns: ["verified_by"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "user_guardian_relationships_verified_by_fkey"
@@ -2719,6 +3203,13 @@ export type Database = {
             foreignKeyName: "user_school_memberships_invited_by_fkey"
             columns: ["invited_by"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "user_school_memberships_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -2728,6 +3219,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "schools"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_school_memberships_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "user_school_memberships_user_id_fkey"
@@ -2773,6 +3271,31 @@ export type Database = {
             columns: ["idea_id"]
             isOneToOne: false
             referencedRelation: "club_ideas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      club_member_directory: {
+        Row: {
+          avatar_asset_id: string | null
+          club_id: string | null
+          display_name: string | null
+          school_id: string | null
+          user_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "club_memberships_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_memberships_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "published_clubs"
             referencedColumns: ["id"]
           },
         ]
@@ -3265,6 +3788,10 @@ export type Database = {
       }
     }
     Functions: {
+      activate_managed_account: {
+        Args: { target_user_id: string }
+        Returns: Database["public"]["Enums"]["account_onboarding_status"]
+      }
       can_edit_idea: {
         Args: { target_idea_id: string; user_id?: string }
         Returns: boolean
@@ -3305,6 +3832,20 @@ export type Database = {
         Args: { target_profile_id: string; user_id?: string }
         Returns: boolean
       }
+      complete_oauth_profile: {
+        Args: {
+          first_name: string
+          last_initial: string
+          school_id?: string
+          selected_age_band: Database["public"]["Enums"]["age_band"]
+          selected_grade_band?: Database["public"]["Enums"]["grade_band"]
+        }
+        Returns: Database["public"]["Enums"]["account_onboarding_status"]
+      }
+      complete_verified_onboarding: {
+        Args: never
+        Returns: Database["public"]["Enums"]["account_onboarding_status"]
+      }
       has_club_role: {
         Args: {
           allowed_roles: Database["public"]["Enums"]["club_role"][]
@@ -3336,9 +3877,24 @@ export type Database = {
         Returns: boolean
       }
       is_valid_school_year: { Args: { value: string }; Returns: boolean }
+      record_guardian_authorization: {
+        Args: { target_user_id: string }
+        Returns: Database["public"]["Enums"]["account_onboarding_status"]
+      }
       restrict_under_13_self_signup: { Args: { event: Json }; Returns: Json }
     }
     Enums: {
+      account_activation_method:
+        | "self_service"
+        | "guardian_authorized"
+        | "school_managed"
+      account_onboarding_status:
+        | "pending_email"
+        | "pending_guardian"
+        | "pending_school"
+        | "active"
+        | "suspended"
+        | "rejected"
       age_band: "under_13" | "age_13_17" | "adult"
       attendance_status: "present" | "late" | "excused" | "absent"
       charter_status:
@@ -3417,6 +3973,14 @@ export type Database = {
         | "tournament"
         | "conference"
         | "other"
+      grade_band:
+        | "k_2"
+        | "grade_3_5"
+        | "grade_6_8"
+        | "grade_9_12"
+        | "college"
+        | "adult"
+        | "other"
       logistics_type:
         | "venue"
         | "equipment"
@@ -3437,6 +4001,10 @@ export type Database = {
         | "suspended"
         | "exited"
       platform_role: "platform_admin" | "committee_reviewer"
+      profile_display_format:
+        | "first_name_last_initial"
+        | "first_name_only"
+        | "custom"
       publication_status:
         | "draft"
         | "review"
@@ -3609,6 +4177,19 @@ export const Constants = {
   },
   public: {
     Enums: {
+      account_activation_method: [
+        "self_service",
+        "guardian_authorized",
+        "school_managed",
+      ],
+      account_onboarding_status: [
+        "pending_email",
+        "pending_guardian",
+        "pending_school",
+        "active",
+        "suspended",
+        "rejected",
+      ],
       age_band: ["under_13", "age_13_17", "adult"],
       attendance_status: ["present", "late", "excused", "absent"],
       charter_status: [
@@ -3695,6 +4276,15 @@ export const Constants = {
         "conference",
         "other",
       ],
+      grade_band: [
+        "k_2",
+        "grade_3_5",
+        "grade_6_8",
+        "grade_9_12",
+        "college",
+        "adult",
+        "other",
+      ],
       logistics_type: [
         "venue",
         "equipment",
@@ -3717,6 +4307,11 @@ export const Constants = {
         "exited",
       ],
       platform_role: ["platform_admin", "committee_reviewer"],
+      profile_display_format: [
+        "first_name_last_initial",
+        "first_name_only",
+        "custom",
+      ],
       publication_status: [
         "draft",
         "review",

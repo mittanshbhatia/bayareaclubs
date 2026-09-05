@@ -29,16 +29,31 @@ mutate application tables.
 
 ## Authenticated user
 
-May read and update their own profile and may read profiles only when a legitimate
-shared-club, school-administration, guardian, or review relationship exists.
+May read and update their own full profile. Guardians, authorized school staff,
+platform administrators, and workflow reviewers receive direct profile access
+only for their legitimate scope. Club peers use `club_member_directory`, which
+projects only a display name and privacy-permitted school/avatar references.
 
 May read their own school memberships, guardian relationships, course
 subscriptions, course progress, notifications, RSVPs, email-delivery record, and
 attendance. They cannot infer another student's attendance through club
 membership.
 
+They may read their own onboarding state, but not internal institutional notes.
+They cannot directly insert or delete onboarding records, activate themselves,
+change governance fields, or assign any privileged role.
+
 May subscribe only to published free courses and may maintain only their own
 progress.
+
+## Managed minor onboarding
+
+Under-13 users cannot self-register. A verified guardian may record authorization
+only for a linked student account awaiting that authorization. Activation still
+requires an authorized administrator for the requested school. School
+administrators can read and review onboarding records and internal notes only for
+their assigned schools. Internal notes are append-only. Platform administrators
+retain explicit platform scope.
 
 ## Club-idea submitter
 

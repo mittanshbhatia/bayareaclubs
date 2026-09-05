@@ -12,7 +12,7 @@ select set_config(
   ),
   true
 );
-select plan(22);
+select plan(25);
 
 insert into auth.users (
   id,
@@ -123,6 +123,11 @@ values
     'high',
     'Oakland'
   );
+update public.profiles
+set
+  primary_school_id = '10000000-0000-0000-0000-000000000001',
+  show_school_to_club_members = false
+where id = '00000000-0000-0000-0000-000000000002';
 
 insert into public.user_school_memberships (
   user_id,
@@ -501,6 +506,25 @@ select results_eq(
   $$select count(*)::bigint from public.media_assets where club_id = '20000000-0000-0000-0000-000000000002'$$,
   array[0::bigint],
   'Club A member cannot read Club B media metadata'
+);
+select results_eq(
+  $$select count(*)::bigint from public.profiles
+    where id = '00000000-0000-0000-0000-000000000002'$$,
+  array[0::bigint],
+  'Club members cannot read another member full profile directly'
+);
+select results_eq(
+  $$select count(*)::bigint from public.club_member_directory
+    where club_id = '20000000-0000-0000-0000-000000000001'$$,
+  array[2::bigint],
+  'Club members can use the privacy-safe member directory'
+);
+select results_eq(
+  $$select count(*)::bigint from public.club_member_directory
+    where user_id = '00000000-0000-0000-0000-000000000002'
+      and school_id is null$$,
+  array[1::bigint],
+  'Member directory hides school when profile privacy disables it'
 );
 
 reset role;

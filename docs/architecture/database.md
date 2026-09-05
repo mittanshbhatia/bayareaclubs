@@ -13,11 +13,25 @@ The initial domain is defined by:
   workflow/integrity triggers, audit triggers, and account-governance hook.
 - `20260905224600_rls.sql`: authorization helpers, grants, RLS policies,
   applicant-safe feedback views, Storage buckets, and Storage policies.
+- `20260905233000_auth_onboarding.sql`: governed profile fields, account
+  activation state, managed-minor authorization functions, and onboarding RLS.
+- `20260905234500_fix_profile_activation_guard.sql`: permits the trusted
+  verification flow to record profile completion without allowing self-service
+  age-band or school changes.
+- `20260905235000_fix_auth_function_return_types.sql`: preserves enum return
+  types explicitly for managed and OAuth activation functions.
+- `20260905235500_allow_governed_oauth_signup.sql`: permits trusted OAuth
+  identities to reach mandatory profile governance while retaining strict email
+  and under-13 signup checks.
+- `20260905240000_enforce_profile_privacy.sql`: removes direct peer access to
+  full profiles and exposes a privacy-filtered club member directory.
 
 ## Identity and assignments
 
-`profiles` extends `auth.users` with only application-safe identity fields and an
-account-governance age band. Authority is never stored as a single profile role.
+`profiles` extends `auth.users` with only application-safe identity and privacy
+fields. `account_onboarding` stores activation state separately from authority.
+Internal institutional notes are append-only and inaccessible to applicants.
+Authority is never stored as a single profile role.
 
 - `platform_role_assignments` stores active or revoked platform administrator and
   committee-reviewer assignments.
@@ -30,8 +44,9 @@ account-governance age band. Authority is never stored as a single profile role.
   decisions without collecting birth dates.
 
 Under-13 self-service registration is rejected by the
-`restrict_under_13_self_signup` Auth hook. A future managed flow must set protected
-app metadata through an administrative server operation.
+`restrict_under_13_self_signup` Auth hook. Managed onboarding requires protected
+app metadata, a school, and school activation. Guardian-authorized onboarding
+also requires a verified guardian relationship and recorded authorization.
 
 ## Club lifecycle
 
