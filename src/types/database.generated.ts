@@ -2264,7 +2264,9 @@ export type Database = {
           event_id: string
           id: string
           logistics_type: Database["public"]["Enums"]["logistics_type"]
+          notes: string
           owner_id: string | null
+          status: Database["public"]["Enums"]["logistics_item_status"]
           title: string
           updated_at: string
         }
@@ -2277,7 +2279,9 @@ export type Database = {
           event_id: string
           id?: string
           logistics_type: Database["public"]["Enums"]["logistics_type"]
+          notes?: string
           owner_id?: string | null
+          status?: Database["public"]["Enums"]["logistics_item_status"]
           title: string
           updated_at?: string
         }
@@ -2290,7 +2294,9 @@ export type Database = {
           event_id?: string
           id?: string
           logistics_type?: Database["public"]["Enums"]["logistics_type"]
+          notes?: string
           owner_id?: string | null
+          status?: Database["public"]["Enums"]["logistics_item_status"]
           title?: string
           updated_at?: string
         }
@@ -2344,28 +2350,43 @@ export type Database = {
           created_at: string
           event_id: string
           id: string
+          override_note: string | null
+          overridden_at: string | null
+          overridden_by: string | null
+          previous_status: Database["public"]["Enums"]["rsvp_status"] | null
           responded_at: string
           status: Database["public"]["Enums"]["rsvp_status"]
           updated_at: string
           user_id: string
+          waitlisted_at: string | null
         }
         Insert: {
           created_at?: string
           event_id: string
           id?: string
+          override_note?: string | null
+          overridden_at?: string | null
+          overridden_by?: string | null
+          previous_status?: Database["public"]["Enums"]["rsvp_status"] | null
           responded_at?: string
           status: Database["public"]["Enums"]["rsvp_status"]
           updated_at?: string
           user_id: string
+          waitlisted_at?: string | null
         }
         Update: {
           created_at?: string
           event_id?: string
           id?: string
+          override_note?: string | null
+          overridden_at?: string | null
+          overridden_by?: string | null
+          previous_status?: Database["public"]["Enums"]["rsvp_status"] | null
           responded_at?: string
           status?: Database["public"]["Enums"]["rsvp_status"]
           updated_at?: string
           user_id?: string
+          waitlisted_at?: string | null
         }
         Relationships: [
           {
@@ -2488,6 +2509,8 @@ export type Database = {
           approval_required: boolean
           approved_at: string | null
           approved_by: string | null
+          audience_notes: string
+          builder_step: number
           capacity: number | null
           club_id: string
           created_at: string
@@ -2497,8 +2520,10 @@ export type Database = {
           format: Database["public"]["Enums"]["event_format"]
           id: string
           location_name: string | null
+          maybe_rsvp_enabled: boolean
           online_url: string | null
           organizer_id: string
+          permissions_notes: string
           rsvp_deadline: string | null
           school_id: string
           starts_at: string
@@ -2513,6 +2538,8 @@ export type Database = {
           approval_required?: boolean
           approved_at?: string | null
           approved_by?: string | null
+          audience_notes?: string
+          builder_step?: number
           capacity?: number | null
           club_id: string
           created_at?: string
@@ -2522,8 +2549,10 @@ export type Database = {
           format?: Database["public"]["Enums"]["event_format"]
           id?: string
           location_name?: string | null
+          maybe_rsvp_enabled?: boolean
           online_url?: string | null
           organizer_id: string
+          permissions_notes?: string
           rsvp_deadline?: string | null
           school_id: string
           starts_at: string
@@ -2538,6 +2567,8 @@ export type Database = {
           approval_required?: boolean
           approved_at?: string | null
           approved_by?: string | null
+          audience_notes?: string
+          builder_step?: number
           capacity?: number | null
           club_id?: string
           created_at?: string
@@ -2547,8 +2578,10 @@ export type Database = {
           format?: Database["public"]["Enums"]["event_format"]
           id?: string
           location_name?: string | null
+          maybe_rsvp_enabled?: boolean
           online_url?: string | null
           organizer_id?: string
+          permissions_notes?: string
           rsvp_deadline?: string | null
           school_id?: string
           starts_at?: string
@@ -4158,6 +4191,29 @@ export type Database = {
         Args: { as_of?: string }
         Returns: number
       }
+      upsert_event_rsvp: {
+        Args: {
+          desired_status: Database["public"]["Enums"]["rsvp_status"]
+          target_event_id: string
+        }
+        Returns: string
+      }
+      admin_override_event_rsvp: {
+        Args: {
+          desired_status: Database["public"]["Enums"]["rsvp_status"]
+          override_note: string
+          target_rsvp_id: string
+        }
+        Returns: string
+      }
+      promote_event_waitlist: {
+        Args: { target_event_id: string }
+        Returns: number
+      }
+      count_event_going: {
+        Args: { target_event_id: string }
+        Returns: number
+      }
       issue_attendance_check_in_token: {
         Args: { target_session_id: string; ttl_seconds?: number }
         Returns: string
@@ -4335,7 +4391,17 @@ export type Database = {
         | "published"
         | "cancelled"
         | "completed"
-      event_task_status: "open" | "in_progress" | "completed" | "cancelled"
+      event_task_status:
+        | "open"
+        | "in_progress"
+        | "completed"
+        | "cancelled"
+        | "blocked"
+      logistics_item_status:
+        | "not_started"
+        | "in_progress"
+        | "blocked"
+        | "complete"
       event_type:
         | "club_meeting"
         | "workshop"
@@ -4637,7 +4703,19 @@ export const Constants = {
         "cancelled",
         "completed",
       ],
-      event_task_status: ["open", "in_progress", "completed", "cancelled"],
+      event_task_status: [
+        "open",
+        "in_progress",
+        "completed",
+        "cancelled",
+        "blocked",
+      ],
+      logistics_item_status: [
+        "not_started",
+        "in_progress",
+        "blocked",
+        "complete",
+      ],
       event_type: [
         "club_meeting",
         "workshop",

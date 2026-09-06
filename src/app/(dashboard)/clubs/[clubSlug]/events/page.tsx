@@ -1,11 +1,12 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { EmptyState } from "@/components/ds/states";
 import { StatusBadge } from "@/components/ds/badges";
-import {
-  listClubEvents,
-  resolveClubBySlugForOfficer,
-} from "@/features/clubs/queries";
+import { Button } from "@/components/ui/button";
+import { listManagedEvents } from "@/features/events/queries";
+import { resolveClubBySlugForOfficer } from "@/features/clubs/queries";
+import { EVENT_TYPE_LABELS } from "@/lib/validation/events";
 import { AuthorizationError } from "@/lib/auth/authorization";
 import { handleAuthorizationError } from "@/lib/auth/route-guard";
 
@@ -28,34 +29,45 @@ export default async function ClubEventsPage({
   }
   if (!context) notFound();
 
-  const events = await listClubEvents(context.club.id);
+  const events = await listManagedEvents(context.club.id);
 
   return (
     <div className="space-y-6">
-      <p className="text-sm text-muted-foreground">
-        Event creation and RSVP management will expand here. Current published and
-        draft events from the database are listed below.
-      </p>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Events</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Manage club meetings through large events, RSVPs, logistics, and
+            post-event follow-through.
+          </p>
+        </div>
+        <Button asChild>
+          <Link href={`/clubs/${clubSlug}/events/new`}>Create event</Link>
+        </Button>
+      </div>
+
       {events.length === 0 ? (
         <EmptyState
           title="No events yet"
-          description="When you publish events, RSVP counts and logistics will appear in Overview recommendations."
+          description="Create a draft for a club meeting or large event, then publish when logistics and capacity are ready."
         />
       ) : (
         <ul className="space-y-3">
-          {events.map((event) => {
-            const going = (event.event_rsvps ?? []).filter(
-              (rsvp) => rsvp.status === "going",
-            ).length;
-            return (
-              <li
-                key={event.id}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-surface p-4 shadow-xs"
+          {events.map((event) => (
+            <li key={event.id}>
+              <Link
+                href={`/clubs/${clubSlug}/events/${event.id}`}
+                className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-surface p-4 shadow-xs hover:bg-surface-muted"
               >
                 <div>
                   <p className="font-medium">{event.title}</p>
                   <p className="text-sm text-muted-foreground">
-                    {new Date(event.starts_at).toLocaleString()} · {going} going
+                    {EVENT_TYPE_LABELS[event.event_type]} ·{" "}
+                    {new Date(event.starts_at).toLocaleString()} · {event.goingCount}
+                    {event.capacity != null ? `/${event.capacity}` : ""} going
+                    {event.waitlistedCount
+                      ? ` · ${event.waitlistedCount} waitlisted`
+                      : ""}
                   </p>
                 </div>
                 <StatusBadge
@@ -64,12 +76,14 @@ export default async function ClubEventsPage({
                       ? "active"
                       : event.status === "cancelled"
                         ? "rejected"
-                        : "draft"
+                        : event.status === "completed"
+                          ? "approved"
+                          : "draft"
                   }
                 />
-              </li>
-            );
-          })}
+              </Link>
+            </li>
+          ))}
         </ul>
       )}
     </div>
