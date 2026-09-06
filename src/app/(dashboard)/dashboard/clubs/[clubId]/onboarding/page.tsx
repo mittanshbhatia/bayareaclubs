@@ -55,10 +55,10 @@ export default async function ClubOnboardingPage({
       </ol>
       <div className="mt-8 flex flex-wrap gap-3">
         <Button asChild>
-          <Link href={`/dashboard/clubs/${club.id}`}>Open club workspace</Link>
+          <Link href={`/clubs/${club.slug}`}>Open club command center</Link>
         </Button>
         <Button asChild variant="outline">
-          <Link href={`/dashboard/clubs/${club.id}/admin`}>Admin tools</Link>
+          <Link href={`/clubs/${club.slug}/members`}>Invite members</Link>
         </Button>
         {club.originating_idea_id ? (
           <Button asChild variant="ghost">

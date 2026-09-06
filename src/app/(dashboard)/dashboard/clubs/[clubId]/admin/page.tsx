@@ -1,8 +1,10 @@
-import { AccessScope } from "@/components/dashboard/access-scope";
+import { redirect } from "next/navigation";
+
 import { requireClubAdmin } from "@/lib/auth/authorization";
 import { handleAuthorizationError } from "@/lib/auth/route-guard";
+import { createClient } from "@/lib/supabase/server";
 
-export default async function ClubAdminPage({
+export default async function ClubAdminRedirect({
   params,
 }: {
   params: Promise<{ clubId: string }>;
@@ -14,10 +16,13 @@ export default async function ClubAdminPage({
     handleAuthorizationError(error, `/dashboard/clubs/${clubId}/admin`);
   }
 
-  return (
-    <AccessScope
-      title="Club administration"
-      description="This route requires the active club administrator assignment for the requested club."
-    />
-  );
+  const supabase = await createClient();
+  const { data: club } = await supabase
+    .from("clubs")
+    .select("slug")
+    .eq("id", clubId)
+    .maybeSingle();
+
+  if (club?.slug) redirect(`/clubs/${club.slug}/settings`);
+  redirect("/dashboard");
 }

@@ -1,8 +1,10 @@
-import { AccessScope } from "@/components/dashboard/access-scope";
+import { redirect } from "next/navigation";
+
 import { requireClubMember } from "@/lib/auth/authorization";
 import { handleAuthorizationError } from "@/lib/auth/route-guard";
+import { createClient } from "@/lib/supabase/server";
 
-export default async function ClubPage({
+export default async function ClubWorkspaceRedirect({
   params,
 }: {
   params: Promise<{ clubId: string }>;
@@ -14,10 +16,13 @@ export default async function ClubPage({
     handleAuthorizationError(error, `/dashboard/clubs/${clubId}`);
   }
 
-  return (
-    <AccessScope
-      title="Club workspace"
-      description="This route requires active membership in the requested club."
-    />
-  );
+  const supabase = await createClient();
+  const { data: club } = await supabase
+    .from("clubs")
+    .select("slug")
+    .eq("id", clubId)
+    .maybeSingle();
+
+  if (club?.slug) redirect(`/clubs/${club.slug}`);
+  redirect("/dashboard");
 }

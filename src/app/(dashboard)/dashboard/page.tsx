@@ -34,7 +34,7 @@ export default async function DashboardPage() {
         .eq("status", "active"),
       supabase
         .from("club_memberships")
-        .select("role, clubs(name)")
+        .select("role, clubs(id, name, slug)")
         .eq("user_id", user.id)
         .eq("status", "active"),
       listMyIdeas(user.id),
@@ -142,16 +142,34 @@ export default async function DashboardPage() {
           </div>
           {clubResult.data?.length ? (
             <ul className="mt-4 space-y-3 text-sm">
-              {clubResult.data.map((membership) => (
-                <li key={`${membership.clubs?.name}-${membership.role}`}>
-                  <span className="block font-medium">
-                    {membership.clubs?.name}
-                  </span>
-                  <span className="text-muted-foreground capitalize">
-                    {formatRole(membership.role)}
-                  </span>
-                </li>
-              ))}
+              {clubResult.data.map((membership) => {
+                const club = membership.clubs as
+                  | { id?: string; name?: string; slug?: string }
+                  | null
+                  | undefined;
+                const href = club?.slug
+                  ? `/clubs/${club.slug}`
+                  : club?.id
+                    ? `/dashboard/clubs/${club.id}`
+                    : null;
+                return (
+                  <li key={`${club?.name}-${membership.role}`}>
+                    {href ? (
+                      <Link
+                        href={href}
+                        className="block font-medium text-primary underline-offset-4 hover:underline"
+                      >
+                        {club?.name}
+                      </Link>
+                    ) : (
+                      <span className="block font-medium">{club?.name}</span>
+                    )}
+                    <span className="text-muted-foreground capitalize">
+                      {formatRole(membership.role)}
+                    </span>
+                  </li>
+                );
+              })}
             </ul>
           ) : (
             <p className="text-muted-foreground mt-4 text-sm">

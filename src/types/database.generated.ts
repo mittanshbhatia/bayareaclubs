@@ -548,6 +548,8 @@ export type Database = {
           created_by: string
           description: string
           id: string
+          outcomes: string
+          related_event_id: string | null
           title: string
           updated_at: string
         }
@@ -559,6 +561,8 @@ export type Database = {
           created_by: string
           description: string
           id?: string
+          outcomes?: string
+          related_event_id?: string | null
           title: string
           updated_at?: string
         }
@@ -570,6 +574,8 @@ export type Database = {
           created_by?: string
           description?: string
           id?: string
+          outcomes?: string
+          related_event_id?: string | null
           title?: string
           updated_at?: string
         }
@@ -600,6 +606,92 @@ export type Database = {
             columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_activities_related_event_id_fkey"
+            columns: ["related_event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_activities_related_event_id_fkey"
+            columns: ["related_event_id"]
+            isOneToOne: false
+            referencedRelation: "published_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      club_activity_media: {
+        Row: {
+          activity_id: string
+          created_at: string
+          id: string
+          media_asset_id: string
+        }
+        Insert: {
+          activity_id: string
+          created_at?: string
+          id?: string
+          media_asset_id: string
+        }
+        Update: {
+          activity_id?: string
+          created_at?: string
+          id?: string
+          media_asset_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "club_activity_media_activity_id_fkey"
+            columns: ["activity_id"]
+            isOneToOne: false
+            referencedRelation: "club_activities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_activity_media_media_asset_id_fkey"
+            columns: ["media_asset_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      club_activity_participants: {
+        Row: {
+          activity_id: string
+          created_at: string
+          id: string
+          membership_id: string
+        }
+        Insert: {
+          activity_id: string
+          created_at?: string
+          id?: string
+          membership_id: string
+        }
+        Update: {
+          activity_id?: string
+          created_at?: string
+          id?: string
+          membership_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "club_activity_participants_activity_id_fkey"
+            columns: ["activity_id"]
+            isOneToOne: false
+            referencedRelation: "club_activities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_activity_participants_membership_id_fkey"
+            columns: ["membership_id"]
+            isOneToOne: false
+            referencedRelation: "club_memberships"
             referencedColumns: ["id"]
           },
         ]
@@ -1555,9 +1647,11 @@ export type Database = {
           grade_min: number | null
           id: string
           logo_asset_id: string | null
+          meeting_cadence: string
           mission: string
           name: string
           originating_idea_id: string | null
+          public_summary: string
           school_id: string
           slug: string
           status: Database["public"]["Enums"]["club_status"]
@@ -1575,9 +1669,11 @@ export type Database = {
           grade_min?: number | null
           id?: string
           logo_asset_id?: string | null
+          meeting_cadence?: string
           mission: string
           name: string
           originating_idea_id?: string | null
+          public_summary?: string
           school_id: string
           slug: string
           status?: Database["public"]["Enums"]["club_status"]
@@ -1595,9 +1691,11 @@ export type Database = {
           grade_min?: number | null
           id?: string
           logo_asset_id?: string | null
+          meeting_cadence?: string
           mission?: string
           name?: string
           originating_idea_id?: string | null
+          public_summary?: string
           school_id?: string
           slug?: string
           status?: Database["public"]["Enums"]["club_status"]
@@ -3860,6 +3958,13 @@ export type Database = {
           target_idea_id: string
         }
         Returns: string
+      }
+      list_club_invite_candidates: {
+        Args: { target_club_id: string }
+        Returns: {
+          display_name: string
+          user_id: string
+        }[]
       }
       can_view_club: {
         Args: { target_club_id: string; user_id?: string }

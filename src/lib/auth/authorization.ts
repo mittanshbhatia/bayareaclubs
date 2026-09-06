@@ -174,3 +174,39 @@ export function requireClubAdmin(clubId: string): Promise<User> {
     "The club administrator role is required.",
   );
 }
+
+/** Officers/advisors, or school/platform managers with can_manage_club. */
+export async function requireClubManager(clubId: string): Promise<User> {
+  const user = await requireActiveUser();
+  const supabase = await createClient();
+  const { data: membership } = await supabase
+    .from("club_memberships")
+    .select("id")
+    .eq("club_id", clubId)
+    .eq("user_id", user.id)
+    .eq("status", "active")
+    .in("role", [
+      "club_admin",
+      "president",
+      "vice_president",
+      "secretary",
+      "treasurer",
+      "officer",
+      "advisor",
+    ])
+    .limit(1)
+    .maybeSingle();
+
+  if (membership) return user;
+
+  const { data: canManage } = await supabase.rpc("can_manage_club", {
+    target_club_id: clubId,
+  });
+  if (!canManage) {
+    throw new AuthorizationError(
+      "FORBIDDEN",
+      "Club management access is required.",
+    );
+  }
+  return user;
+}
