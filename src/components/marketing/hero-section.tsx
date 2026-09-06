@@ -17,21 +17,26 @@ export function HeroSection() {
       />
       <PageContainer
         size="xl"
-        className="relative z-10 grid min-h-[52rem] items-center gap-14 pt-24 pb-32 lg:grid-cols-[0.88fr_1.12fr] lg:gap-8 lg:pt-20 lg:pb-36"
+        className="relative z-10 pt-28 pb-24 sm:pt-32 sm:pb-28 lg:pt-36 lg:pb-32"
       >
-        <div className="relative">
-          <p className={cn(styles.eyebrow, "text-[var(--home-cyan)]")}>
-            The operating system for student communities
-          </p>
-          <h1 className={cn(styles.display, "mt-7 text-balance")}>
-            Start a club.
-            <span className="block text-white/68">Build a community.</span>
-            <span className="block bg-gradient-to-r from-[var(--home-cyan)] via-white to-[var(--home-violet)] bg-clip-text text-transparent">
-              Make it matter.
-            </span>
-          </h1>
+        <HeroWorkflow />
+
+        <div className="mt-12 grid gap-7 border-t border-white/10 pt-10 lg:mt-16 lg:grid-cols-[1.18fr_0.82fr] lg:items-end lg:gap-14 lg:pt-12">
           <MotionReveal delay={0.08} distance={16}>
-            <p className="mt-7 max-w-xl text-base leading-7 text-white/68 sm:text-lg sm:leading-8">
+            <p className={cn(styles.eyebrow, "text-[var(--home-cyan)]")}>
+              The operating system for student communities
+            </p>
+            <h1 className={cn(styles.display, "mt-5 text-balance text-white")}>
+              Start a club.
+              <span className="block text-white/68">Build a community.</span>
+              <span className="block text-[var(--home-cyan)]">
+                Make it matter.
+              </span>
+            </h1>
+          </MotionReveal>
+
+          <MotionReveal delay={0.42} distance={14} className="lg:pb-1">
+            <p className="max-w-xl text-base leading-7 text-white/68 sm:text-lg sm:leading-8">
               From the first idea to approval, members, events, learning and
               yearly renewal — BayAreaClubs gives student communities one place
               to grow.
@@ -71,10 +76,6 @@ export function HeroSection() {
             </a>
           </MotionReveal>
         </div>
-
-        <MotionReveal delay={0.48} distance={42} className="relative lg:-mr-10">
-          <HeroWorkflow />
-        </MotionReveal>
       </PageContainer>
     </section>
   );

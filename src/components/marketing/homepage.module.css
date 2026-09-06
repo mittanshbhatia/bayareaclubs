@@ -67,7 +67,7 @@
       rgb(86 217 255 / 26%),
       transparent 32rem
     ),
-    linear-gradient(145deg, #3731d9 0%, #665cff 46%, #4a30b8 100%);
+    linear-gradient(145deg, #064579 0%, #0878d1 48%, #07529a 100%);
   color: white;
 }
 
@@ -94,7 +94,7 @@
 }
 
 .hero {
-  min-height: 56rem;
+  min-height: 50rem;
   background:
     radial-gradient(
       circle at 78% 18%,
@@ -153,22 +153,26 @@
 }
 
 .display {
-  max-width: 13ch;
-  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+  max-width: 15ch;
+  font-family:
+    ui-sans-serif,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
     sans-serif;
-  font-size: clamp(3.65rem, 7.1vw, 7.4rem);
-  font-weight: 590;
-  line-height: 0.89;
-  letter-spacing: -0.065em;
+  font-size: clamp(3rem, 5.3vw, 5.5rem);
+  font-weight: 620;
+  line-height: 0.94;
+  letter-spacing: -0.055em;
 }
 
 .sectionDisplay {
-  max-width: 13ch;
+  max-width: 15ch;
   font-family: var(--font-space-grotesk), sans-serif;
-  font-size: clamp(2.8rem, 5.7vw, 5.8rem);
+  font-size: clamp(2.35rem, 4.3vw, 4.65rem);
   font-weight: 570;
-  line-height: 0.94;
-  letter-spacing: -0.057em;
+  line-height: 0.98;
+  letter-spacing: -0.047em;
 }
 
 .productSurface {
@@ -378,12 +382,12 @@
 
 @media (max-width: 639px) {
   .display {
-    font-size: clamp(3rem, 15vw, 4.6rem);
-    line-height: 0.91;
+    font-size: clamp(2.55rem, 12vw, 3.35rem);
+    line-height: 0.96;
   }
 
   .sectionDisplay {
-    font-size: clamp(2.5rem, 12vw, 3.8rem);
+    font-size: clamp(2.2rem, 10vw, 3rem);
   }
 
   .hero::after {

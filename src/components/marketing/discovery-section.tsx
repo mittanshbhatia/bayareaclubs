@@ -37,7 +37,7 @@ const clubs = [
     name: "AI Research Club",
     topic: "artificial intelligence",
     icon: BrainCircuit,
-    tone: "var(--home-violet)",
+    tone: "var(--home-cyan)",
     position: { right: "7%", top: "8%" },
     event: "Model Lab",
   },
@@ -61,7 +61,7 @@ const clubs = [
     name: "Biomedical Engineering",
     topic: "biology engineering",
     icon: Microscope,
-    tone: "var(--home-violet)",
+    tone: "var(--home-cyan)",
     position: { left: "35%", top: "61%" },
     event: "Design Studio",
   },
@@ -197,7 +197,7 @@ export function DiscoverySection() {
                     "rounded-xl border p-4 text-left shadow-2xl backdrop-blur-md",
                     isSelected
                       ? "border-white/45 bg-white text-[var(--home-ink)]"
-                      : "border-white/16 bg-[#171755]/72 text-white",
+                      : "border-white/16 bg-[#07365c]/78 text-white",
                   )}
                   style={club.position}
                   aria-pressed={isSelected}
@@ -233,7 +233,7 @@ export function DiscoverySection() {
               initial={reduced ? false : { opacity: 0, x: 22 }}
               animate={{ opacity: 1, x: 0 }}
               exit={reduced ? undefined : { opacity: 0, x: -12 }}
-              className="self-center rounded-2xl border border-white/18 bg-[#10133a]/88 p-5 shadow-2xl backdrop-blur-xl"
+              className="self-center rounded-2xl border border-white/18 bg-[#062f51]/90 p-5 shadow-2xl backdrop-blur-xl"
             >
               <p className="font-mono text-[0.6rem] tracking-[0.15em] text-[var(--home-cyan)] uppercase">
                 Club in focus

@@ -2,10 +2,10 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
-  CalendarDays,
+  CalendarCheck,
   Check,
+  FileText,
   Lightbulb,
-  MessageSquareText,
   Sparkles,
   UsersRound,
 } from "lucide-react";
@@ -16,221 +16,306 @@ import { cn } from "@/lib/utils";
 
 const stages = [
   {
-    id: "idea",
-    label: "Idea captured",
-    detail: "Robotics Builders",
-    node: 0,
+    label: "Student idea",
+    title: "Robotics Builders",
+    detail: "Mission and activity plan captured",
+    icon: Lightbulb,
   },
   {
-    id: "submitted",
-    label: "Submitted",
-    detail: "Proposal routed",
-    node: 1,
+    label: "School review",
+    title: "Application routed",
+    detail: "Advisor and reviewer assigned",
+    icon: FileText,
   },
   {
-    id: "reviewing",
-    label: "Reviewing",
-    detail: "Advisor confirmed",
-    node: 1,
+    label: "Club launch",
+    title: "Approved",
+    detail: "Workspace and charter created",
+    icon: Sparkles,
   },
   {
-    id: "approved",
-    label: "Approved",
-    detail: "Decision recorded",
-    node: 2,
-  },
-  {
-    id: "club",
-    label: "Club created",
-    detail: "Command center online",
-    node: 2,
-  },
-  {
-    id: "members",
-    label: "Members joining",
-    detail: "42 members · demo",
-    node: 3,
-  },
-  {
-    id: "meeting",
-    label: "First meeting",
-    detail: "Attendance ready",
-    node: 3,
-  },
-  {
-    id: "event",
-    label: "Event launched",
-    detail: "Robotics workshop",
-    node: 4,
-  },
-  {
-    id: "highlight",
-    label: "Impact shared",
-    detail: "Highlight published",
-    node: 5,
+    label: "Community",
+    title: "Members join",
+    detail: "First meeting and event connected",
+    icon: UsersRound,
   },
 ] as const;
 
-const nodes = [
-  { label: "Idea", icon: Lightbulb, x: "8%", y: "52%" },
-  { label: "Review", icon: MessageSquareText, x: "31%", y: "21%" },
-  { label: "Club", icon: Sparkles, x: "55%", y: "49%" },
-  { label: "People", icon: UsersRound, x: "72%", y: "18%" },
-  { label: "Event", icon: CalendarDays, x: "82%", y: "64%" },
-  { label: "Impact", icon: Check, x: "55%", y: "79%" },
-] as const;
-
-const paths = [
-  "M92 282 C160 282 163 130 263 130",
-  "M305 130 C390 130 374 264 470 264",
-  "M512 264 C570 264 572 116 630 116",
-  "M670 116 C742 116 697 346 755 346",
-  "M745 375 C660 428 580 433 500 427",
+const checklist = [
+  "Mission reviewed",
+  "Advisor confirmed",
+  "Activities clarified",
+  "School decision recorded",
 ] as const;
 
 export function HeroWorkflow() {
   const reduced = useReducedMotion();
-  const [active, chooseActive, ref] = useVisibleCycle(stages.length, 1120);
+  const [active, setActive, ref] = useVisibleCycle(stages.length, 2400);
   const stage = stages[active];
 
   return (
-    <div ref={ref} className="relative mx-auto w-full max-w-[45rem]">
-      <motion.div
-        initial={reduced ? false : { opacity: 0, y: 34, scale: 0.97 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{
-          duration: reduced ? 0 : 0.9,
-          delay: reduced ? 0 : 0.9,
-          ease: [0.2, 0.8, 0.2, 1],
-        }}
-        className={cn(
-          styles.productSurface,
-          "relative aspect-[1.14] overflow-hidden rounded-[1.15rem] p-4 sm:p-6",
-        )}
-        aria-label="Animated BayAreaClubs lifecycle product demonstration"
-      >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="size-2 rounded-full bg-[var(--home-coral)]" />
-            <span className="size-2 rounded-full bg-[var(--home-lime)]" />
-            <span className="size-2 rounded-full bg-[var(--home-cyan)]" />
-          </div>
-          <span className="font-mono text-[0.62rem] tracking-[0.16em] text-white/45 uppercase">
-            Product story · demonstration
-          </span>
-        </div>
-
+    <div
+      ref={ref}
+      className="relative w-full"
+      aria-label="Animated club idea to community workflow demonstration"
+    >
+      <div className="hidden min-h-[19rem] md:block">
         <svg
           aria-hidden
-          className="absolute inset-x-4 top-12 h-[calc(100%-4rem)] w-[calc(100%-2rem)] overflow-visible text-[var(--home-indigo)] sm:inset-x-6 sm:w-[calc(100%-3rem)]"
-          viewBox="0 0 840 520"
+          className="absolute top-5 left-0 h-28 w-full overflow-visible text-[var(--home-indigo)]"
+          viewBox="0 0 1200 112"
           preserveAspectRatio="none"
         >
-          {paths.map((path, index) => (
-            <g key={path}>
-              <path
-                d={path}
-                className={styles.connector}
-                opacity={index < stage.node ? 0.85 : 0.18}
-              />
-              {index < stage.node ? (
-                <motion.circle
-                  r="4"
-                  fill="var(--home-cyan)"
-                  className={styles.signal}
-                  initial={{ offsetDistance: "0%" }}
-                  animate={{ offsetDistance: "100%" }}
-                  transition={{
-                    duration: reduced ? 0 : 1.2,
-                    repeat: reduced ? 0 : Infinity,
-                    ease: "linear",
-                    delay: index * 0.13,
-                  }}
-                  style={{ offsetPath: `path("${path}")` }}
-                />
-              ) : null}
-            </g>
-          ))}
-        </svg>
-
-        {nodes.map((node, index) => {
-          const Icon = node.icon;
-          const reached = index <= stage.node;
-          const current = index === stage.node;
-          return (
-            <motion.button
-              type="button"
-              key={node.label}
-              onClick={() => {
-                const stageIndex = stages.findIndex(
-                  (item) => item.node === index,
-                );
-                chooseActive(stageIndex < 0 ? 0 : stageIndex);
+          <path
+            d="M0 28 H195 Q220 28 220 52 V72 Q220 88 245 88 H430 Q455 88 455 66 V50 Q455 36 480 36 H720 Q745 36 745 58 V73 Q745 88 770 88 H970 Q995 88 995 66 V42 Q995 28 1020 28 H1200"
+            className={styles.connector}
+            opacity=".25"
+          />
+          <motion.path
+            d="M0 28 H195 Q220 28 220 52 V72 Q220 88 245 88 H430 Q455 88 455 66 V50 Q455 36 480 36 H720 Q745 36 745 58 V73 Q745 88 770 88 H970 Q995 88 995 66 V42 Q995 28 1020 28 H1200"
+            className={styles.connector}
+            stroke="var(--home-indigo)"
+            initial={reduced ? false : { pathLength: 0 }}
+            animate={{ pathLength: (active + 1) / stages.length }}
+            transition={{ duration: reduced ? 0 : 0.65, ease: "easeOut" }}
+          />
+          {!reduced ? (
+            <motion.circle
+              r="4"
+              fill="var(--home-cyan)"
+              className={styles.signal}
+              style={{
+                offsetPath:
+                  'path("M0 28 H195 Q220 28 220 52 V72 Q220 88 245 88 H430 Q455 88 455 66 V50 Q455 36 480 36 H720 Q745 36 745 58 V73 Q745 88 770 88 H970 Q995 88 995 66 V42 Q995 28 1020 28 H1200")',
               }}
               animate={{
-                opacity: reached ? 1 : 0.38,
-                scale: current && !reduced ? 1.08 : 1,
+                offsetDistance: `${((active + 1) / stages.length) * 100}%`,
               }}
-              whileHover={reduced ? undefined : { scale: 1.06 }}
-              className="absolute z-10 -translate-x-1/2 -translate-y-1/2 text-left"
-              style={{ left: node.x, top: node.y }}
-              aria-label={`Show ${node.label} stage`}
-              aria-current={current ? "step" : undefined}
-            >
-              <span
-                className={cn(
-                  "flex size-11 items-center justify-center rounded-xl border transition-colors sm:size-14",
-                  reached
-                    ? "border-white/24 bg-white/12 text-white shadow-[0_0_30px_rgb(102_92_255_/_28%)]"
-                    : "border-white/10 bg-white/5 text-white/50",
-                )}
-              >
-                <Icon className="size-4 sm:size-5" aria-hidden />
-              </span>
-              <span className="mt-2 block font-mono text-[0.58rem] tracking-[0.12em] text-white/55 uppercase sm:text-[0.65rem]">
-                {node.label}
-              </span>
-            </motion.button>
-          );
-        })}
+              transition={{ duration: 0.65, ease: "easeOut" }}
+            />
+          ) : null}
+        </svg>
+
+        <ol className="relative grid grid-cols-4 gap-7 pt-3">
+          {stages.map((item, index) => {
+            const Icon = item.icon;
+            const reached = index <= active;
+            return (
+              <li key={item.label} className="min-w-0">
+                <button
+                  type="button"
+                  onClick={() => setActive(index)}
+                  aria-current={index === active ? "step" : undefined}
+                  className="group w-full text-left"
+                >
+                  <motion.span
+                    initial={reduced ? false : { opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: reduced ? 0 : index * 0.13 }}
+                    className={cn(
+                      "inline-flex min-h-8 items-center gap-2 rounded-full border px-3 font-mono text-[0.62rem] font-bold tracking-[0.11em] uppercase transition-colors",
+                      reached
+                        ? "border-[var(--home-indigo)]/35 bg-white text-[var(--home-indigo-strong)] shadow-sm"
+                        : "border-[#17213a]/12 bg-[#f2f4f7] text-[#526074]",
+                    )}
+                  >
+                    <Icon className="size-3" aria-hidden />
+                    {item.label}
+                  </motion.span>
+                </button>
+
+                <AnimatePresence mode="wait">
+                  {index === 0 ? (
+                    <motion.div
+                      initial={reduced ? false : { opacity: 0, y: 16 }}
+                      animate={{
+                        opacity: reduced || reached ? 1 : 0,
+                        y: reduced || reached ? 0 : 16,
+                        filter:
+                          reduced || reached ? "blur(0px)" : "blur(7px)",
+                      }}
+                      transition={{ duration: reduced ? 0 : 0.55 }}
+                      className="mt-11 rounded-xl border border-[#17213a]/10 bg-white p-4 text-[var(--home-ink)] shadow-[0_14px_35px_rgb(20_38_70_/_10%)]"
+                    >
+                      <p className="font-mono text-[0.58rem] text-[#657087] uppercase">
+                        New club idea
+                      </p>
+                      <p className="font-display mt-3 text-base font-semibold">
+                        Robotics Builders
+                      </p>
+                      <p className="mt-2 text-xs leading-5 text-[#657087]">
+                        Hands-on engineering for every beginner.
+                      </p>
+                    </motion.div>
+                  ) : index === 1 ? (
+                    <motion.ul
+                      initial={reduced ? false : { opacity: 0, y: 16 }}
+                      animate={{
+                        opacity: reduced || reached ? 1 : 0,
+                        y: reduced || reached ? 0 : 16,
+                        filter:
+                          reduced || reached ? "blur(0px)" : "blur(7px)",
+                      }}
+                      transition={{ duration: reduced ? 0 : 0.55 }}
+                      className="mt-9 space-y-2"
+                    >
+                      {checklist.map((entry, entryIndex) => (
+                        <li
+                          key={entry}
+                          className="flex items-center gap-2 rounded-full border border-[#17213a]/10 bg-white/80 px-3 py-1.5 text-[0.65rem] text-[#364158]"
+                        >
+                          <Check
+                            className={cn(
+                              "size-3",
+                              active > 0 && entryIndex <= active
+                                ? "text-[var(--home-indigo)]"
+                                : "text-[#8c97a8]",
+                            )}
+                            aria-hidden
+                          />
+                          {entry}
+                        </li>
+                      ))}
+                    </motion.ul>
+                  ) : index === 2 ? (
+                    <motion.div
+                      initial={reduced ? false : { opacity: 0, y: 16 }}
+                      animate={{
+                        opacity: reduced || reached ? 1 : 0,
+                        y: reduced || reached ? 0 : 16,
+                        filter:
+                          reduced || reached ? "blur(0px)" : "blur(7px)",
+                      }}
+                      transition={{ duration: reduced ? 0 : 0.55 }}
+                      className="mt-11 border-l border-[var(--home-indigo)]/25 pl-4"
+                    >
+                      <p className="font-mono text-[0.58rem] text-[#657087] uppercase">
+                        Decision state
+                      </p>
+                      <p className="mt-3 flex items-center gap-2 text-sm font-semibold">
+                        <span className="size-1.5 rounded-full bg-[var(--home-lime)]" />
+                        Approved for launch
+                      </p>
+                      <p className="mt-3 text-xs leading-5 text-[#657087]">
+                        Application context becomes the club workspace.
+                      </p>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      initial={reduced ? false : { opacity: 0, y: 16 }}
+                      animate={{
+                        opacity: reduced || reached ? 1 : 0,
+                        y: reduced || reached ? 0 : 20,
+                        scale: reduced || reached ? 1 : 0.94,
+                        filter:
+                          reduced || reached ? "blur(0px)" : "blur(9px)",
+                      }}
+                      transition={{ duration: reduced ? 0 : 0.6 }}
+                      className="mt-9 rounded-xl bg-[#0b2545] p-4 text-white shadow-[0_16px_38px_rgb(2_29_61_/_20%)]"
+                    >
+                      <div className="flex items-center justify-between">
+                        <UsersRound
+                          className="size-4 text-[var(--home-cyan)]"
+                          aria-hidden
+                        />
+                        <span className="text-[0.58rem] text-white/60">
+                          DEMO
+                        </span>
+                      </div>
+                      <p className="font-display mt-4 text-base font-semibold">
+                        Community active
+                      </p>
+                      <div className="mt-4 flex items-center justify-between border-t border-white/12 pt-3 text-xs">
+                        <span>Members</span>
+                        <span className="font-mono font-bold">42</span>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+
+      <div className="md:hidden">
+        <div className="relative pl-5">
+          <div
+            aria-hidden
+            className="absolute top-3 bottom-3 left-[0.7rem] w-px bg-[var(--home-indigo)]/20"
+          />
+          <motion.div
+            aria-hidden
+            animate={{ height: `${((active + 1) / stages.length) * 100}%` }}
+            transition={{ duration: reduced ? 0 : 0.45 }}
+            className="absolute top-3 left-[0.7rem] w-px bg-[var(--home-indigo)]"
+          />
+          <ol className="space-y-2">
+            {stages.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <li key={item.label}>
+                  <button
+                    type="button"
+                    onClick={() => setActive(index)}
+                    className={cn(
+                      "relative flex min-h-14 w-full items-center gap-3 rounded-xl border px-3 text-left text-[var(--home-ink)] transition-colors",
+                      index === active
+                        ? "border-[var(--home-indigo)]/35 bg-white shadow-md"
+                        : "border-[#17213a]/10 bg-white/55",
+                    )}
+                    aria-current={index === active ? "step" : undefined}
+                  >
+                    <span
+                      className={cn(
+                        "relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full",
+                        index <= active
+                          ? "bg-[var(--home-indigo-strong)] text-white"
+                          : "bg-[#e8edf3] text-[#657087]",
+                      )}
+                    >
+                      <Icon className="size-3.5" aria-hidden />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block font-mono text-[0.58rem] font-bold tracking-[0.1em] text-[#657087] uppercase">
+                        {item.label}
+                      </span>
+                      <span className="mt-1 block truncate text-sm font-semibold">
+                        {item.title}
+                      </span>
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
 
         <AnimatePresence mode="wait">
           <motion.div
-            key={stage.id}
-            initial={reduced ? false : { opacity: 0, y: 12, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={reduced ? undefined : { opacity: 0, y: -8, scale: 0.98 }}
-            transition={{ duration: reduced ? 0 : 0.34 }}
-            className="absolute right-4 bottom-4 left-4 z-20 flex items-center justify-between gap-4 rounded-xl border border-white/14 bg-[#0c1126]/92 px-4 py-3 shadow-2xl backdrop-blur-md sm:right-6 sm:bottom-6 sm:left-6 sm:px-5"
+            key={stage.label}
+            initial={reduced ? false : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={reduced ? undefined : { opacity: 0, y: -6 }}
+            className="mt-4 flex items-center justify-between rounded-lg bg-[#0b2545] px-4 py-3 text-white"
           >
-            <div>
-              <p className="font-mono text-[0.6rem] tracking-[0.14em] text-[var(--home-cyan)] uppercase">
-                {String(active + 1).padStart(2, "0")} / {stages.length}
-              </p>
-              <p className="font-display mt-1 text-base font-semibold text-white sm:text-lg">
-                {stage.label}
-              </p>
-            </div>
-            <p className="max-w-36 text-right text-xs text-white/60 sm:text-sm">
+            <span className="text-xs font-semibold">{stage.title}</span>
+            <span className="max-w-36 text-right text-[0.65rem] text-white/70">
               {stage.detail}
-            </p>
+            </span>
           </motion.div>
         </AnimatePresence>
-      </motion.div>
+      </div>
 
-      <motion.div
-        aria-hidden
-        animate={reduced ? undefined : { y: [0, -9, 0], rotate: [-1, 1, -1] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -top-5 -right-3 hidden rounded-lg border border-white/14 bg-[#171d3b]/90 px-3 py-2 shadow-xl backdrop-blur sm:block"
-      >
-        <p className="font-mono text-[0.58rem] text-white/45 uppercase">
-          Community signal
-        </p>
-        <p className="mt-1 text-xs font-semibold text-white">
-          New member joined
-        </p>
-      </motion.div>
+      <div className="mt-5 hidden items-center justify-end gap-2 md:flex">
+        <CalendarCheck
+          className="size-3.5 text-[var(--home-indigo)]"
+          aria-hidden
+        />
+        <span className="font-mono text-[0.58rem] tracking-[0.12em] text-[#657087] uppercase">
+          Original BayAreaClubs product demonstration
+        </span>
+      </div>
     </div>
   );
 }
