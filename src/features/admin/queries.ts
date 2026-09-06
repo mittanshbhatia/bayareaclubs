@@ -5,6 +5,7 @@ import {
   requireAdminConsoleAccess,
   requirePlatformAdmin,
 } from "@/lib/auth/authorization";
+import { postgrestIlikeOr } from "@/lib/supabase/postgrest-filter";
 import { createClient } from "@/lib/supabase/server";
 import type { PlatformRoleKey } from "@/features/admin/sections";
 
@@ -152,8 +153,8 @@ export async function listAdminClubs(filters: {
     );
   }
   if (filters.q) {
-    const q = filters.q.replaceAll(",", " ").trim();
-    query = query.or(`name.ilike.%${q}%,slug.ilike.%${q}%,category.ilike.%${q}%`);
+    const orFilter = postgrestIlikeOr(["name", "slug", "category"], filters.q);
+    if (orFilter) query = query.or(orFilter);
   }
   const { data: clubs, error } = await query;
   if (error) throw error;

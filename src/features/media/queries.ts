@@ -1,6 +1,7 @@
 import "server-only";
 
 import { requireClubManager, requireActiveUser } from "@/lib/auth/authorization";
+import { postgrestIlikeOr } from "@/lib/supabase/postgrest-filter";
 import { createClient } from "@/lib/supabase/server";
 import type { MediaLibraryFilterInput } from "@/lib/validation/media";
 
@@ -40,9 +41,8 @@ export async function listClubMediaLibrary(
     .limit(100);
 
   if (filters.q) {
-    query = query.or(
-      `title.ilike.%${filters.q}%,description.ilike.%${filters.q}%`,
-    );
+    const orFilter = postgrestIlikeOr(["title", "description"], filters.q);
+    if (orFilter) query = query.or(orFilter);
   }
   if (filters.mediaType && filters.mediaType !== "all") {
     query = query.eq("media_type", filters.mediaType);

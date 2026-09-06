@@ -71,6 +71,10 @@ where user_id in (
   'd0000000-0000-0000-0000-000000000002'
 );
 
+insert into public.user_school_memberships (user_id, school_id, role, status, joined_at)
+values
+  ('d0000000-0000-0000-0000-000000000001', 'd1000000-0000-0000-0000-000000000001', 'student', 'active', now());
+
 insert into public.club_memberships (
   club_id, user_id, role, status, school_year, joined_at
 )

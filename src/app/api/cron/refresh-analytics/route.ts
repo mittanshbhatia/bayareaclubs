@@ -2,34 +2,22 @@ import { NextResponse } from "next/server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { logger } from "@/lib/logging/logger";
+import { requireCronBearer } from "@/lib/security/cron-auth";
 
 export const dynamic = "force-dynamic";
 
 /**
  * Daily analytics rollup processor.
- * Protect with CRON_SECRET (Authorization: Bearer <secret> or ?secret=).
+ * Protect with CRON_SECRET via Authorization: Bearer.
  * Defaults to yesterday Pacific; pass ?date=YYYY-MM-DD to refresh a day.
  */
 export async function GET(request: Request) {
-  const secret = process.env.CRON_SECRET;
-  if (!secret) {
-    return NextResponse.json(
-      { ok: false, error: "CRON_SECRET is not configured" },
-      { status: 503 },
-    );
-  }
-
-  const auth = request.headers.get("authorization");
-  const url = new URL(request.url);
-  const token =
-    auth?.startsWith("Bearer ") ? auth.slice("Bearer ".length) : url.searchParams.get("secret");
-
-  if (token !== secret) {
-    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
-  }
+  const denied = requireCronBearer(request);
+  if (denied) return denied;
 
   try {
     const admin = createAdminClient();
+    const url = new URL(request.url);
     const date = url.searchParams.get("date");
     const { data, error } = await admin.rpc(
       "refresh_analytics_for_date",

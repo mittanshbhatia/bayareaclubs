@@ -4,11 +4,12 @@ import { expect, test } from "@playwright/test";
 test("renders the production landing page without detectable accessibility violations", async ({
   page,
 }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
 
   await expect(
     page.getByRole("heading", {
-      name: "Give every great club a path from idea to impact.",
+      name: /Start a club\./i,
     }),
   ).toBeVisible();
 

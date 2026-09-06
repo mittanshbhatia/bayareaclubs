@@ -1,7 +1,7 @@
--- Authorized global command palette search.
--- Returns only rows the caller could otherwise retrieve via membership / manage / platform helpers.
+-- Fix ambiguous rank references in search_command_palette CTEs.
+drop function if exists public.search_command_palette(text, integer);
 
-create or replace function public.search_command_palette(
+create function public.search_command_palette(
   p_query text default '',
   p_limit integer default 24
 )
@@ -281,8 +281,6 @@ begin
 end;
 $$;
 
+
 revoke all on function public.search_command_palette(text, integer) from public;
 grant execute on function public.search_command_palette(text, integer) to authenticated;
-
-comment on function public.search_command_palette(text, integer) is
-  'Authorized command palette search. Uses membership/manage/platform helpers; never returns unauthorized entities.';

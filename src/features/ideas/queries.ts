@@ -1,5 +1,6 @@
 import "server-only";
 
+import { postgrestIlikeOr } from "@/lib/supabase/postgrest-filter";
 import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database.generated";
 
@@ -67,9 +68,8 @@ export async function listReviewQueue(filters: {
   }
   if (filters.category) query = query.eq("category", filters.category);
   if (filters.search) {
-    query = query.or(
-      `title.ilike.%${filters.search}%,category.ilike.%${filters.search}%`,
-    );
+    const orFilter = postgrestIlikeOr(["title", "category"], filters.search);
+    if (orFilter) query = query.or(orFilter);
   }
 
   const { data, error } = await query;

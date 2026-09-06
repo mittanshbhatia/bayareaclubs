@@ -22,12 +22,12 @@ export const MEDIA_TYPE_OPTIONS = [
   { value: "document", label: "PDF / document" },
 ] as const;
 
+/** Raster images only — SVG is rejected (scriptable markup). */
 const IMAGE_MIME = [
   "image/jpeg",
   "image/png",
   "image/webp",
   "image/gif",
-  "image/svg+xml",
 ] as const;
 
 const VIDEO_MIME = ["video/mp4", "video/webm", "video/quicktime"] as const;
@@ -43,7 +43,7 @@ const DOCUMENT_MIME = [
 
 export const BUCKET_MIME_ALLOWLIST: Record<MediaBucket, readonly string[]> = {
   "club-branding": IMAGE_MIME,
-  "club-media": [...IMAGE_MIME.filter((m) => m !== "image/svg+xml"), ...VIDEO_MIME, ...DOCUMENT_MIME],
+  "club-media": [...IMAGE_MIME, ...VIDEO_MIME, ...DOCUMENT_MIME],
   "club-documents": [
     ...DOCUMENT_MIME,
     "image/jpeg",

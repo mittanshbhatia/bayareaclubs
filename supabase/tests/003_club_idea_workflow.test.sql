@@ -277,7 +277,7 @@ select ok(
   exists (
     select 1 from public.notifications
     where user_id = 'a0000000-0000-0000-0000-000000000001'
-      and notification_type = 'club_idea_approved'
+      and notification_type = 'idea_approved'
   ),
   'approval notifies the applicant'
 );

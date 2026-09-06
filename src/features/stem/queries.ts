@@ -1,6 +1,7 @@
 import "server-only";
 
 import { requireActiveUser, requirePlatformAdmin } from "@/lib/auth/authorization";
+import { postgrestIlikeOr } from "@/lib/supabase/postgrest-filter";
 import { createClient } from "@/lib/supabase/server";
 import type { CatalogFilters } from "@/lib/validation/stem";
 import type { Database } from "@/types/database.generated";
@@ -27,10 +28,11 @@ export async function listPublishedCourses(filters: CatalogFilters = {}) {
   if (filters.format) query = query.eq("format", filters.format);
   if (filters.gradeBand) query = query.contains("grade_bands", [filters.gradeBand]);
   if (filters.q) {
-    const q = filters.q.replaceAll(",", " ").trim();
-    query = query.or(
-      `title.ilike.%${q}%,description.ilike.%${q}%,provider_name.ilike.%${q}%`,
+    const orFilter = postgrestIlikeOr(
+      ["title", "description", "provider_name"],
+      filters.q,
     );
+    if (orFilter) query = query.or(orFilter);
   }
 
   const bounds = effortBounds(filters.effort);

@@ -3,31 +3,18 @@ import { randomUUID } from "node:crypto";
 
 import { processCommunicationJobs } from "@/features/communications/processor";
 import { logger } from "@/lib/logging/logger";
+import { requireCronBearer } from "@/lib/security/cron-auth";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 /**
  * Durable communications outbox processor.
- * Protect with CRON_SECRET. Idempotent job + recipient claims.
+ * Protect with CRON_SECRET via Authorization: Bearer.
  */
 export async function GET(request: Request) {
-  const secret = process.env.CRON_SECRET;
-  if (!secret) {
-    return NextResponse.json(
-      { ok: false, error: "CRON_SECRET is not configured" },
-      { status: 503 },
-    );
-  }
-
-  const auth = request.headers.get("authorization");
-  const url = new URL(request.url);
-  const token =
-    auth?.startsWith("Bearer ") ? auth.slice("Bearer ".length) : url.searchParams.get("secret");
-
-  if (token !== secret) {
-    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
-  }
+  const denied = requireCronBearer(request);
+  if (denied) return denied;
 
   try {
     const workerId = `cron:${randomUUID()}`;

@@ -185,6 +185,9 @@ select results_eq(
   'approval updates charter status'
 );
 
+reset role;
+set local role postgres;
+
 select ok(
   (
     select public.enqueue_renewal_reminders(statement_timestamp()) >= 0

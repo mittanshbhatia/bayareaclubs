@@ -81,12 +81,10 @@ where user_id in (
   'c0000000-0000-0000-0000-000000000003'
 );
 
-insert into public.platform_role_assignments (user_id, role, assigned_by)
-values (
-  'c0000000-0000-0000-0000-000000000001',
-  'platform_admin',
-  'c0000000-0000-0000-0000-000000000001'
-);
+insert into public.user_school_memberships (user_id, school_id, role, status, joined_at)
+values
+  ('c0000000-0000-0000-0000-000000000001', 'c1000000-0000-0000-0000-000000000001', 'school_admin', 'active', now()),
+  ('c0000000-0000-0000-0000-000000000002', 'c1000000-0000-0000-0000-000000000001', 'student', 'active', now());
 
 insert into public.club_memberships (club_id, user_id, role, status, school_year, joined_at)
 values
@@ -153,6 +151,9 @@ select throws_ok(
   'Recipient is not a member of the target club',
   'blocks notifying non-members for club-scoped notifications'
 );
+
+reset role;
+set local role postgres;
 
 select is(
   (

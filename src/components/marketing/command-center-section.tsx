@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
 import {
@@ -13,31 +12,8 @@ import { Reveal } from "@/components/marketing/reveal";
 import { Badge } from "@/components/ui/badge";
 
 function DemoCount({ to, label }: { to: number; label: string }) {
-  const reduceMotion = useReducedMotion();
-  if (reduceMotion) {
-    return (
-      <span aria-label={`${label}: ${to} (marketing demo)`}>{to}</span>
-    );
-  }
-  return <AnimatedDemoCount to={to} label={label} />;
-}
-
-function AnimatedDemoCount({ to, label }: { to: number; label: string }) {
-  const [value, setValue] = useState(0);
-
-  useEffect(() => {
-    let frame = 0;
-    const frames = 36;
-    const id = window.setInterval(() => {
-      frame += 1;
-      setValue(Math.round((to * frame) / frames));
-      if (frame >= frames) window.clearInterval(id);
-    }, 24);
-    return () => window.clearInterval(id);
-  }, [to]);
-
   return (
-    <span aria-label={`${label}: ${to} (marketing demo)`}>{value}</span>
+    <span aria-label={`${label}: ${to} (marketing demo)`}>{to}</span>
   );
 }
 

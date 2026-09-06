@@ -25,7 +25,7 @@ test.describe("marketing homepage visuals", () => {
     await page.setViewportSize({ width: 768, height: 1024 });
     await page.goto("/");
     await expect(
-      page.getByRole("heading", { name: /idea shouldn't get lost/i }),
+      page.getByRole("heading", { level: 1, name: /Start a club/i }),
     ).toBeVisible();
     await page.screenshot({
       path: path.join(outputDir, "homepage-tablet.png"),

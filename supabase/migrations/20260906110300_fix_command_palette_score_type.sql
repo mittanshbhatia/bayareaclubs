@@ -1,6 +1,4 @@
--- Authorized global command palette search.
--- Returns only rows the caller could otherwise retrieve via membership / manage / platform helpers.
-
+-- Cast command palette match_score to integer (row_number arithmetic yields bigint).
 create or replace function public.search_command_palette(
   p_query text default '',
   p_limit integer default 24
@@ -31,7 +29,7 @@ begin
   end if;
 
   is_admin := public.is_platform_admin(actor);
-  is_committee := public.is_committee_reviewer(actor) or is_admin;
+  is_committee := public.is_committee_reviewer(actor);
 
   return query
   with managed_clubs as (
@@ -66,12 +64,14 @@ begin
       action.description,
       '/clubs/' || club.slug || action.path as href,
       action.icon,
-      case
-        when q = '' then 70 - club.club_ord
-        when lower(action.label) like '%' || q || '%' then 100
-        when lower(club.name) like '%' || q || '%' then 80
-        else 0
-      end as match_score
+      (
+        case
+          when q = '' then 70 - club.club_ord
+          when lower(action.label) like '%' || q || '%' then 100
+          when lower(club.name) like '%' || q || '%' then 80
+          else 0
+        end
+      )::integer as match_score
     from (
       select
         managed.id,
@@ -92,13 +92,13 @@ begin
   ),
   global_actions as (
     select
-      'action:browse-stem-global'::text,
-      'Actions'::text,
-      'Browse STEM resources'::text,
-      'Open the free STEM catalog'::text,
-      '/resources'::text,
-      'graduation-cap'::text,
-      70 as match_score
+      'action:browse-stem-global'::text as result_id,
+      'Actions'::text as result_group,
+      'Browse STEM resources'::text as label,
+      'Open the free STEM catalog'::text as description,
+      '/resources'::text as href,
+      'graduation-cap'::text as icon,
+      70::integer as match_score
     where q = ''
        or q like '%stem%'
        or q like '%resource%'
@@ -107,18 +107,20 @@ begin
   ),
   club_rows as (
     select
-      'club:' || club.id::text,
-      'Clubs'::text,
-      club.name,
-      coalesce(club.category, 'Club') || ' · /' || club.slug,
-      '/clubs/' || club.slug,
-      'shield'::text,
-      case
-        when q <> '' and lower(club.name) like q || '%' then 95
-        when q <> '' and lower(club.name) like '%' || q || '%' then 85
-        when q = '' then 60
-        else 0
-      end as match_score
+      'club:' || club.id::text as result_id,
+      'Clubs'::text as result_group,
+      club.name as label,
+      coalesce(club.category, 'Club') || ' · /' || club.slug as description,
+      '/clubs/' || club.slug as href,
+      'shield'::text as icon,
+      (
+        case
+          when q <> '' and lower(club.name) like q || '%' then 95
+          when q <> '' and lower(club.name) like '%' || q || '%' then 85
+          when q = '' then 60
+          else 0
+        end
+      )::integer as match_score
     from visible_clubs club
     where
       q = ''
@@ -128,18 +130,20 @@ begin
   ),
   member_rows as (
     select
-      'member:' || membership.club_id::text || ':' || membership.user_id::text,
-      'Members'::text,
-      profile.display_name,
-      initcap(replace(membership.role::text, '_', ' ')) || ' · ' || club.name,
-      '/clubs/' || club.slug || '/members',
-      'user'::text,
-      case
-        when q <> '' and lower(profile.display_name) like q || '%' then 90
-        when q <> '' and lower(profile.display_name) like '%' || q || '%' then 75
-        when q = '' then 40
-        else 0
-      end as match_score
+      'member:' || membership.club_id::text || ':' || membership.user_id::text as result_id,
+      'Members'::text as result_group,
+      profile.display_name as label,
+      initcap(replace(membership.role::text, '_', ' ')) || ' · ' || club.name as description,
+      '/clubs/' || club.slug || '/members' as href,
+      'user'::text as icon,
+      (
+        case
+          when q <> '' and lower(profile.display_name) like q || '%' then 90
+          when q <> '' and lower(profile.display_name) like '%' || q || '%' then 75
+          when q = '' then 40
+          else 0
+        end
+      )::integer as match_score
     from public.club_memberships membership
     join public.profiles profile on profile.id = membership.user_id
     join public.clubs club on club.id = membership.club_id
@@ -156,17 +160,19 @@ begin
   ),
   event_rows as (
     select
-      'event:' || event.id::text,
-      'Events'::text,
-      event.title,
-      to_char(timezone('UTC', event.starts_at), 'Mon DD') || ' · ' || club.name,
-      '/clubs/' || club.slug || '/events/' || event.id::text,
-      'calendar'::text,
-      case
-        when q <> '' and lower(event.title) like '%' || q || '%' then 88
-        when q = '' then 55
-        else 0
-      end as match_score
+      'event:' || event.id::text as result_id,
+      'Events'::text as result_group,
+      event.title as label,
+      to_char(timezone('UTC', event.starts_at), 'Mon DD') || ' · ' || club.name as description,
+      '/clubs/' || club.slug || '/events/' || event.id::text as href,
+      'calendar'::text as icon,
+      (
+        case
+          when q <> '' and lower(event.title) like '%' || q || '%' then 88
+          when q = '' then 55
+          else 0
+        end
+      )::integer as match_score
     from public.events event
     join public.clubs club on club.id = event.club_id
     where public.can_view_club(event.club_id, actor)
@@ -182,46 +188,69 @@ begin
   ),
   resource_rows as (
     select
-      'resource:' || course.id::text,
-      'Resources'::text,
-      course.title,
-      course.provider_name || ' · ' || course.discipline::text,
-      '/resources/' || course.slug,
-      'book-open'::text,
-      case
-        when q <> '' and lower(course.title) like '%' || q || '%' then 82
-        when q = '' then 35
-        else 0
-      end as match_score
-    from public.stem_courses course
-    where course.status = 'published'
-      and (
-        q = ''
-        or lower(course.title) like '%' || q || '%'
-        or lower(course.provider_name) like '%' || q || '%'
-        or lower(course.discipline::text) like '%' || q || '%'
-      )
+      'resource:' || course.id::text as result_id,
+      'Resources'::text as result_group,
+      course.title as label,
+      course.provider_name || ' · ' || course.discipline::text as description,
+      '/resources/' || course.slug as href,
+      'book-open'::text as icon,
+      (
+        case
+          when q <> '' and lower(course.title) like q || '%' then 88
+          when q <> '' and lower(course.title) like '%' || q || '%' then 70
+          when q = '' then 40
+          else 0
+        end
+      )::integer as match_score
+    from public.published_stem_courses course
+    where
+      q = ''
+      or lower(course.title) like '%' || q || '%'
+      or lower(coalesce(course.provider_name, '')) like '%' || q || '%'
+      or lower(course.discipline::text) like '%' || q || '%'
   ),
   admin_rows as (
     select *
     from (
       values
-        ('admin:overview', 'Admin', 'Administration console', 'Platform overview and queues', '/admin', 'layout-dashboard', 65),
-        ('admin:ideas', 'Admin', 'Club idea review queue', 'Review submitted club ideas', '/admin/ideas', 'inbox', 64),
-        ('admin:renewals', 'Admin', 'Renewals queue', 'Review club renewals', '/admin/renewals', 'refresh-cw', 63),
-        ('admin:clubs', 'Admin', 'Manage clubs', 'Platform clubs directory', '/admin/clubs', 'shield', 62),
-        ('admin:schools', 'Admin', 'Manage schools', 'School directory and settings', '/admin/schools', 'building-2', 61),
-        ('admin:users', 'Admin', 'Users & roles', 'Platform role assignments', '/admin/users', 'users', 60),
-        ('admin:audit', 'Admin', 'Audit log', 'Search administrative activity', '/admin/audit', 'scroll-text', 59),
-        ('admin:resources', 'Admin', 'STEM resources admin', 'Draft and publish courses', '/admin/resources', 'library', 58)
-    ) as admin(result_id, result_group, label, description, href, icon, match_score)
-    where (
-        is_admin
-        or (
-          is_committee
-          and admin.result_id in ('admin:overview', 'admin:ideas', 'admin:renewals')
+        (
+          'admin:overview',
+          'Admin',
+          'Administration overview',
+          'Platform administration home',
+          '/admin',
+          'layout-dashboard',
+          65
+        ),
+        (
+          'admin:ideas',
+          'Admin',
+          'Idea review queue',
+          'Review submitted club ideas',
+          '/admin/ideas',
+          'inbox',
+          65
+        ),
+        (
+          'admin:users',
+          'Admin',
+          'Users & roles',
+          'Manage platform role assignments',
+          '/admin/users',
+          'shield',
+          65
+        ),
+        (
+          'admin:audit',
+          'Admin',
+          'Audit log',
+          'Review security-sensitive actions',
+          '/admin/audit',
+          'scroll-text',
+          65
         )
-      )
+    ) as admin(result_id, result_group, label, description, href, icon, match_score)
+    where (is_admin or is_committee)
       and (
         q = ''
         or lower(admin.label) like '%' || q || '%'
@@ -230,17 +259,20 @@ begin
   ),
   school_rows as (
     select
-      'school:' || school.id::text,
-      'Schools'::text,
-      school.name,
-      school.level::text || ' · ' || school.city,
-      '/admin/schools',
-      'building-2'::text,
-      case
-        when q <> '' and lower(school.name) like '%' || q || '%' then 84
-        when q = '' then 20
-        else 0
-      end as match_score
+      'school:' || school.id::text as result_id,
+      'Schools'::text as result_group,
+      school.name as label,
+      school.city || ' · /' || school.slug as description,
+      '/admin/schools' as href,
+      'building-2'::text as icon,
+      (
+        case
+          when q <> '' and lower(school.name) like q || '%' then 92
+          when q <> '' and lower(school.name) like '%' || q || '%' then 84
+          when q = '' then 20
+          else 0
+        end
+      )::integer as match_score
     from public.schools school
     where is_admin
       and (
@@ -274,15 +306,9 @@ begin
     combined.description,
     combined.href,
     combined.icon,
-    combined.match_score::integer
+    combined.match_score
   from combined
   order by combined.match_score desc, combined.result_group, combined.label
   limit lim;
 end;
 $$;
-
-revoke all on function public.search_command_palette(text, integer) from public;
-grant execute on function public.search_command_palette(text, integer) to authenticated;
-
-comment on function public.search_command_palette(text, integer) is
-  'Authorized command palette search. Uses membership/manage/platform helpers; never returns unauthorized entities.';
