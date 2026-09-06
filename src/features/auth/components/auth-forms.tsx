@@ -70,7 +70,7 @@ function Field({
         className="bg-surface min-h-11 w-full rounded-md border px-3 py-2 text-base shadow-sm sm:text-sm"
       />
       {error ? (
-        <p id={errorId} className="mt-1.5 text-sm text-red-700">
+        <p id={errorId} className="mt-1.5 text-sm text-danger">
           {error}
         </p>
       ) : null}
@@ -92,7 +92,7 @@ function FormMessage({
       className={
         success
           ? "border-primary text-foreground border-l-2 pl-3 text-sm"
-          : "border-l-2 border-red-700 pl-3 text-sm text-red-800"
+          : "border-l-2 border-danger pl-3 text-sm text-danger"
       }
     >
       {message}
@@ -224,7 +224,7 @@ function ProfileFields({
           <option value="adult">Adult</option>
         </select>
         {errors.ageBand?.message ? (
-          <p className="mt-1.5 text-sm text-red-700">
+          <p className="mt-1.5 text-sm text-danger">
             {errors.ageBand.message}
           </p>
         ) : null}
@@ -260,7 +260,7 @@ function ProfileFields({
               ))}
             </select>
             {errors.schoolId?.message ? (
-              <p className="mt-1.5 text-sm text-red-700">
+              <p className="mt-1.5 text-sm text-danger">
                 {errors.schoolId.message}
               </p>
             ) : null}
@@ -287,7 +287,7 @@ function ProfileFields({
               <option value="other">Other</option>
             </select>
             {errors.gradeBand?.message ? (
-              <p className="mt-1.5 text-sm text-red-700">
+              <p className="mt-1.5 text-sm text-danger">
                 {errors.gradeBand.message}
               </p>
             ) : null}

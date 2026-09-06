@@ -45,27 +45,36 @@ export default async function ClubInsightsPage({
 
   return (
     <div className="space-y-8">
-      <div>
-        <p className="text-sm text-muted-foreground">
-          Operational insights for {context.club.name}. Metrics use daily
-          rollups and deterministic period comparisons—not AI advice, and not
-          student performance rankings.
-        </p>
-        <form className="mt-4 flex flex-wrap gap-2">
-          <input
-            type="date"
-            name="start"
-            defaultValue={range.start}
-            className="h-10 rounded-md border border-input bg-background px-3 text-sm"
-            aria-label="Start date"
-          />
-          <input
-            type="date"
-            name="end"
-            defaultValue={range.end}
-            className="h-10 rounded-md border border-input bg-background px-3 text-sm"
-            aria-label="End date"
-          />
+      <header className="space-y-3">
+        <div className="space-y-2">
+          <h2 className="font-display text-xl font-semibold tracking-tight sm:text-2xl">
+            Insights
+          </h2>
+          <p className="max-w-2xl text-sm text-muted-foreground">
+            Operational insights for {context.club.name}. Metrics use daily
+            rollups and period comparisons—not AI advice, and not student
+            performance rankings.
+          </p>
+        </div>
+        <form className="flex flex-wrap items-end gap-2">
+          <label className="space-y-1 text-sm">
+            <span className="text-muted-foreground">Start</span>
+            <input
+              type="date"
+              name="start"
+              defaultValue={range.start}
+              className="block h-10 rounded-md border border-input bg-background px-3 text-sm"
+            />
+          </label>
+          <label className="space-y-1 text-sm">
+            <span className="text-muted-foreground">End</span>
+            <input
+              type="date"
+              name="end"
+              defaultValue={range.end}
+              className="block h-10 rounded-md border border-input bg-background px-3 text-sm"
+            />
+          </label>
           <button
             type="submit"
             className="h-10 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground"
@@ -73,17 +82,17 @@ export default async function ClubInsightsPage({
             Update range
           </button>
         </form>
-      </div>
+      </header>
 
       <section className="rounded-lg border border-border bg-surface p-5 shadow-xs">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <p className="text-xs font-semibold tracking-[0.12em] text-muted-foreground uppercase">
-              Club Momentum · operational insight
+            <p className="text-xs font-medium tracking-wide text-muted-foreground">
+              Club momentum
             </p>
-            <h2 className="mt-2 font-display text-2xl font-semibold">
+            <h3 className="mt-2 font-display text-2xl font-semibold">
               {data.momentum.statusLabel}
-            </h2>
+            </h3>
             <p className="mt-1 font-mono text-3xl font-semibold">
               {data.momentum.combinedScore}
             </p>

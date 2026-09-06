@@ -41,11 +41,16 @@ export default async function ClubCommunicationsPage({
 
   return (
     <div className="space-y-8">
-      <p className="text-sm text-muted-foreground">
-        Club email is sent server-side with Resend. Audiences are derived from
-        memberships and events only. Delivery runs asynchronously so large sends
-        never hold open a browser request.
-      </p>
+      <header className="space-y-2">
+        <h2 className="font-display text-xl font-semibold tracking-tight sm:text-2xl">
+          Communications
+        </h2>
+        <p className="max-w-2xl text-sm text-muted-foreground">
+          Club email is sent server-side with Resend. Audiences are derived from
+          memberships and events only. Delivery runs asynchronously so large sends
+          never hold open a browser request.
+        </p>
+      </header>
 
       <CommunicationsComposer
         clubId={context.club.id}

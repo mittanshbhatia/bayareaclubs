@@ -32,21 +32,27 @@ export default async function ClubNewsletterPage({
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <p className="max-w-2xl text-sm text-muted-foreground">
-          Newsletter Studio is database-driven with structured blocks. Pull only
-          recorded club facts, preview desktop/mobile/email, then draft, test,
-          schedule, send, or archive.
-        </p>
+      <header className="flex flex-wrap items-end justify-between gap-3">
+        <div className="space-y-2">
+          <h2 className="font-display text-xl font-semibold tracking-tight sm:text-2xl">
+            Newsletter
+          </h2>
+          <p className="max-w-2xl text-sm text-muted-foreground">
+            Build issues from recorded club facts, preview layouts, then draft,
+            test, schedule, send, or archive.
+          </p>
+        </div>
         <Button asChild>
           <Link href={`/clubs/${clubSlug}/newsletter/new`}>New newsletter</Link>
         </Button>
-      </div>
+      </header>
 
       {newsletters.length === 0 ? (
         <EmptyState
           title="No newsletters"
           description="Create an issue after you have activities, events, or highlights to summarize."
+          actionLabel="New newsletter"
+          actionHref={`/clubs/${clubSlug}/newsletter/new`}
         />
       ) : (
         <ul className="space-y-3">

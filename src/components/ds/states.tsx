@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { AlertCircle, Inbox } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -8,7 +9,9 @@ type EmptyStateProps = {
   description?: string;
   actionLabel?: string;
   onAction?: () => void;
+  actionHref?: string;
   className?: string;
+  compact?: boolean;
 };
 
 export function EmptyState({
@@ -16,18 +19,28 @@ export function EmptyState({
   description,
   actionLabel,
   onAction,
+  actionHref,
   className,
+  compact = false,
 }: EmptyStateProps) {
+  const showAction = Boolean(actionLabel && (onAction || actionHref));
+
   return (
     <div
       data-slot="empty-state"
       className={cn(
-        "flex flex-col items-center justify-center rounded-lg border border-dashed border-border bg-surface-muted/40 px-6 py-12 text-center",
+        "flex flex-col items-center justify-center rounded-lg border border-dashed border-border bg-surface-muted/30 text-center",
+        compact ? "px-4 py-6" : "px-6 py-10",
         className,
       )}
     >
-      <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-surface text-muted-foreground shadow-xs">
-        <Inbox aria-hidden className="size-5" />
+      <div
+        className={cn(
+          "mb-3 flex items-center justify-center rounded-md bg-surface text-muted-foreground shadow-xs",
+          compact ? "size-9" : "size-11",
+        )}
+      >
+        <Inbox aria-hidden className={compact ? "size-4" : "size-5"} />
       </div>
       <h3 className="font-semibold text-foreground">{title}</h3>
       {description ? (
@@ -35,8 +48,18 @@ export function EmptyState({
           {description}
         </p>
       ) : null}
-      {actionLabel && onAction ? (
-        <Button className="mt-5" type="button" onClick={onAction}>
+      {showAction && actionHref ? (
+        <Button asChild className="mt-5" size={compact ? "sm" : "default"}>
+          <Link href={actionHref}>{actionLabel}</Link>
+        </Button>
+      ) : null}
+      {showAction && !actionHref && onAction ? (
+        <Button
+          className="mt-5"
+          type="button"
+          size={compact ? "sm" : "default"}
+          onClick={onAction}
+        >
           {actionLabel}
         </Button>
       ) : null}
@@ -66,11 +89,11 @@ export function ErrorState({
       data-slot="error-state"
       role="alert"
       className={cn(
-        "flex flex-col items-center justify-center rounded-lg border border-danger/30 bg-danger-muted/40 px-6 py-12 text-center",
+        "flex flex-col items-center justify-center rounded-lg border border-danger/30 bg-danger-muted/40 px-6 py-10 text-center",
         className,
       )}
     >
-      <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-surface text-danger shadow-xs">
+      <div className="mb-3 flex size-11 items-center justify-center rounded-md bg-surface text-danger shadow-xs">
         <AlertCircle aria-hidden className="size-5" />
       </div>
       <h3 className="font-semibold text-foreground">{title}</h3>

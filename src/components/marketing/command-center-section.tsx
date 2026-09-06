@@ -44,53 +44,31 @@ export function CommandCenterSection() {
           </div>
         </Reveal>
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-8 grid gap-4 sm:grid-cols-3">
           <Reveal delay={0.02}>
             <MetricCard
               label="Members (demo)"
               value={<DemoCount to={32} label="Members" />}
               hint="Sample roster size"
-              delta={{ value: "demo", tone: "up", label: "Demo growth marker" }}
             />
           </Reveal>
           <Reveal delay={0.04}>
-            <div className="rounded-lg border border-border bg-surface p-5 shadow-xs">
-              <p className="text-sm font-medium text-muted-foreground">
-                Attendance (demo)
-              </p>
-              <p className="mt-2 font-mono text-3xl font-semibold tracking-tight">
-                <DemoCount to={91} label="Attendance percent" />%
-              </p>
-              <p className="mt-2 text-xs text-muted-foreground">
-                Last recorded session · sample
-              </p>
-            </div>
+            <MetricCard
+              label="Attendance (demo)"
+              value={
+                <>
+                  <DemoCount to={91} label="Attendance percent" />%
+                </>
+              }
+              hint="Last recorded session · sample"
+            />
           </Reveal>
           <Reveal delay={0.06}>
-            <div className="rounded-lg border border-border bg-surface p-5 shadow-xs">
-              <p className="text-sm font-medium text-muted-foreground">
-                Upcoming events (demo)
-              </p>
-              <p className="mt-2 font-mono text-3xl font-semibold tracking-tight">
-                <DemoCount to={3} label="Upcoming events" />
-              </p>
-              <p className="mt-2 text-xs text-muted-foreground">
-                Next: Maker Night
-              </p>
-            </div>
-          </Reveal>
-          <Reveal delay={0.08}>
-            <div className="rounded-lg border border-border bg-surface p-5 shadow-xs">
-              <p className="text-sm font-medium text-muted-foreground">
-                Charter status (demo)
-              </p>
-              <p className="mt-2 font-display text-2xl font-semibold tracking-tight text-primary">
-                Current
-              </p>
-              <p className="mt-2 text-xs text-muted-foreground">
-                Renewal window illustrated only
-              </p>
-            </div>
+            <MetricCard
+              label="Upcoming events (demo)"
+              value={<DemoCount to={3} label="Upcoming events" />}
+              hint="Next: Maker Night"
+            />
           </Reveal>
         </div>
 

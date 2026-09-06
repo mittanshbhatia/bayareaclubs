@@ -1,6 +1,10 @@
-import Link from "next/link";
-
-import { CourseCard, FilterBar, PageContainer, SectionHeader } from "@/components/ds";
+import {
+  CourseCard,
+  FilterBar,
+  PageContainer,
+  SectionHeader,
+} from "@/components/ds";
+import { EmptyState } from "@/components/ds/states";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { Button } from "@/components/ui/button";
@@ -22,6 +26,9 @@ import {
 } from "@/lib/validation/stem";
 
 export const dynamic = "force-dynamic";
+
+const selectClassName =
+  "h-11 w-full min-w-0 rounded-md border border-input bg-background px-3 text-sm sm:w-auto sm:min-w-[10rem]";
 
 export default async function ResourcesCatalogPage({
   searchParams,
@@ -60,12 +67,12 @@ export default async function ResourcesCatalogPage({
                   name="q"
                   defaultValue={filters.q ?? ""}
                   placeholder="Search title, provider, or topic"
-                  className="min-w-[14rem] flex-1"
+                  className="min-h-11 w-full min-w-0 flex-1"
                   aria-label="Search resources"
                 />
               }
               trailing={
-                <Button type="submit" variant="outline">
+                <Button type="submit" className="w-full sm:w-auto">
                   Apply filters
                 </Button>
               }
@@ -73,20 +80,22 @@ export default async function ResourcesCatalogPage({
               <select
                 name="discipline"
                 defaultValue={filters.discipline ?? ""}
-                className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+                className={selectClassName}
                 aria-label="Subject"
               >
                 <option value="">All subjects</option>
-                {STEM_DISCIPLINES.filter((item) => item !== "other").map((item) => (
-                  <option key={item} value={item}>
-                    {STEM_DISCIPLINE_LABELS[item]}
-                  </option>
-                ))}
+                {STEM_DISCIPLINES.filter((item) => item !== "other").map(
+                  (item) => (
+                    <option key={item} value={item}>
+                      {STEM_DISCIPLINE_LABELS[item]}
+                    </option>
+                  ),
+                )}
               </select>
               <select
                 name="gradeBand"
                 defaultValue={filters.gradeBand ?? ""}
-                className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+                className={selectClassName}
                 aria-label="Grade band"
               >
                 <option value="">All grade bands</option>
@@ -99,7 +108,7 @@ export default async function ResourcesCatalogPage({
               <select
                 name="difficulty"
                 defaultValue={filters.difficulty ?? ""}
-                className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+                className={selectClassName}
                 aria-label="Difficulty"
               >
                 <option value="">All difficulties</option>
@@ -112,7 +121,7 @@ export default async function ResourcesCatalogPage({
               <select
                 name="format"
                 defaultValue={filters.format ?? ""}
-                className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+                className={selectClassName}
                 aria-label="Format"
               >
                 <option value="">All formats</option>
@@ -125,7 +134,7 @@ export default async function ResourcesCatalogPage({
               <select
                 name="effort"
                 defaultValue={filters.effort ?? ""}
-                className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+                className={selectClassName}
                 aria-label="Estimated time"
               >
                 <option value="">Any time</option>
@@ -138,35 +147,36 @@ export default async function ResourcesCatalogPage({
             </FilterBar>
           </form>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {courses.map((course) => (
-              <CourseCard
-                key={course.id}
-                title={course.title ?? "Course"}
-                provider={`${course.provider_name ?? "Provider"} · Free`}
-                duration={formatEffortMinutes(course.estimated_minutes)}
-                level={
-                  course.difficulty
-                    ? COURSE_DIFFICULTY_LABELS[
-                        course.difficulty as keyof typeof COURSE_DIFFICULTY_LABELS
-                      ]
-                    : "Level varies"
-                }
-                href={`/resources/${course.slug}`}
-                actionLabel="View resource"
-                className="h-full"
-              />
-            ))}
-          </div>
-
           {courses.length === 0 ? (
-            <p className="mt-10 text-sm text-muted-foreground">
-              No free published resources match these filters.{" "}
-              <Link href="/resources" className="underline">
-                Clear filters
-              </Link>
-            </p>
-          ) : null}
+            <EmptyState
+              className="mt-10"
+              title="No matching resources"
+              description="Try clearing filters or check back after committee publishes free STEM courses."
+              actionLabel="Clear filters"
+              actionHref="/resources"
+            />
+          ) : (
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {courses.map((course) => (
+                <CourseCard
+                  key={course.id}
+                  title={course.title ?? "Course"}
+                  provider={`${course.provider_name ?? "Provider"} · Free`}
+                  duration={formatEffortMinutes(course.estimated_minutes)}
+                  level={
+                    course.difficulty
+                      ? COURSE_DIFFICULTY_LABELS[
+                          course.difficulty as keyof typeof COURSE_DIFFICULTY_LABELS
+                        ]
+                      : "Level varies"
+                  }
+                  href={`/resources/${course.slug}`}
+                  actionLabel="View resource"
+                  className="h-full"
+                />
+              ))}
+            </div>
+          )}
         </PageContainer>
       </main>
       <SiteFooter />

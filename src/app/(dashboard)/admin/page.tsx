@@ -172,7 +172,7 @@ function QueueCard({
       </div>
       {items.length === 0 ? (
         <div className="mt-4">
-          <EmptyState title={empty} className="py-8" />
+          <EmptyState title={empty} className="py-6" compact />
         </div>
       ) : (
         <ul className="mt-4 divide-y divide-border">

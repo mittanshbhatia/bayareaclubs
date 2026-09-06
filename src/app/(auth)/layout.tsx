@@ -5,19 +5,19 @@ export default function AuthLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <main className="bg-background min-h-screen px-5 py-10 sm:py-16">
+    <main className="min-h-screen bg-background px-5 py-10 sm:py-16">
       <div className="mx-auto w-full max-w-md">
         <Link
           href="/"
-          className="mb-8 inline-flex items-center gap-2 font-semibold tracking-tight"
+          className="mb-8 inline-flex items-center gap-2 font-display font-semibold tracking-tight"
         >
-          <ShieldCheck aria-hidden="true" className="text-primary size-5" />
+          <ShieldCheck aria-hidden="true" className="size-5 text-primary" />
           BayAreaClubs
         </Link>
-        <section className="bg-surface rounded-lg border p-6 shadow-sm sm:p-8">
+        <section className="rounded-lg border border-border bg-surface p-6 shadow-xs sm:p-8">
           {children}
         </section>
-        <p className="text-muted-foreground mt-6 text-sm leading-6">
+        <p className="mt-6 text-sm leading-6 text-muted-foreground">
           BayAreaClubs provides compliance-supporting controls. Institutional
           and legal review remains required.
         </p>

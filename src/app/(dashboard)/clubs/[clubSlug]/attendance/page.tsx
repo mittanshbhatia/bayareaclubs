@@ -35,7 +35,9 @@ export default async function ClubAttendancePage({
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Attendance</h1>
+        <h2 className="font-display text-2xl font-semibold tracking-tight">
+          Attendance
+        </h2>
         <p className="mt-1 text-sm text-muted-foreground">
           Club attendance is private. Members only see their own records.
           Check-in tokens stay off unless you enable them per session.

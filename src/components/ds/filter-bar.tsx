@@ -21,12 +21,14 @@ export function FilterBar({
       )}
       {...props}
     >
-      <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+      <div className="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
         {leading}
         {children}
       </div>
       {trailing ? (
-        <div className="flex shrink-0 flex-wrap items-center gap-2">{trailing}</div>
+        <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
+          {trailing}
+        </div>
       ) : null}
     </div>
   );

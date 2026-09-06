@@ -51,13 +51,13 @@ export default async function AppShellLayout({
           <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4">
             <Link
               href="/dashboard"
-              className="flex shrink-0 items-center gap-2 font-semibold"
+              className="flex shrink-0 items-center gap-2 font-display font-semibold tracking-tight"
             >
               <ShieldCheck aria-hidden="true" className="size-5 text-primary" />
-              <span className="hidden sm:inline">BayAreaClubs</span>
+              <span>BayAreaClubs</span>
             </Link>
             <GlobalCommandPalette className="max-w-md flex-1" />
-            <nav className="hidden items-center gap-1 lg:flex">
+            <nav className="hidden items-center gap-1 md:flex">
               <Button asChild variant="ghost" size="sm">
                 <Link href="/start-a-club">Club ideas</Link>
               </Button>

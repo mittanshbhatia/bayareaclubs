@@ -9,7 +9,7 @@ test("renders the production landing page without detectable accessibility viola
 
   await expect(
     page.getByRole("heading", {
-      name: /Start a club\./i,
+      name: /BayAreaClubs/i,
     }),
   ).toBeVisible();
 

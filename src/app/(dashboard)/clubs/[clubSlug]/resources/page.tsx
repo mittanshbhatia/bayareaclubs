@@ -47,17 +47,22 @@ export default async function ClubResourcesPage({
 
   return (
     <div className="space-y-8">
-      <p className="text-sm text-muted-foreground">
-        Recommend free STEM resources and build optional learning collections.
-        Members are never auto-enrolled.
-      </p>
+      <header className="space-y-2">
+        <h2 className="font-display text-xl font-semibold tracking-tight sm:text-2xl">
+          Resources
+        </h2>
+        <p className="max-w-2xl text-sm text-muted-foreground">
+          Recommend free STEM resources and build optional learning collections.
+          Members are never auto-enrolled.
+        </p>
+      </header>
 
       <section className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="font-display text-xl font-semibold tracking-tight">
+          <h3 className="font-display text-lg font-semibold tracking-tight">
             Catalog picks
-          </h2>
-          <Link href="/resources" className="text-sm underline">
+          </h3>
+          <Link href="/resources" className="text-sm font-medium text-primary underline-offset-4 hover:underline">
             Open full STEM catalog
           </Link>
         </div>
@@ -65,6 +70,8 @@ export default async function ClubResourcesPage({
           <EmptyState
             title="No published courses"
             description="When free STEM courses are published on the platform, they appear here for recommendation."
+            actionLabel="Browse STEM catalog"
+            actionHref="/resources"
           />
         ) : (
           <ul className="grid gap-3 sm:grid-cols-2">

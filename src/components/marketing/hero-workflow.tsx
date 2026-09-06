@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -66,12 +66,11 @@ export function HeroWorkflow() {
     >
       <div className="border-b border-border bg-surface px-4 py-3">
         <div className="flex items-center justify-between gap-3">
-          <p className="text-xs font-semibold tracking-[0.14em] text-foreground uppercase">
+          <p className="text-xs font-medium tracking-wide text-muted-foreground">
             Club launch workflow
           </p>
-          <span className="inline-flex items-center gap-1.5 rounded-md border border-primary/30 bg-surface px-2 py-1 text-[11px] font-semibold text-primary">
-            <span className="size-1.5 rounded-full bg-primary" aria-hidden />
-            Live preview
+          <span className="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface-muted px-2 py-1 text-xs font-medium text-muted-foreground">
+            Preview
           </span>
         </div>
       </div>
@@ -96,7 +95,7 @@ export function HeroWorkflow() {
                 >
                   <span
                     className={cn(
-                      "flex size-7 shrink-0 items-center justify-center rounded-full border text-[11px] font-bold",
+                      "flex size-7 shrink-0 items-center justify-center rounded-md border text-[11px] font-bold",
                       isDone &&
                         "border-primary bg-primary text-primary-foreground",
                       isActive &&
@@ -114,7 +113,7 @@ export function HeroWorkflow() {
                     )}
                   </span>
                   <span className="min-w-0">
-                    <span className="block text-[11px] font-semibold tracking-[0.12em] text-foreground uppercase">
+                    <span className="block text-xs font-medium tracking-wide text-muted-foreground">
                       {item.label}
                     </span>
                     <span
@@ -145,45 +144,35 @@ export function HeroWorkflow() {
               transition={{ duration: reduceMotion ? 0 : 0.28 }}
               className="space-y-4"
             >
-              <p className="text-xs font-semibold tracking-[0.16em] text-foreground uppercase">
+              <p className="text-xs font-medium tracking-wide text-muted-foreground">
                 {stage.label}
               </p>
               <p className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
                 {stage.title}
               </p>
-              <p className="text-sm text-foreground">{stage.detail}</p>
+              <p className="text-sm text-muted-foreground">{stage.detail}</p>
 
-              <div className="rounded-lg border border-border bg-background p-4 shadow-xs">
-                <div className="mb-3 flex items-center justify-between gap-2">
-                  <span className="text-xs font-medium text-foreground">
-                    Proposal card
-                  </span>
-                  <span className="rounded-md border border-border px-2 py-0.5 font-mono text-[10px] text-foreground">
-                    demo UI
-                  </span>
-                </div>
-                <p className="font-semibold text-foreground">
+              <div className="rounded-lg border border-border bg-background p-4">
+                <p className="text-xs font-medium text-muted-foreground">
+                  Example proposal
+                </p>
+                <p className="mt-2 font-semibold text-foreground">
                   Robotics for Everyone
                 </p>
-                <p className="mt-1 text-sm text-foreground">
+                <p className="mt-1 text-sm text-muted-foreground">
                   Mission High · STEM · After-school builds for all grades
                 </p>
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <span className="rounded-md border border-primary/40 bg-surface px-2 py-1 text-xs font-semibold text-primary">
+                  <span className="rounded-md border border-primary/40 bg-surface px-2 py-1 text-xs font-medium text-primary">
                     Charter ready
                   </span>
-                  <span className="rounded-md border border-border bg-surface px-2 py-1 text-xs font-semibold text-foreground">
+                  <span className="rounded-md border border-border bg-surface px-2 py-1 text-xs font-medium text-foreground">
                     Advisor linked
                   </span>
                 </div>
               </div>
             </motion.div>
           </AnimatePresence>
-
-          <div className="mt-6 flex items-center gap-2 text-sm text-foreground">
-            <ArrowRight aria-hidden className="size-4 text-primary" />
-            Connected stages, not floating decoration
-          </div>
         </div>
       </div>
     </div>

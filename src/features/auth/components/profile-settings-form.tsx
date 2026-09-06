@@ -88,7 +88,7 @@ export function ProfileSettingsForm({
             className={`${inputClass} mt-2`}
           />
           {form.formState.errors.customDisplayName?.message ? (
-            <span className="mt-1 block text-red-700">
+            <span className="mt-1 block text-danger">
               {form.formState.errors.customDisplayName.message}
             </span>
           ) : null}

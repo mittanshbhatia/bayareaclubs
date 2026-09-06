@@ -74,7 +74,7 @@ export function ChartCard({
         >
           <ResponsiveContainer width="100%" height="100%">
             {variant === "bar" ? (
-              <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+              <BarChart data={data} margin={{ top: 8, right: 12, left: 4, bottom: 4 }}>
                 <CartesianGrid stroke="var(--chart-grid)" strokeDasharray="3 3" />
                 <XAxis
                   dataKey="label"
@@ -88,7 +88,7 @@ export function ChartCard({
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
-                  width={32}
+                  width={44}
                 />
                 <Tooltip
                   contentStyle={{
@@ -114,7 +114,7 @@ export function ChartCard({
                 ) : null}
               </BarChart>
             ) : (
-              <LineChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+              <LineChart data={data} margin={{ top: 8, right: 12, left: 4, bottom: 4 }}>
                 <CartesianGrid stroke="var(--chart-grid)" strokeDasharray="3 3" />
                 <XAxis
                   dataKey="label"
@@ -128,7 +128,7 @@ export function ChartCard({
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
-                  width={32}
+                  width={44}
                 />
                 <Tooltip
                   contentStyle={{
@@ -162,7 +162,7 @@ export function ChartCard({
           </ResponsiveContainer>
         </div>
       )}
-      <p className="mt-3 text-xs text-muted-foreground">{chartSummary}</p>
+      <p className="sr-only">{chartSummary}</p>
       <table className="sr-only">
         <caption>{title} data</caption>
         <thead>

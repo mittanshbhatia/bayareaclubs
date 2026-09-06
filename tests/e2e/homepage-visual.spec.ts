@@ -13,7 +13,7 @@ test.describe("marketing homepage visuals", () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/");
     await expect(
-      page.getByRole("heading", { level: 1, name: /Start a club/i }),
+      page.getByRole("heading", { level: 1, name: /BayAreaClubs/i }),
     ).toBeVisible();
     await page.screenshot({
       path: path.join(outputDir, "homepage-desktop.png"),
@@ -25,7 +25,7 @@ test.describe("marketing homepage visuals", () => {
     await page.setViewportSize({ width: 768, height: 1024 });
     await page.goto("/");
     await expect(
-      page.getByRole("heading", { level: 1, name: /Start a club/i }),
+      page.getByRole("heading", { level: 1, name: /BayAreaClubs/i }),
     ).toBeVisible();
     await page.screenshot({
       path: path.join(outputDir, "homepage-tablet.png"),

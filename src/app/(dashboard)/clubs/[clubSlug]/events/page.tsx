@@ -35,7 +35,9 @@ export default async function ClubEventsPage({
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Events</h1>
+          <h2 className="font-display text-2xl font-semibold tracking-tight">
+            Events
+          </h2>
           <p className="mt-1 text-sm text-muted-foreground">
             Manage club meetings through large events, RSVPs, logistics, and
             post-event follow-through.
@@ -50,6 +52,8 @@ export default async function ClubEventsPage({
         <EmptyState
           title="No events yet"
           description="Create a draft for a club meeting or large event, then publish when logistics and capacity are ready."
+          actionLabel="Create event"
+          actionHref={`/clubs/${clubSlug}/events/new`}
         />
       ) : (
         <ul className="space-y-3">
