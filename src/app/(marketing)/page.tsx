@@ -9,6 +9,7 @@ import styles from "@/components/marketing/homepage.module.css";
 import { InsightsSection } from "@/components/marketing/insights-section";
 import { LifecycleSection } from "@/components/marketing/lifecycle-section";
 import { NetworkSection } from "@/components/marketing/network-section";
+import { SceneBridge } from "@/components/marketing/scene-bridge";
 import { SchoolSystemSection } from "@/components/marketing/school-system-section";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
@@ -45,14 +46,49 @@ export default function HomePage() {
       <main id="main-content">
         <HeroSection />
         <LifecycleSection />
+        <SceneBridge
+          from="#f7f7fb"
+          to="#070916"
+          accent="#665cff"
+          label="Approval becomes operations"
+        />
         <CommandCenterSection />
+        <SceneBridge from="#070916" to="#0878d1" accent="#56d9ff" />
         <DiscoverySection />
+        <SceneBridge from="#07529a" to="#071629" accent="#56d9ff" />
         <EventsSection />
+        <SceneBridge
+          from="#071629"
+          to="#fbf8f2"
+          accent="#56d9ff"
+          label="Participation becomes learning"
+          spacious
+        />
         <StemSection />
+        <SceneBridge
+          from="#fbf8f2"
+          to="#070916"
+          accent="#665cff"
+          label="Learning meets governance"
+        />
         <SchoolSystemSection />
+        <SceneBridge
+          from="#070916"
+          to="#5548dd"
+          accent="#9b6cff"
+          label="Activity becomes insight"
+        />
         <InsightsSection />
+        <SceneBridge from="#5548dd" to="#070916" accent="#56d9ff" />
         <NetworkSection />
+        <SceneBridge from="#070916" to="#fbf8f2" accent="#665cff" spacious />
         <TrustSection />
+        <SceneBridge
+          from="#fbf8f2"
+          to="#080b1a"
+          accent="#56d9ff"
+          label="Every system starts with an idea"
+        />
         <FinalCtaSection />
       </main>
       <SiteFooter />

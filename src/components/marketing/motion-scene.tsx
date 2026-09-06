@@ -15,7 +15,7 @@ export function MotionReveal({
   children,
   className,
   delay = 0,
-  distance = 30,
+  distance = 22,
   ...props
 }: HTMLMotionProps<"div"> & {
   delay?: number;
@@ -26,12 +26,12 @@ export function MotionReveal({
   return (
     <motion.div
       initial={
-        reduced ? false : { opacity: 0, y: distance, filter: "blur(8px)" }
+        reduced ? false : { opacity: 0, y: distance, filter: "blur(5px)" }
       }
       whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      viewport={{ once: true, amount: 0.22 }}
+      viewport={{ once: true, amount: 0.16 }}
       transition={{
-        duration: reduced ? 0 : 0.72,
+        duration: reduced ? 0 : 0.88,
         delay: reduced ? 0 : delay,
         ease: [0.2, 0.8, 0.2, 1],
       }}
@@ -87,7 +87,7 @@ export function StaggerItem({
         visible: { opacity: 1, y: 0 },
       }}
       transition={{
-        duration: reduced ? 0 : 0.62,
+        duration: reduced ? 0 : 0.72,
         ease: [0.2, 0.8, 0.2, 1],
       }}
       className={className}

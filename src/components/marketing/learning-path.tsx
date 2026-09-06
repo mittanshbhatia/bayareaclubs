@@ -21,7 +21,7 @@ export function LearningPath({
   usingPublishedCourses: boolean;
 }) {
   const reduced = useReducedMotion();
-  const [active, setActive, ref] = useVisibleCycle(modules.length, 1750);
+  const [active, setActive, ref] = useVisibleCycle(modules.length, 2400);
 
   return (
     <div
@@ -96,6 +96,10 @@ export function LearningPath({
         key={active}
         initial={reduced ? false : { opacity: 0, y: 18, rotateY: -4 }}
         animate={{ opacity: 1, y: 0, rotateY: 0 }}
+        transition={{
+          duration: reduced ? 0 : 0.58,
+          ease: [0.2, 0.8, 0.2, 1],
+        }}
         className="rounded-2xl border border-[#252b4c]/10 bg-[#10152f] p-6 text-white shadow-[0_32px_80px_rgb(40_35_100_/_20%)] sm:p-8"
       >
         <div className="flex items-center justify-between">

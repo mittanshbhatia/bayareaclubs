@@ -55,7 +55,7 @@ const charts = [
 
 export function InsightsSection() {
   const reduced = useReducedMotion();
-  const [active, setActive, ref] = useVisibleCycle(insights.length, 2800);
+  const [active, setActive, ref] = useVisibleCycle(insights.length, 2400);
   const insight = insights[active];
 
   return (
@@ -137,6 +137,10 @@ export function InsightsSection() {
                   initial={reduced ? false : { opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={reduced ? undefined : { opacity: 0, y: -10 }}
+                  transition={{
+                    duration: reduced ? 0 : 0.58,
+                    ease: [0.2, 0.8, 0.2, 1],
+                  }}
                 >
                   <div className="flex items-end justify-between gap-5">
                     <div>

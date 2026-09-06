@@ -63,7 +63,7 @@ export function SchoolSystemSection() {
   const reduced = useReducedMotion();
   const [active, setActive, ref] = useVisibleCycle(
     governanceModes.length,
-    2300,
+    2400,
   );
   const mode = governanceModes[active];
 
@@ -199,6 +199,10 @@ export function SchoolSystemSection() {
                   initial={reduced ? false : { opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={reduced ? undefined : { opacity: 0 }}
+                  transition={{
+                    duration: reduced ? 0 : 0.52,
+                    ease: [0.2, 0.8, 0.2, 1],
+                  }}
                   className="mt-5 flex items-center gap-3 rounded-lg bg-white/5 px-4 py-3 text-xs text-white/58"
                 >
                   <Check

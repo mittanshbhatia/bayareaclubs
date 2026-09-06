@@ -130,7 +130,10 @@ export function LifecycleSection() {
                 initial={reduced ? false : { opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={reduced ? undefined : { opacity: 0, y: -10 }}
-                transition={{ duration: reduced ? 0 : 0.34 }}
+                transition={{
+                  duration: reduced ? 0 : 0.52,
+                  ease: [0.2, 0.8, 0.2, 1],
+                }}
                 className="mt-7"
               >
                 <p className="font-display text-xl font-semibold tracking-tight sm:text-2xl">

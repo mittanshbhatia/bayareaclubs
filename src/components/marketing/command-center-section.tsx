@@ -82,7 +82,7 @@ const downstream = [
 
 export function CommandCenterSection() {
   const reduced = useReducedMotion();
-  const [active, setActive, ref] = useVisibleCycle(modes.length, 2600);
+  const [active, setActive, ref] = useVisibleCycle(modes.length, 2400);
   const mode = modes[active];
   const ActiveIcon = mode.icon;
 
@@ -174,7 +174,10 @@ export function CommandCenterSection() {
                             ? undefined
                             : { opacity: 0, y: -10, filter: "blur(4px)" }
                         }
-                        transition={{ duration: reduced ? 0 : 0.4 }}
+                        transition={{
+                          duration: reduced ? 0 : 0.58,
+                          ease: [0.2, 0.8, 0.2, 1],
+                        }}
                       >
                         <span
                           className="flex size-11 items-center justify-center rounded-xl"

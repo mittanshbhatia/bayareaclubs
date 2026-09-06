@@ -35,7 +35,7 @@ const eventStages = [
 
 export function EventsSection() {
   const reduced = useReducedMotion();
-  const [active, setActive, ref] = useVisibleCycle(eventStages.length, 1800);
+  const [active, setActive, ref] = useVisibleCycle(eventStages.length, 2400);
   const stage = eventStages[active];
   const StageIcon = stage.icon;
 
@@ -131,6 +131,10 @@ export function EventsSection() {
                     initial={reduced ? false : { opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={reduced ? undefined : { opacity: 0, y: -10 }}
+                    transition={{
+                      duration: reduced ? 0 : 0.58,
+                      ease: [0.2, 0.8, 0.2, 1],
+                    }}
                     className="mt-10 min-h-[18rem] rounded-xl border border-white/10 bg-[#07192c] p-5 sm:p-7"
                   >
                     <div className="flex items-center justify-between">
@@ -297,9 +301,7 @@ function EventDetail({
   return (
     <motion.div
       animate={{
-        borderColor: ready
-          ? "rgba(86,217,255,.28)"
-          : "rgba(255,255,255,.12)",
+        borderColor: ready ? "rgba(86,217,255,.28)" : "rgba(255,255,255,.12)",
       }}
       className="flex items-center gap-3 rounded-lg border border-white/8 bg-white/4 p-3"
     >
