@@ -1,17 +1,24 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import {
+  AnimatePresence,
+  motion,
+  useInView,
+  useReducedMotion,
+} from "motion/react";
 import {
   CalendarCheck,
   Check,
+  Circle,
   FileText,
   Lightbulb,
+  LoaderCircle,
   Sparkles,
   UsersRound,
 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 import styles from "@/components/marketing/homepage.module.css";
-import { useVisibleCycle } from "@/components/marketing/motion-scene";
 import { cn } from "@/lib/utils";
 
 const stages = [
@@ -48,10 +55,85 @@ const checklist = [
   "School decision recorded",
 ] as const;
 
+const stops = [12.5, 37.5, 62.5, 87.5] as const;
+const desktopPath = "M0 20 H1200";
+
+function wait(duration: number) {
+  return new Promise((resolve) => window.setTimeout(resolve, duration));
+}
+
 export function HeroWorkflow() {
   const reduced = useReducedMotion();
-  const [active, setActive, ref] = useVisibleCycle(stages.length, 2400);
-  const stage = stages[active];
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { amount: 0.35 });
+  const [reached, setReached] = useState(-1);
+  const [reviewStep, setReviewStep] = useState(-1);
+  const [signalPosition, setSignalPosition] = useState(0);
+  const [signalVisible, setSignalVisible] = useState(false);
+
+  useEffect(() => {
+    if (reduced || !inView) return;
+    let cancelled = false;
+
+    async function runTimeline() {
+      while (!cancelled) {
+        setSignalVisible(false);
+        setSignalPosition(0);
+        setReached(-1);
+        setReviewStep(-1);
+        await wait(700);
+        if (cancelled) return;
+
+        setSignalVisible(true);
+        await wait(250);
+        setSignalPosition(stops[0]);
+        await wait(900);
+        if (cancelled) return;
+        setReached(0);
+        await wait(700);
+
+        setSignalPosition(stops[1]);
+        await wait(1050);
+        if (cancelled) return;
+        setReached(1);
+        setReviewStep(0);
+        for (let step = 1; step <= checklist.length; step += 1) {
+          await wait(470);
+          if (cancelled) return;
+          setReviewStep(step);
+        }
+        await wait(450);
+
+        setSignalPosition(stops[2]);
+        await wait(1050);
+        if (cancelled) return;
+        setReached(2);
+        await wait(850);
+
+        setSignalPosition(stops[3]);
+        await wait(1050);
+        if (cancelled) return;
+        setReached(3);
+        await wait(1200);
+
+        setSignalPosition(100);
+        await wait(850);
+        if (cancelled) return;
+        setReached(-1);
+        setReviewStep(-1);
+        await wait(650);
+      }
+    }
+
+    void runTimeline();
+    return () => {
+      cancelled = true;
+    };
+  }, [inView, reduced]);
+
+  const visibleReached = reduced ? stages.length - 1 : reached;
+  const visibleReviewStep = reduced ? checklist.length : reviewStep;
+  const currentStage = stages[Math.max(visibleReached, 0)];
 
   return (
     <div
@@ -62,175 +144,97 @@ export function HeroWorkflow() {
       <div className="hidden min-h-[19rem] md:block">
         <svg
           aria-hidden
-          className="absolute top-5 left-0 h-28 w-full overflow-visible text-[var(--home-indigo)]"
-          viewBox="0 0 1200 112"
+          className="absolute top-0 left-0 h-14 w-full overflow-visible"
+          viewBox="0 0 1200 56"
           preserveAspectRatio="none"
         >
           <path
-            d="M0 28 H195 Q220 28 220 52 V72 Q220 88 245 88 H430 Q455 88 455 66 V50 Q455 36 480 36 H720 Q745 36 745 58 V73 Q745 88 770 88 H970 Q995 88 995 66 V42 Q995 28 1020 28 H1200"
+            d={desktopPath}
             className={styles.connector}
-            opacity=".25"
-          />
-          <motion.path
-            d="M0 28 H195 Q220 28 220 52 V72 Q220 88 245 88 H430 Q455 88 455 66 V50 Q455 36 480 36 H720 Q745 36 745 58 V73 Q745 88 770 88 H970 Q995 88 995 66 V42 Q995 28 1020 28 H1200"
-            className={styles.connector}
-            stroke="var(--home-indigo)"
-            initial={reduced ? false : { pathLength: 0 }}
-            animate={{ pathLength: (active + 1) / stages.length }}
-            transition={{ duration: reduced ? 0 : 0.65, ease: "easeOut" }}
+            stroke="rgba(203, 211, 226, 0.46)"
           />
           {!reduced ? (
             <motion.circle
-              r="4"
+              r="4.5"
               fill="var(--home-cyan)"
               className={styles.signal}
-              style={{
-                offsetPath:
-                  'path("M0 28 H195 Q220 28 220 52 V72 Q220 88 245 88 H430 Q455 88 455 66 V50 Q455 36 480 36 H720 Q745 36 745 58 V73 Q745 88 770 88 H970 Q995 88 995 66 V42 Q995 28 1020 28 H1200")',
-              }}
+              style={{ offsetPath: `path("${desktopPath}")` }}
+              initial={false}
               animate={{
-                offsetDistance: `${((active + 1) / stages.length) * 100}%`,
+                offsetDistance: `${signalPosition}%`,
+                opacity: signalVisible ? 1 : 0,
               }}
-              transition={{ duration: 0.65, ease: "easeOut" }}
+              transition={{
+                offsetDistance: {
+                  duration: 1.02,
+                  ease: [0.45, 0, 0.2, 1],
+                },
+                opacity: { duration: 0.22 },
+              }}
             />
           ) : null}
         </svg>
 
-        <ol className="relative grid grid-cols-4 gap-7 pt-3">
+        <ol className="relative grid grid-cols-4 gap-7 pt-1">
           {stages.map((item, index) => {
             const Icon = item.icon;
-            const reached = index <= active;
+            const isReached = index <= visibleReached;
+
             return (
               <li key={item.label} className="min-w-0">
-                <button
-                  type="button"
-                  onClick={() => setActive(index)}
-                  aria-current={index === active ? "step" : undefined}
-                  className="group w-full text-left"
-                >
-                  <motion.span
-                    initial={reduced ? false : { opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: reduced ? 0 : index * 0.13 }}
+                <div className="flex h-10 justify-center">
+                  <motion.div
+                    layout
+                    animate={{ width: isReached ? "auto" : 32 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 260,
+                      damping: 25,
+                    }}
                     className={cn(
-                      "inline-flex min-h-8 items-center gap-2 rounded-full border px-3 font-mono text-[0.62rem] font-bold tracking-[0.11em] uppercase transition-colors",
-                      reached
-                        ? "border-[var(--home-indigo)]/35 bg-white text-[var(--home-indigo-strong)] shadow-sm"
-                        : "border-[#17213a]/12 bg-[#f2f4f7] text-[#526074]",
+                      "flex h-8 items-center justify-center overflow-hidden rounded-full border",
+                      isReached
+                        ? "border-[var(--home-indigo)]/35 bg-white text-[var(--home-indigo-strong)] shadow-[0_8px_24px_rgb(0_0_0_/_16%)]"
+                        : "border-white/22 bg-[#10172c] text-white/64",
                     )}
                   >
-                    <Icon className="size-3" aria-hidden />
-                    {item.label}
-                  </motion.span>
-                </button>
-
-                <AnimatePresence mode="wait">
-                  {index === 0 ? (
-                    <motion.div
-                      initial={reduced ? false : { opacity: 0, y: 16 }}
-                      animate={{
-                        opacity: reduced || reached ? 1 : 0,
-                        y: reduced || reached ? 0 : 16,
-                        filter:
-                          reduced || reached ? "blur(0px)" : "blur(7px)",
-                      }}
-                      transition={{ duration: reduced ? 0 : 0.55 }}
-                      className="mt-11 rounded-xl border border-[#17213a]/10 bg-white p-4 text-[var(--home-ink)] shadow-[0_14px_35px_rgb(20_38_70_/_10%)]"
-                    >
-                      <p className="font-mono text-[0.58rem] text-[#657087] uppercase">
-                        New club idea
-                      </p>
-                      <p className="font-display mt-3 text-base font-semibold">
-                        Robotics Builders
-                      </p>
-                      <p className="mt-2 text-xs leading-5 text-[#657087]">
-                        Hands-on engineering for every beginner.
-                      </p>
-                    </motion.div>
-                  ) : index === 1 ? (
-                    <motion.ul
-                      initial={reduced ? false : { opacity: 0, y: 16 }}
-                      animate={{
-                        opacity: reduced || reached ? 1 : 0,
-                        y: reduced || reached ? 0 : 16,
-                        filter:
-                          reduced || reached ? "blur(0px)" : "blur(7px)",
-                      }}
-                      transition={{ duration: reduced ? 0 : 0.55 }}
-                      className="mt-9 space-y-2"
-                    >
-                      {checklist.map((entry, entryIndex) => (
-                        <li
-                          key={entry}
-                          className="flex items-center gap-2 rounded-full border border-[#17213a]/10 bg-white/80 px-3 py-1.5 text-[0.65rem] text-[#364158]"
+                    <span className="flex size-8 shrink-0 items-center justify-center">
+                      <Icon className="size-3.5" aria-hidden />
+                    </span>
+                    <AnimatePresence initial={false}>
+                      {isReached ? (
+                        <motion.span
+                          initial={{ opacity: 0, width: 0 }}
+                          animate={{ opacity: 1, width: "auto" }}
+                          exit={{ opacity: 0, width: 0 }}
+                          transition={{ duration: 0.38, ease: "easeOut" }}
+                          className="pr-3 font-mono text-[0.62rem] font-bold tracking-[0.11em] whitespace-nowrap uppercase"
                         >
-                          <Check
-                            className={cn(
-                              "size-3",
-                              active > 0 && entryIndex <= active
-                                ? "text-[var(--home-indigo)]"
-                                : "text-[#8c97a8]",
-                            )}
-                            aria-hidden
-                          />
-                          {entry}
-                        </li>
-                      ))}
-                    </motion.ul>
-                  ) : index === 2 ? (
+                          {item.label}
+                        </motion.span>
+                      ) : null}
+                    </AnimatePresence>
+                  </motion.div>
+                </div>
+
+                <AnimatePresence initial={false}>
+                  {isReached ? (
                     <motion.div
-                      initial={reduced ? false : { opacity: 0, y: 16 }}
-                      animate={{
-                        opacity: reduced || reached ? 1 : 0,
-                        y: reduced || reached ? 0 : 16,
-                        filter:
-                          reduced || reached ? "blur(0px)" : "blur(7px)",
+                      key={`${item.label}-content`}
+                      initial={{ opacity: 0, y: 18, filter: "blur(6px)" }}
+                      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                      exit={{ opacity: 0, y: -10, filter: "blur(5px)" }}
+                      transition={{
+                        duration: 0.58,
+                        ease: [0.2, 0.8, 0.2, 1],
                       }}
-                      transition={{ duration: reduced ? 0 : 0.55 }}
-                      className="mt-11 border-l border-[var(--home-indigo)]/25 pl-4"
                     >
-                      <p className="font-mono text-[0.58rem] text-[#657087] uppercase">
-                        Decision state
-                      </p>
-                      <p className="mt-3 flex items-center gap-2 text-sm font-semibold">
-                        <span className="size-1.5 rounded-full bg-[var(--home-lime)]" />
-                        Approved for launch
-                      </p>
-                      <p className="mt-3 text-xs leading-5 text-[#657087]">
-                        Application context becomes the club workspace.
-                      </p>
+                      <DesktopStageContent
+                        index={index}
+                        reviewStep={visibleReviewStep}
+                      />
                     </motion.div>
-                  ) : (
-                    <motion.div
-                      initial={reduced ? false : { opacity: 0, y: 16 }}
-                      animate={{
-                        opacity: reduced || reached ? 1 : 0,
-                        y: reduced || reached ? 0 : 20,
-                        scale: reduced || reached ? 1 : 0.94,
-                        filter:
-                          reduced || reached ? "blur(0px)" : "blur(9px)",
-                      }}
-                      transition={{ duration: reduced ? 0 : 0.6 }}
-                      className="mt-9 rounded-xl bg-[#0b2545] p-4 text-white shadow-[0_16px_38px_rgb(2_29_61_/_20%)]"
-                    >
-                      <div className="flex items-center justify-between">
-                        <UsersRound
-                          className="size-4 text-[var(--home-cyan)]"
-                          aria-hidden
-                        />
-                        <span className="text-[0.58rem] text-white/60">
-                          DEMO
-                        </span>
-                      </div>
-                      <p className="font-display mt-4 text-base font-semibold">
-                        Community active
-                      </p>
-                      <div className="mt-4 flex items-center justify-between border-t border-white/12 pt-3 text-xs">
-                        <span>Members</span>
-                        <span className="font-mono font-bold">42</span>
-                      </div>
-                    </motion.div>
-                  )}
+                  ) : null}
                 </AnimatePresence>
               </li>
             );
@@ -242,49 +246,66 @@ export function HeroWorkflow() {
         <div className="relative pl-5">
           <div
             aria-hidden
-            className="absolute top-3 bottom-3 left-[0.7rem] w-px bg-[var(--home-indigo)]/20"
+            className="absolute top-4 bottom-4 left-[0.7rem] w-px bg-white/26"
           />
-          <motion.div
-            aria-hidden
-            animate={{ height: `${((active + 1) / stages.length) * 100}%` }}
-            transition={{ duration: reduced ? 0 : 0.45 }}
-            className="absolute top-3 left-[0.7rem] w-px bg-[var(--home-indigo)]"
-          />
+          {!reduced ? (
+            <motion.span
+              aria-hidden
+              initial={false}
+              animate={{
+                top: `${signalPosition}%`,
+                opacity: signalVisible ? 1 : 0,
+              }}
+              transition={{
+                top: { duration: 1.02, ease: [0.45, 0, 0.2, 1] },
+                opacity: { duration: 0.22 },
+              }}
+              className="absolute left-[0.47rem] z-20 size-2 rounded-full bg-[var(--home-cyan)] shadow-[0_0_12px_var(--home-cyan)]"
+            />
+          ) : null}
           <ol className="space-y-2">
             {stages.map((item, index) => {
               const Icon = item.icon;
+              const isReached = index <= visibleReached;
               return (
-                <li key={item.label}>
-                  <button
-                    type="button"
-                    onClick={() => setActive(index)}
+                <li key={item.label} className="h-14">
+                  <motion.div
+                    layout
                     className={cn(
-                      "relative flex min-h-14 w-full items-center gap-3 rounded-xl border px-3 text-left text-[var(--home-ink)] transition-colors",
-                      index === active
-                        ? "border-[var(--home-indigo)]/35 bg-white shadow-md"
-                        : "border-[#17213a]/10 bg-white/55",
+                      "relative flex h-14 items-center gap-3 overflow-hidden rounded-xl border px-3 text-left transition-colors",
+                      isReached
+                        ? "border-[var(--home-indigo)]/35 bg-white text-[var(--home-ink)] shadow-md"
+                        : "w-14 border-white/20 bg-[#10172c] text-white/64",
                     )}
-                    aria-current={index === active ? "step" : undefined}
                   >
                     <span
                       className={cn(
                         "relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full",
-                        index <= active
+                        isReached
                           ? "bg-[var(--home-indigo-strong)] text-white"
-                          : "bg-[#e8edf3] text-[#657087]",
+                          : "bg-white/8 text-white/64",
                       )}
                     >
                       <Icon className="size-3.5" aria-hidden />
                     </span>
-                    <span className="min-w-0">
-                      <span className="block font-mono text-[0.58rem] font-bold tracking-[0.1em] text-[#657087] uppercase">
-                        {item.label}
-                      </span>
-                      <span className="mt-1 block truncate text-sm font-semibold">
-                        {item.title}
-                      </span>
-                    </span>
-                  </button>
+                    <AnimatePresence initial={false}>
+                      {isReached ? (
+                        <motion.span
+                          initial={{ opacity: 0, x: -8 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: -8 }}
+                          className="min-w-0"
+                        >
+                          <span className="block font-mono text-[0.58rem] font-bold tracking-[0.1em] text-[#657087] uppercase">
+                            {item.label}
+                          </span>
+                          <span className="mt-1 block truncate text-sm font-semibold">
+                            {item.title}
+                          </span>
+                        </motion.span>
+                      ) : null}
+                    </AnimatePresence>
+                  </motion.div>
                 </li>
               );
             })}
@@ -292,18 +313,24 @@ export function HeroWorkflow() {
         </div>
 
         <AnimatePresence mode="wait">
-          <motion.div
-            key={stage.label}
-            initial={reduced ? false : { opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={reduced ? undefined : { opacity: 0, y: -6 }}
-            className="mt-4 flex items-center justify-between rounded-lg bg-[#0b2545] px-4 py-3 text-white"
-          >
-            <span className="text-xs font-semibold">{stage.title}</span>
-            <span className="max-w-36 text-right text-[0.65rem] text-white/70">
-              {stage.detail}
-            </span>
-          </motion.div>
+          {visibleReached >= 0 ? (
+            <motion.div
+              key={currentStage.label}
+              initial={reduced ? false : { opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={reduced ? undefined : { opacity: 0, y: -6 }}
+              className="mt-4 flex items-center justify-between rounded-lg bg-[#0b2545] px-4 py-3 text-white"
+            >
+              <span className="text-xs font-semibold">
+                {currentStage.title}
+              </span>
+              <span className="max-w-36 text-right text-[0.65rem] text-white/70">
+                {currentStage.detail}
+              </span>
+            </motion.div>
+          ) : (
+            <div className="mt-4 h-11" />
+          )}
         </AnimatePresence>
       </div>
 
@@ -312,9 +339,110 @@ export function HeroWorkflow() {
           className="size-3.5 text-[var(--home-indigo)]"
           aria-hidden
         />
-        <span className="font-mono text-[0.58rem] tracking-[0.12em] text-[#657087] uppercase">
+        <span className="font-mono text-[0.58rem] tracking-[0.12em] text-[#8290a8] uppercase">
           Original BayAreaClubs product demonstration
         </span>
+      </div>
+    </div>
+  );
+}
+
+function DesktopStageContent({
+  index,
+  reviewStep,
+}: {
+  index: number;
+  reviewStep: number;
+}) {
+  if (index === 0) {
+    return (
+      <div className="mt-8 rounded-xl border border-[#17213a]/10 bg-white p-4 text-[var(--home-ink)] shadow-[0_14px_35px_rgb(20_38_70_/_13%)]">
+        <p className="font-mono text-[0.58rem] text-[#657087] uppercase">
+          New club idea
+        </p>
+        <p className="font-display mt-3 text-base font-semibold">
+          Robotics Builders
+        </p>
+        <p className="mt-2 text-xs leading-5 text-[#657087]">
+          Hands-on engineering for every beginner.
+        </p>
+      </div>
+    );
+  }
+
+  if (index === 1) {
+    return (
+      <ul className="mt-6 space-y-2">
+        {checklist.map((entry, entryIndex) => {
+          const complete = entryIndex < reviewStep;
+          const processing = entryIndex === reviewStep;
+          return (
+            <motion.li
+              key={entry}
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: entryIndex * 0.18 }}
+              className="flex items-center gap-2 rounded-full border border-[#17213a]/10 bg-white px-3 py-1.5 text-[0.65rem] text-[#364158] shadow-sm"
+            >
+              <span className="flex size-4 items-center justify-center">
+                {complete ? (
+                  <motion.span
+                    initial={{ scale: 0.5, rotate: -45 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    className="flex size-4 items-center justify-center rounded-full bg-[var(--home-indigo)] text-white"
+                  >
+                    <Check className="size-2.5" aria-hidden />
+                  </motion.span>
+                ) : processing ? (
+                  <LoaderCircle
+                    className="size-3.5 animate-spin text-[var(--home-indigo)]"
+                    aria-hidden
+                  />
+                ) : (
+                  <Circle className="size-3 text-[#a8b1c0]" aria-hidden />
+                )}
+              </span>
+              {entry}
+            </motion.li>
+          );
+        })}
+      </ul>
+    );
+  }
+
+  if (index === 2) {
+    return (
+      <div className="mt-8 border-l border-[var(--home-indigo)]/35 pl-4 text-white">
+        <p className="font-mono text-[0.58rem] text-white/58 uppercase">
+          Decision state
+        </p>
+        <p className="mt-3 flex items-center gap-2 text-sm font-semibold">
+          <motion.span
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="size-1.5 rounded-full bg-[var(--home-lime)]"
+          />
+          Approved for launch
+        </p>
+        <p className="mt-3 text-xs leading-5 text-white/58">
+          Application context becomes the club workspace.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-6 rounded-xl bg-[#0b2545] p-4 text-white shadow-[0_16px_38px_rgb(2_29_61_/_28%)]">
+      <div className="flex items-center justify-between">
+        <UsersRound className="size-4 text-[var(--home-cyan)]" aria-hidden />
+        <span className="text-[0.58rem] text-white/60">DEMO</span>
+      </div>
+      <p className="font-display mt-4 text-base font-semibold">
+        Community active
+      </p>
+      <div className="mt-4 flex items-center justify-between border-t border-white/12 pt-3 text-xs">
+        <span>Members</span>
+        <span className="font-mono font-bold">42</span>
       </div>
     </div>
   );
