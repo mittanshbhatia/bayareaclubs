@@ -19,10 +19,16 @@
     "test:watch": "vitest",
     "e2e": "playwright test",
     "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:status": "supabase status",
     "db:reset": "supabase db reset",
     "db:test": "supabase test db",
     "db:lint": "supabase db lint --level warning",
-    "db:types": "supabase gen types typescript --local > src/types/database.generated.ts"
+    "db:types": "supabase gen types typescript --local > src/types/database.generated.ts",
+    "db:types:linked": "supabase gen types typescript --linked > src/types/database.generated.ts",
+    "db:push": "node scripts/supabase-with-env.mjs db push --linked --yes",
+    "db:push:dry": "node scripts/supabase-with-env.mjs db push --linked --yes --dry-run",
+    "db:link": "node scripts/supabase-with-env.mjs link --project-ref kygrtkazmjjutswjbwag --yes"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",

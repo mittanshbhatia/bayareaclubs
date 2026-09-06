@@ -1,0 +1,66 @@
+---
+description: Supabase CLI auth for bayareaclubs — token already stored; never re-ask
+alwaysApply: true
+---
+
+# Supabase CLI authentication
+
+The Supabase personal access token for this repo is already configured.
+**Do not ask the user for the access token again.**
+**Do not ask for approval to use the stored token for Supabase CLI / migration pushes.**
+The user explicitly authorized persistent local use for bayareaclubs database work.
+
+## Where it lives (secrets — never commit, never echo)
+
+1. `~/.supabase/access-token` — Supabase CLI default credential file (mode 600)
+2. `.env.local` → `SUPABASE_ACCESS_TOKEN` — gitignored project-local copy
+
+## Linked project
+
+- Name: `bayareaclubs`
+- Project ref: `kygrtkazmjjutswjbwag`
+- Region: `us-west-2`
+- Linked via: `supabase link --project-ref kygrtkazmjjutswjbwag`
+
+## Non-interactive commands (preferred)
+
+Use the wrapper so the token is loaded automatically:
+
+```bash
+pnpm db:push          # supabase db push --linked --yes
+pnpm db:push:dry      # dry-run
+pnpm db:link          # re-link if needed
+node scripts/supabase-with-env.mjs <any supabase args...>
+```
+
+Or export first:
+
+```bash
+export SUPABASE_ACCESS_TOKEN="$(cat ~/.supabase/access-token)"
+pnpm exec supabase db push --linked --yes
+```
+
+The access token is enough for linked `db push` (CLI creates a temporary login role).
+A database password is not required unless a specific command asks for `--password`.
+
+## Local Docker
+
+Local `supabase start` / `db:reset` / `db:test` need Docker via Colima:
+
+```bash
+colima start
+pnpm db:start
+```
+
+## Agent usage
+
+- Prefer `pnpm db:push` / `scripts/supabase-with-env.mjs` for remote migrations.
+- Never print, log, or commit the token value.
+- Never put the token in committed rules, docs, or source.
+- If auth fails, check those files exist; only ask the user if they say the token was rotated.
+
+## Sole committer
+
+Git commits for this repository MUST be authored solely by **Mittansh Bhatia**.
+Never add `Co-authored-by` trailers or any co-committer attribution for agents,
+assistants, or other accounts.
