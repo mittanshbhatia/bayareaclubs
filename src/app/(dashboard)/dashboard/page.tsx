@@ -147,11 +147,22 @@ export default async function DashboardPage() {
                   | { id?: string; name?: string; slug?: string }
                   | null
                   | undefined;
-                const href = club?.slug
-                  ? `/clubs/${club.slug}`
-                  : club?.id
-                    ? `/dashboard/clubs/${club.id}`
-                    : null;
+                const officerRoles = new Set([
+                  "club_admin",
+                  "president",
+                  "vice_president",
+                  "secretary",
+                  "treasurer",
+                  "officer",
+                  "advisor",
+                ]);
+                const isOfficer = officerRoles.has(membership.role);
+                const href =
+                  isOfficer && club?.slug
+                    ? `/clubs/${club.slug}`
+                    : club?.id
+                      ? `/dashboard/clubs/${club.id}/attendance`
+                      : null;
                 return (
                   <li key={`${club?.name}-${membership.role}`}>
                     {href ? (
@@ -166,6 +177,7 @@ export default async function DashboardPage() {
                     )}
                     <span className="text-muted-foreground capitalize">
                       {formatRole(membership.role)}
+                      {!isOfficer && club?.id ? " · my attendance" : ""}
                     </span>
                   </li>
                 );

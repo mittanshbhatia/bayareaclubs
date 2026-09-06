@@ -320,12 +320,70 @@ export type Database = {
           },
         ]
       }
+      attendance_check_in_tokens: {
+        Row: {
+          consumed_at: string | null
+          consumed_by: string | null
+          created_at: string
+          created_by: string
+          expires_at: string
+          id: string
+          session_id: string
+          token_hash: string
+        }
+        Insert: {
+          consumed_at?: string | null
+          consumed_by?: string | null
+          created_at?: string
+          created_by: string
+          expires_at: string
+          id?: string
+          session_id: string
+          token_hash: string
+        }
+        Update: {
+          consumed_at?: string | null
+          consumed_by?: string | null
+          created_at?: string
+          created_by?: string
+          expires_at?: string
+          id?: string
+          session_id?: string
+          token_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_check_in_tokens_consumed_by_fkey"
+            columns: ["consumed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_check_in_tokens_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_check_in_tokens_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "attendance_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       attendance_records: {
         Row: {
+          corrected_at: string | null
+          correction_note: string | null
           created_at: string
           id: string
           membership_id: string
           note: string | null
+          previous_status: Database["public"]["Enums"]["attendance_status"] | null
           recorded_at: string
           recorded_by: string
           session_id: string
@@ -333,10 +391,15 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          corrected_at?: string | null
+          correction_note?: string | null
           created_at?: string
           id?: string
           membership_id: string
           note?: string | null
+          previous_status?:
+            | Database["public"]["Enums"]["attendance_status"]
+            | null
           recorded_at?: string
           recorded_by: string
           session_id: string
@@ -344,10 +407,15 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          corrected_at?: string | null
+          correction_note?: string | null
           created_at?: string
           id?: string
           membership_id?: string
           note?: string | null
+          previous_status?:
+            | Database["public"]["Enums"]["attendance_status"]
+            | null
           recorded_at?: string
           recorded_by?: string
           session_id?: string
@@ -387,6 +455,7 @@ export type Database = {
       }
       attendance_sessions: {
         Row: {
+          check_in_enabled: boolean
           club_id: string
           created_at: string
           created_by: string
@@ -396,9 +465,11 @@ export type Database = {
           location_name: string | null
           starts_at: string
           timezone: string
+          title: string
           updated_at: string
         }
         Insert: {
+          check_in_enabled?: boolean
           club_id: string
           created_at?: string
           created_by: string
@@ -408,9 +479,11 @@ export type Database = {
           location_name?: string | null
           starts_at: string
           timezone?: string
+          title?: string
           updated_at?: string
         }
         Update: {
+          check_in_enabled?: boolean
           club_id?: string
           created_at?: string
           created_by?: string
@@ -420,6 +493,7 @@ export type Database = {
           location_name?: string | null
           starts_at?: string
           timezone?: string
+          title?: string
           updated_at?: string
         }
         Relationships: [
@@ -3942,6 +4016,14 @@ export type Database = {
       can_manage_club: {
         Args: { target_club_id: string; user_id?: string }
         Returns: boolean
+      }
+      issue_attendance_check_in_token: {
+        Args: { target_session_id: string; ttl_seconds?: number }
+        Returns: string
+      }
+      redeem_attendance_check_in: {
+        Args: { raw_token: string }
+        Returns: string
       }
       can_manage_school: {
         Args: { target_school_id: string; user_id?: string }
