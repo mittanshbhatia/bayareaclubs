@@ -28,7 +28,8 @@
     "db:types:linked": "supabase gen types typescript --linked > src/types/database.generated.ts",
     "db:push": "node scripts/supabase-with-env.mjs db push --linked --yes",
     "db:push:dry": "node scripts/supabase-with-env.mjs db push --linked --yes --dry-run",
-    "db:link": "node scripts/supabase-with-env.mjs link --project-ref kygrtkazmjjutswjbwag --yes"
+    "db:link": "node scripts/supabase-with-env.mjs link --project-ref kygrtkazmjjutswjbwag --yes",
+    "smoke:prod": "node scripts/production-smoke.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1127.0",

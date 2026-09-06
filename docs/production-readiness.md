@@ -149,6 +149,11 @@ Capture a staging Lighthouse/CWV report before production cutover and attach num
 
 1. Confirm migrations through `20260906110300_*` applied on linked project.
 2. Confirm `CRON_SECRET` set and Vercel Cron sends Bearer token only.
+3. Set `RESEND_API_KEY` and `EMAIL_FROM` in **Production** (and Development).
+   Without them, `/api/cron/process-communications` returns `skipped:
+   email_unconfigured` and `/api/health/ready` reports `checks.email: missing`.
+4. Keep `SUPABASE_SECRET_KEY` / `CRON_SECRET` off Preview until a dedicated
+   preview Supabase project exists.
 3. Confirm no `SUPABASE_SECRET_KEY` / service role in client bundles.
 4. Staging CWV snapshot meets targets (or documented exceptions).
 5. Institutional privacy decisions table reviewed by school partners (not engineering-only).

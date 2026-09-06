@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { ShieldCheck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { NotificationBell } from "@/features/notifications/components/notificati
 import { listMyNotifications } from "@/features/notifications/queries";
 import { requireActiveUser } from "@/lib/auth/authorization";
 import { handleAuthorizationError } from "@/lib/auth/route-guard";
+import { safeNextPath } from "@/lib/auth/safe-next-path";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -15,11 +17,14 @@ export const dynamic = "force-dynamic";
 export default async function AppShellLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const headerStore = await headers();
+  const nextPath = safeNextPath(headerStore.get("x-pathname"), "/dashboard");
+
   let user;
   try {
     user = await requireActiveUser();
   } catch (error) {
-    handleAuthorizationError(error, "/dashboard");
+    handleAuthorizationError(error, nextPath);
   }
 
   const supabase = await createClient();

@@ -1,22 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 
+import { safeNextPath } from "@/lib/auth/safe-next-path";
 import { createClient } from "@/lib/supabase/server";
-
-function safeNextPath(value: string | null): string {
-  if (!value) return "/dashboard";
-  // Same-origin relative path only: no protocol-relative, backslash, or scheme tricks.
-  if (
-    !value.startsWith("/") ||
-    value.startsWith("//") ||
-    value.includes("\\") ||
-    value.includes("@") ||
-    /[\u0000-\u001f\u007f]/.test(value) ||
-    /^\/[a-z][a-z0-9+.-]*:/i.test(value)
-  ) {
-    return "/dashboard";
-  }
-  return value;
-}
 
 export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get("code");

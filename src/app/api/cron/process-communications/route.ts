@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { randomUUID } from "node:crypto";
 
 import { processCommunicationJobs } from "@/features/communications/processor";
+import { isEmailConfigured } from "@/lib/email/config";
 import { logger } from "@/lib/logging/logger";
 import { requireCronBearer } from "@/lib/security/cron-auth";
 
@@ -15,6 +16,17 @@ export const maxDuration = 60;
 export async function GET(request: Request) {
   const denied = requireCronBearer(request);
   if (denied) return denied;
+
+  if (!isEmailConfigured()) {
+    logger.warn("communications.cron_skipped_email_unconfigured");
+    return NextResponse.json({
+      ok: true,
+      skipped: true,
+      reason: "email_unconfigured",
+      processed: 0,
+      at: new Date().toISOString(),
+    });
+  }
 
   try {
     const workerId = `cron:${randomUUID()}`;

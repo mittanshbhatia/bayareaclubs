@@ -177,9 +177,11 @@ Copy [`.env.example`](.env.example). **Never commit `.env.local` or secrets.**
 | `VERCEL_QUEUES_ENABLED` | Server only | Optional queue adapter (`false` by default) |
 | `SUPABASE_ACCESS_TOKEN` | Local CLI | Supabase CLI / `db:push` (not for the app runtime) |
 
-Vercel: set Production / Preview / Development separately. Preview may point at
-a non-production Supabase project when available; never reuse production
-`SUPABASE_SECRET_KEY` on untrusted Preview branches without a review process.
+Vercel: set Production / Preview / Development separately. Prefer a dedicated
+non-production Supabase project for Preview when one exists. Until then, Preview
+may use the production **publishable** Supabase keys for UI/auth, but
+**must not** carry `SUPABASE_SECRET_KEY` or `CRON_SECRET` (Production-only) so
+preview deployments cannot run privileged jobs against production.
 
 ---
 
@@ -228,8 +230,20 @@ are available.
 
 All cron handlers fail closed without `CRON_SECRET` and accept **Bearer only**.
 Jobs are designed to be idempotent (outbox keys, reminder uniqueness, rollup
-upserts). Hobby plan cron frequency limits may force coarsening the outbox
-schedule—verify on your Vercel plan.
+upserts). The Vercel team for this project is on **Pro**, so `*/2` outbox
+scheduling is allowed. On Hobby accounts, cron expressions may run at most once
+per day—coarsen the schedule before deploying there.
+
+### Production smoke
+
+```bash
+node scripts/production-smoke.mjs
+# or
+SMOKE_BASE_URL=https://bayareaclubs.vercel.app node scripts/production-smoke.mjs
+```
+
+Uses `.env.local` for `CRON_SECRET` and Supabase admin checks. Never commit
+secrets. Signed-in flows (idea submit UI as a member) still need a manual check.
 
 ---
 

@@ -3,15 +3,25 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import type { Database } from "@/types/database.generated";
 
+function nextWithPathname(request: NextRequest) {
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-pathname", request.nextUrl.pathname);
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
+}
+
 export async function refreshAuthSession(request: NextRequest) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const publishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
   if (!url || !publishableKey) {
-    return NextResponse.next({ request });
+    return nextWithPathname(request);
   }
 
-  let response = NextResponse.next({ request });
+  let response = nextWithPathname(request);
   const supabase = createServerClient<Database>(url, publishableKey, {
     cookies: {
       getAll() {
@@ -21,7 +31,7 @@ export async function refreshAuthSession(request: NextRequest) {
         cookiesToSet.forEach(({ name, value }) => {
           request.cookies.set(name, value);
         });
-        response = NextResponse.next({ request });
+        response = nextWithPathname(request);
         cookiesToSet.forEach(({ name, value, options }) => {
           response.cookies.set(name, value, options);
         });
