@@ -55,8 +55,9 @@ const checklist = [
   "School decision recorded",
 ] as const;
 
-const stops = [12.5, 37.5, 62.5, 87.5] as const;
-const desktopPath = "M0 20 H1200";
+const stops = [11.5, 39.5, 63, 86.5] as const;
+const traversalDuration = 8800;
+const desktopPath = "M0 20 H220 Q260 20 260 52 V58 Q260 76 282 76 H1200";
 
 function wait(duration: number) {
   return new Promise((resolve) => window.setTimeout(resolve, duration));
@@ -85,39 +86,34 @@ export function HeroWorkflow() {
         if (cancelled) return;
 
         setSignalVisible(true);
-        await wait(250);
-        setSignalPosition(stops[0]);
-        await wait(900);
+        await wait(80);
+        setSignalPosition(100);
+        await wait((stops[0] / 100) * traversalDuration);
         if (cancelled) return;
         setReached(0);
-        await wait(700);
 
-        setSignalPosition(stops[1]);
-        await wait(1050);
+        await wait(((stops[1] - stops[0]) / 100) * traversalDuration);
         if (cancelled) return;
         setReached(1);
         setReviewStep(0);
-        for (let step = 1; step <= checklist.length; step += 1) {
-          await wait(470);
-          if (cancelled) return;
-          setReviewStep(step);
-        }
-        await wait(450);
 
-        setSignalPosition(stops[2]);
-        await wait(1050);
+        void (async () => {
+          for (let step = 1; step <= checklist.length; step += 1) {
+            await wait(470);
+            if (cancelled) return;
+            setReviewStep(step);
+          }
+        })();
+
+        await wait(((stops[2] - stops[1]) / 100) * traversalDuration);
         if (cancelled) return;
         setReached(2);
-        await wait(850);
 
-        setSignalPosition(stops[3]);
-        await wait(1050);
+        await wait(((stops[3] - stops[2]) / 100) * traversalDuration);
         if (cancelled) return;
         setReached(3);
-        await wait(1200);
 
-        setSignalPosition(100);
-        await wait(850);
+        await wait(((100 - stops[3]) / 100) * traversalDuration);
         if (cancelled) return;
         setReached(-1);
         setReviewStep(-1);
@@ -144,8 +140,8 @@ export function HeroWorkflow() {
       <div className="hidden min-h-[19rem] md:block">
         <svg
           aria-hidden
-          className="absolute top-0 left-0 h-14 w-full overflow-visible"
-          viewBox="0 0 1200 56"
+          className="absolute top-0 left-0 h-[6.25rem] w-full overflow-visible"
+          viewBox="0 0 1200 100"
           preserveAspectRatio="none"
         >
           <path
@@ -166,8 +162,11 @@ export function HeroWorkflow() {
               }}
               transition={{
                 offsetDistance: {
-                  duration: 1.02,
-                  ease: [0.45, 0, 0.2, 1],
+                  duration:
+                    signalVisible && signalPosition > 0
+                      ? traversalDuration / 1000
+                      : 0,
+                  ease: "linear",
                 },
                 opacity: { duration: 0.22 },
               }}
@@ -182,7 +181,12 @@ export function HeroWorkflow() {
 
             return (
               <li key={item.label} className="min-w-0">
-                <div className="flex h-10 justify-center">
+                <div
+                  className={cn(
+                    "flex h-10 justify-center",
+                    index > 0 && "mt-14",
+                  )}
+                >
                   <motion.div
                     layout
                     animate={{ width: isReached ? "auto" : 32 }}
@@ -257,7 +261,13 @@ export function HeroWorkflow() {
                 opacity: signalVisible ? 1 : 0,
               }}
               transition={{
-                top: { duration: 1.02, ease: [0.45, 0, 0.2, 1] },
+                top: {
+                  duration:
+                    signalVisible && signalPosition > 0
+                      ? traversalDuration / 1000
+                      : 0,
+                  ease: "linear",
+                },
                 opacity: { duration: 0.22 },
               }}
               className="absolute left-[0.47rem] z-20 size-2 rounded-full bg-[var(--home-cyan)] shadow-[0_0_12px_var(--home-cyan)]"
