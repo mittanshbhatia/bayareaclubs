@@ -385,8 +385,8 @@ values (
   'image',
   1000,
   'image/jpeg',
-  'Private media',
-  'private'
+  'Club media',
+  'club'
 );
 
 insert into public.email_campaigns (
@@ -500,7 +500,7 @@ select results_eq(
 select results_eq(
   $$select count(*)::bigint from public.media_assets where club_id = '20000000-0000-0000-0000-000000000001'$$,
   array[1::bigint],
-  'Club A member can read private Club A media metadata'
+  'Club A member can read club-scoped Club A media metadata'
 );
 select results_eq(
   $$select count(*)::bigint from public.media_assets where club_id = '20000000-0000-0000-0000-000000000002'$$,

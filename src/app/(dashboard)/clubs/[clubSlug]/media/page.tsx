@@ -1,10 +1,13 @@
 import { notFound } from "next/navigation";
 
-import { EmptyState } from "@/components/ds/states";
+import { MediaLibraryPanel } from "@/features/media/components/media-library-panel";
+import { MediaUploader } from "@/features/media/components/media-uploader";
 import {
-  listClubMedia,
-  resolveClubBySlugForOfficer,
-} from "@/features/clubs/queries";
+  listClubMediaAttachTargets,
+  listClubMediaLibrary,
+  listClubMediaUploaders,
+} from "@/features/media/queries";
+import { resolveClubBySlugForOfficer } from "@/features/clubs/queries";
 import { AuthorizationError } from "@/lib/auth/authorization";
 import { handleAuthorizationError } from "@/lib/auth/route-guard";
 
@@ -12,10 +15,14 @@ export const dynamic = "force-dynamic";
 
 export default async function ClubMediaPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ clubSlug: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { clubSlug } = await params;
+  const query = await searchParams;
+
   let context;
   try {
     context = await resolveClubBySlugForOfficer(clubSlug);
@@ -27,34 +34,58 @@ export default async function ClubMediaPage({
   }
   if (!context) notFound();
 
-  const media = await listClubMedia(context.club.id);
+  const activityId =
+    typeof query.activityId === "string" ? query.activityId : null;
+
+  const [items, uploaders, attachTargets] = await Promise.all([
+    listClubMediaLibrary({
+      clubId: context.club.id,
+      q: typeof query.q === "string" ? query.q : "",
+      mediaType:
+        typeof query.type === "string" &&
+        ["image", "video", "document", "audio", "other"].includes(query.type)
+          ? (query.type as "image" | "video" | "document" | "audio" | "other")
+          : "all",
+      eventId: typeof query.eventId === "string" ? query.eventId : null,
+      activityId,
+      uploaderId: typeof query.uploaderId === "string" ? query.uploaderId : null,
+      createdFrom: typeof query.from === "string" ? query.from : null,
+      createdTo: typeof query.to === "string" ? query.to : null,
+      visibility: "all",
+    }),
+    listClubMediaUploaders(context.club.id),
+    listClubMediaAttachTargets(context.club.id),
+  ]);
 
   return (
-    <div className="space-y-6">
-      <p className="text-sm text-muted-foreground">
-        Private media stays private by default. Upload and consent workflows will
-        expand here; existing assets are listed from the database.
-      </p>
-      {media.length === 0 ? (
-        <EmptyState
-          title="No media assets"
-          description="Club branding, documents, and activity media will appear here once uploaded."
+    <div className="space-y-8">
+      <div className="space-y-2">
+        <p className="text-sm text-muted-foreground">
+          Private by default. Signed URLs protect private objects. Path guessing
+          cannot bypass authorization because Storage reads require media
+          metadata and RLS.
+        </p>
+      </div>
+
+      <MediaUploader
+        clubId={context.club.id}
+        events={attachTargets.events.map((event) => ({
+          id: event.id,
+          title: event.title,
+        }))}
+      />
+
+      <section className="space-y-3">
+        <h2 className="font-display text-xl font-semibold tracking-tight">
+          Media library
+        </h2>
+        <MediaLibraryPanel
+          clubId={context.club.id}
+          initialItems={items as never}
+          uploaders={uploaders}
+          attachTargets={attachTargets}
         />
-      ) : (
-        <ul className="space-y-3">
-          {media.map((asset) => (
-            <li
-              key={asset.id}
-              className="rounded-lg border border-border bg-surface p-4 shadow-xs"
-            >
-              <p className="font-medium">{asset.title}</p>
-              <p className="text-sm text-muted-foreground">
-                {asset.storage_bucket} · {asset.visibility} · {asset.mime_type}
-              </p>
-            </li>
-          ))}
-        </ul>
-      )}
+      </section>
     </div>
   );
 }

@@ -7,11 +7,6 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "14.5"
-  }
   graphql_public: {
     Tables: {
       [_ in never]: never
@@ -356,8 +351,22 @@ export type Database = {
             foreignKeyName: "attendance_check_in_tokens_consumed_by_fkey"
             columns: ["consumed_by"]
             isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "attendance_check_in_tokens_consumed_by_fkey"
+            columns: ["consumed_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_check_in_tokens_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "attendance_check_in_tokens_created_by_fkey"
@@ -383,7 +392,9 @@ export type Database = {
           id: string
           membership_id: string
           note: string | null
-          previous_status: Database["public"]["Enums"]["attendance_status"] | null
+          previous_status:
+            | Database["public"]["Enums"]["attendance_status"]
+            | null
           recorded_at: string
           recorded_by: string
           session_id: string
@@ -613,6 +624,42 @@ export type Database = {
           },
         ]
       }
+      charter_section_definitions: {
+        Row: {
+          created_at: string
+          description: string
+          field_column: string
+          is_active: boolean
+          key: string
+          label: string
+          min_length: number
+          required: boolean
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          field_column: string
+          is_active?: boolean
+          key: string
+          label: string
+          min_length?: number
+          required?: boolean
+          sort_order: number
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          field_column?: string
+          is_active?: boolean
+          key?: string
+          label?: string
+          min_length?: number
+          required?: boolean
+          sort_order?: number
+        }
+        Relationships: []
+      }
       club_activities: {
         Row: {
           activity_date: string
@@ -732,6 +779,13 @@ export type Database = {
             referencedRelation: "media_assets"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "club_activity_media_media_asset_id_fkey"
+            columns: ["media_asset_id"]
+            isOneToOne: false
+            referencedRelation: "published_media_assets"
+            referencedColumns: ["id"]
+          },
         ]
       }
       club_activity_participants: {
@@ -766,121 +820,6 @@ export type Database = {
             columns: ["membership_id"]
             isOneToOne: false
             referencedRelation: "club_memberships"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      charter_section_definitions: {
-        Row: {
-          created_at: string
-          description: string
-          field_column: string
-          is_active: boolean
-          key: string
-          label: string
-          min_length: number
-          required: boolean
-          sort_order: number
-        }
-        Insert: {
-          created_at?: string
-          description?: string
-          field_column: string
-          is_active?: boolean
-          key: string
-          label: string
-          min_length?: number
-          required?: boolean
-          sort_order: number
-        }
-        Update: {
-          created_at?: string
-          description?: string
-          field_column?: string
-          is_active?: boolean
-          key?: string
-          label?: string
-          min_length?: number
-          required?: boolean
-          sort_order?: number
-        }
-        Relationships: []
-      }
-      club_charter_versions: {
-        Row: {
-          charter_id: string
-          created_at: string
-          created_by: string | null
-          id: string
-          snapshot: Json
-          status_at_freeze: Database["public"]["Enums"]["charter_status"]
-          version_number: number
-        }
-        Insert: {
-          charter_id: string
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          snapshot: Json
-          status_at_freeze: Database["public"]["Enums"]["charter_status"]
-          version_number: number
-        }
-        Update: {
-          charter_id?: string
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          snapshot?: Json
-          status_at_freeze?: Database["public"]["Enums"]["charter_status"]
-          version_number?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "club_charter_versions_charter_id_fkey"
-            columns: ["charter_id"]
-            isOneToOne: false
-            referencedRelation: "club_charters"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      renewal_reminders: {
-        Row: {
-          club_id: string
-          created_at: string
-          due_on: string
-          id: string
-          reminder_kind: string
-          scheduled_for: string
-          school_year: string
-          sent_at: string | null
-        }
-        Insert: {
-          club_id: string
-          created_at?: string
-          due_on: string
-          id?: string
-          reminder_kind: string
-          scheduled_for: string
-          school_year: string
-          sent_at?: string | null
-        }
-        Update: {
-          club_id?: string
-          created_at?: string
-          due_on?: string
-          id?: string
-          reminder_kind?: string
-          scheduled_for?: string
-          school_year?: string
-          sent_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "renewal_reminders_club_id_fkey"
-            columns: ["club_id"]
-            isOneToOne: false
-            referencedRelation: "clubs"
             referencedColumns: ["id"]
           },
         ]
@@ -934,6 +873,58 @@ export type Database = {
           {
             foreignKeyName: "club_charter_reviews_reviewer_id_fkey"
             columns: ["reviewer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      club_charter_versions: {
+        Row: {
+          charter_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          snapshot: Json
+          status_at_freeze: Database["public"]["Enums"]["charter_status"]
+          version_number: number
+        }
+        Insert: {
+          charter_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          snapshot: Json
+          status_at_freeze: Database["public"]["Enums"]["charter_status"]
+          version_number: number
+        }
+        Update: {
+          charter_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          snapshot?: Json
+          status_at_freeze?: Database["public"]["Enums"]["charter_status"]
+          version_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "club_charter_versions_charter_id_fkey"
+            columns: ["charter_id"]
+            isOneToOne: false
+            referencedRelation: "club_charters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_charter_versions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "club_charter_versions_created_by_fkey"
+            columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -1365,7 +1356,7 @@ export type Database = {
           created_by: string | null
           id: string
           idea_id: string
-          snapshot: Record<string, unknown>
+          snapshot: Json
           status_at_freeze: Database["public"]["Enums"]["club_idea_status"]
           version_number: number
         }
@@ -1374,7 +1365,7 @@ export type Database = {
           created_by?: string | null
           id?: string
           idea_id: string
-          snapshot: Record<string, unknown>
+          snapshot: Json
           status_at_freeze: Database["public"]["Enums"]["club_idea_status"]
           version_number: number
         }
@@ -1383,11 +1374,25 @@ export type Database = {
           created_by?: string | null
           id?: string
           idea_id?: string
-          snapshot?: Record<string, unknown>
+          snapshot?: Json
           status_at_freeze?: Database["public"]["Enums"]["club_idea_status"]
           version_number?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "club_idea_versions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "club_idea_versions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "club_idea_versions_idea_id_fkey"
             columns: ["idea_id"]
@@ -2345,14 +2350,81 @@ export type Database = {
           },
         ]
       }
+      event_media: {
+        Row: {
+          created_at: string
+          created_by: string
+          event_id: string
+          id: string
+          media_asset_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          event_id: string
+          id?: string
+          media_asset_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          event_id?: string
+          id?: string
+          media_asset_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_media_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "event_media_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_media_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_media_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "published_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_media_media_asset_id_fkey"
+            columns: ["media_asset_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_media_media_asset_id_fkey"
+            columns: ["media_asset_id"]
+            isOneToOne: false
+            referencedRelation: "published_media_assets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_rsvps: {
         Row: {
           created_at: string
           event_id: string
           id: string
-          override_note: string | null
           overridden_at: string | null
           overridden_by: string | null
+          override_note: string | null
           previous_status: Database["public"]["Enums"]["rsvp_status"] | null
           responded_at: string
           status: Database["public"]["Enums"]["rsvp_status"]
@@ -2364,9 +2436,9 @@ export type Database = {
           created_at?: string
           event_id: string
           id?: string
-          override_note?: string | null
           overridden_at?: string | null
           overridden_by?: string | null
+          override_note?: string | null
           previous_status?: Database["public"]["Enums"]["rsvp_status"] | null
           responded_at?: string
           status: Database["public"]["Enums"]["rsvp_status"]
@@ -2378,9 +2450,9 @@ export type Database = {
           created_at?: string
           event_id?: string
           id?: string
-          override_note?: string | null
           overridden_at?: string | null
           overridden_by?: string | null
+          override_note?: string | null
           previous_status?: Database["public"]["Enums"]["rsvp_status"] | null
           responded_at?: string
           status?: Database["public"]["Enums"]["rsvp_status"]
@@ -2401,6 +2473,20 @@ export type Database = {
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "published_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_rsvps_overridden_by_fkey"
+            columns: ["overridden_by"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "event_rsvps_overridden_by_fkey"
+            columns: ["overridden_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
           {
@@ -2650,60 +2736,87 @@ export type Database = {
           approved_for_public_by: string | null
           club_id: string | null
           consent_required: boolean
+          consent_state: Database["public"]["Enums"]["media_consent_state"]
           created_at: string
+          deleted_at: string | null
+          deleted_by: string | null
+          deletion_reason: string | null
           description: string | null
+          duration_seconds: number | null
+          height: number | null
           id: string
           idea_id: string | null
           media_type: Database["public"]["Enums"]["media_type"]
           mime_type: string
+          related_event_id: string | null
           school_id: string
           size_bytes: number
           storage_bucket: string
           storage_path: string
           title: string
           updated_at: string
+          upload_session_id: string | null
           uploader_id: string
           visibility: Database["public"]["Enums"]["visibility_level"]
+          width: number | null
         }
         Insert: {
           approved_for_public_at?: string | null
           approved_for_public_by?: string | null
           club_id?: string | null
           consent_required?: boolean
+          consent_state?: Database["public"]["Enums"]["media_consent_state"]
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          deletion_reason?: string | null
           description?: string | null
+          duration_seconds?: number | null
+          height?: number | null
           id?: string
           idea_id?: string | null
           media_type: Database["public"]["Enums"]["media_type"]
           mime_type: string
+          related_event_id?: string | null
           school_id: string
           size_bytes: number
           storage_bucket: string
           storage_path: string
           title: string
           updated_at?: string
+          upload_session_id?: string | null
           uploader_id: string
           visibility?: Database["public"]["Enums"]["visibility_level"]
+          width?: number | null
         }
         Update: {
           approved_for_public_at?: string | null
           approved_for_public_by?: string | null
           club_id?: string | null
           consent_required?: boolean
+          consent_state?: Database["public"]["Enums"]["media_consent_state"]
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          deletion_reason?: string | null
           description?: string | null
+          duration_seconds?: number | null
+          height?: number | null
           id?: string
           idea_id?: string | null
           media_type?: Database["public"]["Enums"]["media_type"]
           mime_type?: string
+          related_event_id?: string | null
           school_id?: string
           size_bytes?: number
           storage_bucket?: string
           storage_path?: string
           title?: string
           updated_at?: string
+          upload_session_id?: string | null
           uploader_id?: string
           visibility?: Database["public"]["Enums"]["visibility_level"]
+          width?: number | null
         }
         Relationships: [
           {
@@ -2735,6 +2848,20 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "media_assets_deleted_by_fkey"
+            columns: ["deleted_by"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "media_assets_deleted_by_fkey"
+            columns: ["deleted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "media_assets_idea_id_fkey"
             columns: ["idea_id"]
             isOneToOne: false
@@ -2742,10 +2869,31 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "media_assets_related_event_id_fkey"
+            columns: ["related_event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_assets_related_event_id_fkey"
+            columns: ["related_event_id"]
+            isOneToOne: false
+            referencedRelation: "published_events"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "media_assets_school_id_fkey"
             columns: ["school_id"]
             isOneToOne: false
             referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_assets_upload_session_id_fkey"
+            columns: ["upload_session_id"]
+            isOneToOne: false
+            referencedRelation: "media_upload_sessions"
             referencedColumns: ["id"]
           },
           {
@@ -2863,6 +3011,161 @@ export type Database = {
           {
             foreignKeyName: "media_consents_subject_user_id_fkey"
             columns: ["subject_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      media_upload_sessions: {
+        Row: {
+          aborted_at: string | null
+          club_id: string | null
+          consent_required: boolean
+          created_at: string
+          declared_mime_type: string
+          declared_size_bytes: number
+          description: string | null
+          detected_mime_type: string | null
+          error_message: string | null
+          expires_at: string
+          finalized_at: string | null
+          id: string
+          idea_id: string | null
+          media_asset_id: string | null
+          media_type: Database["public"]["Enums"]["media_type"]
+          related_event_id: string | null
+          school_id: string
+          status: Database["public"]["Enums"]["media_upload_status"]
+          storage_bucket: string
+          storage_path: string
+          title: string
+          updated_at: string
+          uploaded_at: string | null
+          uploader_id: string
+          visibility: Database["public"]["Enums"]["visibility_level"]
+        }
+        Insert: {
+          aborted_at?: string | null
+          club_id?: string | null
+          consent_required?: boolean
+          created_at?: string
+          declared_mime_type: string
+          declared_size_bytes: number
+          description?: string | null
+          detected_mime_type?: string | null
+          error_message?: string | null
+          expires_at?: string
+          finalized_at?: string | null
+          id?: string
+          idea_id?: string | null
+          media_asset_id?: string | null
+          media_type: Database["public"]["Enums"]["media_type"]
+          related_event_id?: string | null
+          school_id: string
+          status?: Database["public"]["Enums"]["media_upload_status"]
+          storage_bucket: string
+          storage_path: string
+          title: string
+          updated_at?: string
+          uploaded_at?: string | null
+          uploader_id: string
+          visibility?: Database["public"]["Enums"]["visibility_level"]
+        }
+        Update: {
+          aborted_at?: string | null
+          club_id?: string | null
+          consent_required?: boolean
+          created_at?: string
+          declared_mime_type?: string
+          declared_size_bytes?: number
+          description?: string | null
+          detected_mime_type?: string | null
+          error_message?: string | null
+          expires_at?: string
+          finalized_at?: string | null
+          id?: string
+          idea_id?: string | null
+          media_asset_id?: string | null
+          media_type?: Database["public"]["Enums"]["media_type"]
+          related_event_id?: string | null
+          school_id?: string
+          status?: Database["public"]["Enums"]["media_upload_status"]
+          storage_bucket?: string
+          storage_path?: string
+          title?: string
+          updated_at?: string
+          uploaded_at?: string | null
+          uploader_id?: string
+          visibility?: Database["public"]["Enums"]["visibility_level"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_upload_sessions_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_upload_sessions_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "published_clubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_upload_sessions_idea_id_fkey"
+            columns: ["idea_id"]
+            isOneToOne: false
+            referencedRelation: "club_ideas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_upload_sessions_media_asset_id_fkey"
+            columns: ["media_asset_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_upload_sessions_media_asset_id_fkey"
+            columns: ["media_asset_id"]
+            isOneToOne: false
+            referencedRelation: "published_media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_upload_sessions_related_event_id_fkey"
+            columns: ["related_event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_upload_sessions_related_event_id_fkey"
+            columns: ["related_event_id"]
+            isOneToOne: false
+            referencedRelation: "published_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_upload_sessions_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_upload_sessions_uploader_id_fkey"
+            columns: ["uploader_id"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "media_upload_sessions_uploader_id_fkey"
+            columns: ["uploader_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -3195,6 +3498,54 @@ export type Database = {
             columns: ["primary_school_id"]
             isOneToOne: false
             referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      renewal_reminders: {
+        Row: {
+          club_id: string
+          created_at: string
+          due_on: string
+          id: string
+          reminder_kind: string
+          scheduled_for: string
+          school_year: string
+          sent_at: string | null
+        }
+        Insert: {
+          club_id: string
+          created_at?: string
+          due_on: string
+          id?: string
+          reminder_kind: string
+          scheduled_for: string
+          school_year: string
+          sent_at?: string | null
+        }
+        Update: {
+          club_id?: string
+          created_at?: string
+          due_on?: string
+          id?: string
+          reminder_kind?: string
+          scheduled_for?: string
+          school_year?: string
+          sent_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "renewal_reminders_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "renewal_reminders_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "published_clubs"
             referencedColumns: ["id"]
           },
         ]
@@ -4167,9 +4518,21 @@ export type Database = {
       }
     }
     Functions: {
+      abort_media_upload_session: {
+        Args: { target_session_id: string }
+        Returns: string
+      }
       activate_managed_account: {
         Args: { target_user_id: string }
         Returns: Database["public"]["Enums"]["account_onboarding_status"]
+      }
+      admin_override_event_rsvp: {
+        Args: {
+          desired_status: Database["public"]["Enums"]["rsvp_status"]
+          override_note: string
+          target_rsvp_id: string
+        }
+        Returns: string
       }
       can_edit_idea: {
         Args: { target_idea_id: string; user_id?: string }
@@ -4183,45 +4546,6 @@ export type Database = {
         Args: { target_club_id: string; user_id?: string }
         Returns: boolean
       }
-      enqueue_renewal_reminders: {
-        Args: { as_of?: string }
-        Returns: number
-      }
-      process_due_renewal_reminders: {
-        Args: { as_of?: string }
-        Returns: number
-      }
-      upsert_event_rsvp: {
-        Args: {
-          desired_status: Database["public"]["Enums"]["rsvp_status"]
-          target_event_id: string
-        }
-        Returns: string
-      }
-      admin_override_event_rsvp: {
-        Args: {
-          desired_status: Database["public"]["Enums"]["rsvp_status"]
-          override_note: string
-          target_rsvp_id: string
-        }
-        Returns: string
-      }
-      promote_event_waitlist: {
-        Args: { target_event_id: string }
-        Returns: number
-      }
-      count_event_going: {
-        Args: { target_event_id: string }
-        Returns: number
-      }
-      issue_attendance_check_in_token: {
-        Args: { target_session_id: string; ttl_seconds?: number }
-        Returns: string
-      }
-      redeem_attendance_check_in: {
-        Args: { raw_token: string }
-        Returns: string
-      }
       can_manage_school: {
         Args: { target_school_id: string; user_id?: string }
         Returns: boolean
@@ -4229,21 +4553,6 @@ export type Database = {
       can_review_school: {
         Args: { target_school_id: string; user_id?: string }
         Returns: boolean
-      }
-      convert_approved_idea_to_club: {
-        Args: {
-          confirm_name: string
-          confirm_slug: string
-          target_idea_id: string
-        }
-        Returns: string
-      }
-      list_club_invite_candidates: {
-        Args: { target_club_id: string }
-        Returns: {
-          display_name: string
-          user_id: string
-        }[]
       }
       can_view_club: {
         Args: { target_club_id: string; user_id?: string }
@@ -4279,6 +4588,16 @@ export type Database = {
         Args: never
         Returns: Database["public"]["Enums"]["account_onboarding_status"]
       }
+      convert_approved_idea_to_club: {
+        Args: {
+          confirm_name: string
+          confirm_slug: string
+          target_idea_id: string
+        }
+        Returns: string
+      }
+      count_event_going: { Args: { target_event_id: string }; Returns: number }
+      enqueue_renewal_reminders: { Args: { as_of?: string }; Returns: number }
       has_club_role: {
         Args: {
           allowed_roles: Database["public"]["Enums"]["club_role"][]
@@ -4310,11 +4629,53 @@ export type Database = {
         Returns: boolean
       }
       is_valid_school_year: { Args: { value: string }; Returns: boolean }
+      issue_attendance_check_in_token: {
+        Args: { target_session_id: string; ttl_seconds?: number }
+        Returns: string
+      }
+      list_club_invite_candidates: {
+        Args: { target_club_id: string }
+        Returns: {
+          display_name: string
+          user_id: string
+        }[]
+      }
+      process_due_renewal_reminders: {
+        Args: { as_of?: string }
+        Returns: number
+      }
+      promote_event_waitlist: {
+        Args: { target_event_id: string }
+        Returns: number
+      }
       record_guardian_authorization: {
         Args: { target_user_id: string }
         Returns: Database["public"]["Enums"]["account_onboarding_status"]
       }
+      redeem_attendance_check_in: {
+        Args: { raw_token: string }
+        Returns: string
+      }
+      refresh_event_club_analytics: {
+        Args: { target_event_id: string }
+        Returns: undefined
+      }
+      refresh_media_consent_state: {
+        Args: { target_asset_id: string }
+        Returns: Database["public"]["Enums"]["media_consent_state"]
+      }
       restrict_under_13_self_signup: { Args: { event: Json }; Returns: Json }
+      soft_delete_media_asset: {
+        Args: { reason: string; target_asset_id: string }
+        Returns: string
+      }
+      upsert_event_rsvp: {
+        Args: {
+          desired_status: Database["public"]["Enums"]["rsvp_status"]
+          target_event_id: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       account_activation_method:
@@ -4397,11 +4758,6 @@ export type Database = {
         | "completed"
         | "cancelled"
         | "blocked"
-      logistics_item_status:
-        | "not_started"
-        | "in_progress"
-        | "blocked"
-        | "complete"
       event_type:
         | "club_meeting"
         | "workshop"
@@ -4424,6 +4780,11 @@ export type Database = {
         | "college"
         | "adult"
         | "other"
+      logistics_item_status:
+        | "not_started"
+        | "in_progress"
+        | "blocked"
+        | "complete"
       logistics_type:
         | "venue"
         | "equipment"
@@ -4436,7 +4797,14 @@ export type Database = {
         | "setup"
         | "cleanup"
         | "other"
+      media_consent_state: "not_required" | "pending" | "granted" | "restricted"
       media_type: "image" | "video" | "document" | "audio" | "other"
+      media_upload_status:
+        | "pending"
+        | "uploaded"
+        | "finalized"
+        | "aborted"
+        | "expired"
       membership_status:
         | "invited"
         | "active"
@@ -4505,12 +4873,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends (DefaultSchemaTableNameOrOptions extends {
+  TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never) = never,
+    : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -4534,11 +4902,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends (DefaultSchemaTableNameOrOptions extends {
+  TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never) = never,
+    : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -4559,11 +4927,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends (DefaultSchemaTableNameOrOptions extends {
+  TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never) = never,
+    : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -4584,11 +4952,11 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never) = never,
+    : never = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -4601,11 +4969,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never) = never,
+    : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -4710,12 +5078,6 @@ export const Constants = {
         "cancelled",
         "blocked",
       ],
-      logistics_item_status: [
-        "not_started",
-        "in_progress",
-        "blocked",
-        "complete",
-      ],
       event_type: [
         "club_meeting",
         "workshop",
@@ -4740,6 +5102,12 @@ export const Constants = {
         "adult",
         "other",
       ],
+      logistics_item_status: [
+        "not_started",
+        "in_progress",
+        "blocked",
+        "complete",
+      ],
       logistics_type: [
         "venue",
         "equipment",
@@ -4753,7 +5121,15 @@ export const Constants = {
         "cleanup",
         "other",
       ],
+      media_consent_state: ["not_required", "pending", "granted", "restricted"],
       media_type: ["image", "video", "document", "audio", "other"],
+      media_upload_status: [
+        "pending",
+        "uploaded",
+        "finalized",
+        "aborted",
+        "expired",
+      ],
       membership_status: [
         "invited",
         "active",
@@ -4816,3 +5192,4 @@ export const Constants = {
     },
   },
 } as const
+

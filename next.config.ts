@@ -9,13 +9,16 @@ const contentSecurityPolicy = [
   "frame-ancestors 'none'",
   "object-src 'none'",
   "img-src 'self' blob: data: https:",
+  "media-src 'self' blob: https:",
   "font-src 'self' data:",
   "style-src 'self' 'unsafe-inline'",
   // React Fast Refresh needs eval in development only.
   isDev
     ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
     : "script-src 'self' 'unsafe-inline'",
-  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://vitals.vercel-insights.com",
+  isDev
+    ? "connect-src 'self' http://127.0.0.1:* http://localhost:* https://*.supabase.co wss://*.supabase.co https://vitals.vercel-insights.com"
+    : "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://vitals.vercel-insights.com",
   ...(isDev ? [] : ["upgrade-insecure-requests"]),
 ].join("; ");
 
