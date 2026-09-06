@@ -770,6 +770,121 @@ export type Database = {
           },
         ]
       }
+      charter_section_definitions: {
+        Row: {
+          created_at: string
+          description: string
+          field_column: string
+          is_active: boolean
+          key: string
+          label: string
+          min_length: number
+          required: boolean
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          field_column: string
+          is_active?: boolean
+          key: string
+          label: string
+          min_length?: number
+          required?: boolean
+          sort_order: number
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          field_column?: string
+          is_active?: boolean
+          key?: string
+          label?: string
+          min_length?: number
+          required?: boolean
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      club_charter_versions: {
+        Row: {
+          charter_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          snapshot: Json
+          status_at_freeze: Database["public"]["Enums"]["charter_status"]
+          version_number: number
+        }
+        Insert: {
+          charter_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          snapshot: Json
+          status_at_freeze: Database["public"]["Enums"]["charter_status"]
+          version_number: number
+        }
+        Update: {
+          charter_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          snapshot?: Json
+          status_at_freeze?: Database["public"]["Enums"]["charter_status"]
+          version_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "club_charter_versions_charter_id_fkey"
+            columns: ["charter_id"]
+            isOneToOne: false
+            referencedRelation: "club_charters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      renewal_reminders: {
+        Row: {
+          club_id: string
+          created_at: string
+          due_on: string
+          id: string
+          reminder_kind: string
+          scheduled_for: string
+          school_year: string
+          sent_at: string | null
+        }
+        Insert: {
+          club_id: string
+          created_at?: string
+          due_on: string
+          id?: string
+          reminder_kind: string
+          scheduled_for: string
+          school_year: string
+          sent_at?: string | null
+        }
+        Update: {
+          club_id?: string
+          created_at?: string
+          due_on?: string
+          id?: string
+          reminder_kind?: string
+          scheduled_for?: string
+          school_year?: string
+          sent_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "renewal_reminders_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       club_charter_reviews: {
         Row: {
           applicant_feedback: string | null
@@ -834,6 +949,7 @@ export type Database = {
           conduct_expectations: string
           created_at: string
           created_by: string
+          draft_step: number
           elections: string
           expires_at: string | null
           financial_policy: string
@@ -841,6 +957,7 @@ export type Database = {
           meeting_cadence: string
           membership_requirements: string
           mission: string
+          officer_responsibilities: string
           officer_structure: string
           planned_activities: string
           purpose: string
@@ -859,6 +976,7 @@ export type Database = {
           conduct_expectations?: string
           created_at?: string
           created_by: string
+          draft_step?: number
           elections?: string
           expires_at?: string | null
           financial_policy?: string
@@ -866,6 +984,7 @@ export type Database = {
           meeting_cadence?: string
           membership_requirements?: string
           mission?: string
+          officer_responsibilities?: string
           officer_structure?: string
           planned_activities?: string
           purpose?: string
@@ -884,6 +1003,7 @@ export type Database = {
           conduct_expectations?: string
           created_at?: string
           created_by?: string
+          draft_step?: number
           elections?: string
           expires_at?: string | null
           financial_policy?: string
@@ -891,6 +1011,7 @@ export type Database = {
           meeting_cadence?: string
           membership_requirements?: string
           mission?: string
+          officer_responsibilities?: string
           officer_structure?: string
           planned_activities?: string
           purpose?: string
@@ -1615,8 +1736,12 @@ export type Database = {
           club_id: string
           created_at: string
           current_officers_snapshot: Json
+          derived_at: string | null
+          derived_snapshot: Json
+          highlights_summary: string
           id: string
           membership_summary: Json
+          next_year_plan: string
           school_year: string
           status: Database["public"]["Enums"]["renewal_status"]
           submitted_at: string | null
@@ -1632,8 +1757,12 @@ export type Database = {
           club_id: string
           created_at?: string
           current_officers_snapshot?: Json
+          derived_at?: string | null
+          derived_snapshot?: Json
+          highlights_summary?: string
           id?: string
           membership_summary?: Json
+          next_year_plan?: string
           school_year: string
           status?: Database["public"]["Enums"]["renewal_status"]
           submitted_at?: string | null
@@ -1649,8 +1778,12 @@ export type Database = {
           club_id?: string
           created_at?: string
           current_officers_snapshot?: Json
+          derived_at?: string | null
+          derived_snapshot?: Json
+          highlights_summary?: string
           id?: string
           membership_summary?: Json
+          next_year_plan?: string
           school_year?: string
           status?: Database["public"]["Enums"]["renewal_status"]
           submitted_at?: string | null
@@ -4016,6 +4149,14 @@ export type Database = {
       can_manage_club: {
         Args: { target_club_id: string; user_id?: string }
         Returns: boolean
+      }
+      enqueue_renewal_reminders: {
+        Args: { as_of?: string }
+        Returns: number
+      }
+      process_due_renewal_reminders: {
+        Args: { as_of?: string }
+        Returns: number
       }
       issue_attendance_check_in_token: {
         Args: { target_session_id: string; ttl_seconds?: number }

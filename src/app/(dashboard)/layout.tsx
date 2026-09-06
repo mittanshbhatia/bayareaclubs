@@ -47,9 +47,17 @@ export default async function AppShellLayout({
                 <Link href="/start-a-club">Club ideas</Link>
               </Button>
               {isCommittee ? (
-                <Button asChild variant="ghost" size="sm">
-                  <Link href="/admin/ideas">Review queue</Link>
-                </Button>
+                <>
+                  <Button asChild variant="ghost" size="sm">
+                    <Link href="/admin/ideas">Idea queue</Link>
+                  </Button>
+                  <Button asChild variant="ghost" size="sm">
+                    <Link href="/admin/charters">Charters</Link>
+                  </Button>
+                  <Button asChild variant="ghost" size="sm">
+                    <Link href="/admin/renewals">Renewals</Link>
+                  </Button>
+                </>
               ) : null}
             </nav>
           </div>
