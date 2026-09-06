@@ -22,6 +22,7 @@ import {
 } from "@/lib/validation/stem";
 import type { ActionResult } from "@/types/action-result";
 import type { Database } from "@/types/database.generated";
+import { emitNotificationToClubMembers } from "@/features/notifications/queries";
 
 function validationFailure(
   fieldErrors: Record<string, string[] | undefined>,
@@ -215,7 +216,36 @@ export async function recommendCourseToClub(
       return failure("RECOMMEND_FAILED", error?.message ?? "Could not recommend course.");
     }
 
-    const slug = await clubSlug(parsed.data.clubId);
+    const [{ data: course }, slug] = await Promise.all([
+      supabase
+        .from("stem_courses")
+        .select("title, slug")
+        .eq("id", parsed.data.courseId)
+        .maybeSingle(),
+      clubSlug(parsed.data.clubId),
+    ]);
+    try {
+      await emitNotificationToClubMembers({
+        clubId: parsed.data.clubId,
+        type: "course_recommendation",
+        title: "Course recommendation",
+        body: `${course?.title ?? "A STEM course"} was recommended to your club.`,
+        actionUrl: course?.slug
+          ? `/resources/${course.slug}`
+          : slug
+            ? `/clubs/${slug}/resources`
+            : "/resources",
+        entityType: "stem_courses",
+        entityId: parsed.data.courseId,
+        excludeUserId: user.id,
+        payload: { note: parsed.data.note || null },
+      });
+    } catch (notifyError) {
+      logger.error("stem.recommend.notify_failed", {
+        error: notifyError instanceof Error ? notifyError.message : "unknown",
+      });
+    }
+
     if (slug) revalidateStem([`/clubs/${slug}/resources`]);
     return { ok: true, data: { recommendationId: data.id } };
   } catch (error) {

@@ -23,6 +23,9 @@ import {
 } from "@/lib/validation/clubs";
 import type { ActionResult } from "@/types/action-result";
 import { currentSchoolYear } from "@/features/clubs/school-year";
+import {
+  emitNotification,
+} from "@/features/notifications/queries";
 
 function validationFailure(
   fieldErrors: Record<string, string[] | undefined>,
@@ -85,6 +88,30 @@ export async function inviteMemberAction(
       logger.error("club.invite.failed", { message: error?.message });
       return failure("INVITE_FAILED", error?.message ?? "Could not invite member.");
     }
+
+    const { data: club } = await supabase
+      .from("clubs")
+      .select("name, slug")
+      .eq("id", parsed.data.clubId)
+      .maybeSingle();
+    try {
+      await emitNotification({
+        userId: parsed.data.userId,
+        type: "club_invitation",
+        title: "Club invitation",
+        body: `You were invited to join ${club?.name ?? "a club"} as ${parsed.data.role.replaceAll("_", " ")}.`,
+        actionUrl: club?.slug ? `/clubs/${club.slug}/members` : "/dashboard",
+        clubId: parsed.data.clubId,
+        entityType: "club_memberships",
+        entityId: data.id,
+        payload: { role: parsed.data.role },
+      });
+    } catch (notifyError) {
+      logger.error("club.invite.notify_failed", {
+        error: notifyError instanceof Error ? notifyError.message : "unknown",
+      });
+    }
+
     await revalidateClub(parsed.data.clubId);
     return { ok: true, data: { membershipId: data.id } };
   } catch (error) {
@@ -182,7 +209,7 @@ export async function changeMemberRoleAction(input: unknown) {
     const supabase = await createClient();
     const { data: membership, error: membershipError } = await supabase
       .from("club_memberships")
-      .select("id, role, status")
+      .select("id, role, status, user_id")
       .eq("id", parsed.data.membershipId)
       .eq("club_id", parsed.data.clubId)
       .maybeSingle();
@@ -223,6 +250,34 @@ export async function changeMemberRoleAction(input: unknown) {
         .eq("membership_id", membership.id)
         .eq("club_id", parsed.data.clubId)
         .is("ends_on", null);
+    }
+
+    if (
+      parsed.data.role !== membership.role &&
+      parsed.data.role !== "member"
+    ) {
+      const { data: club } = await supabase
+        .from("clubs")
+        .select("name, slug")
+        .eq("id", parsed.data.clubId)
+        .maybeSingle();
+      try {
+        await emitNotification({
+          userId: membership.user_id,
+          type: "officer_assignment",
+          title: "Officer assignment",
+          body: `You were assigned as ${parsed.data.role.replaceAll("_", " ")} for ${club?.name ?? "your club"}.`,
+          actionUrl: club?.slug ? `/clubs/${club.slug}/members` : "/dashboard",
+          clubId: parsed.data.clubId,
+          entityType: "club_memberships",
+          entityId: membership.id,
+          payload: { role: parsed.data.role },
+        });
+      } catch (notifyError) {
+        logger.error("club.role.notify_failed", {
+          error: notifyError instanceof Error ? notifyError.message : "unknown",
+        });
+      }
     }
 
     await revalidateClub(parsed.data.clubId);

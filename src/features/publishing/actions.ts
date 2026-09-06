@@ -21,6 +21,7 @@ import {
 } from "@/lib/validation/publishing";
 import type { ActionResult } from "@/types/action-result";
 import type { Database, Json } from "@/types/database.generated";
+import { emitNotificationToClubMembers } from "@/features/notifications/queries";
 
 function validationFailure(
   fieldErrors: Record<string, string[] | undefined>,
@@ -277,6 +278,31 @@ export async function publishNewsletterWeb(
       club_id: parsed.data.clubId,
       metadata: { visibility: newsletter.visibility },
     });
+
+    const slug = await clubSlug(parsed.data.clubId);
+    const { data: newsletterRow } = await supabase
+      .from("newsletters")
+      .select("title")
+      .eq("id", parsed.data.newsletterId)
+      .maybeSingle();
+    try {
+      await emitNotificationToClubMembers({
+        clubId: parsed.data.clubId,
+        type: "newsletter_published",
+        title: "Newsletter published",
+        body: `${newsletterRow?.title ?? "A newsletter"} is now available.`,
+        actionUrl: slug
+          ? `/clubs/${slug}/newsletter/${parsed.data.newsletterId}`
+          : "/dashboard",
+        entityType: "newsletters",
+        entityId: parsed.data.newsletterId,
+        excludeUserId: user.id,
+      });
+    } catch (notifyError) {
+      logger.error("publishing.newsletter_notify_failed", {
+        error: notifyError instanceof Error ? notifyError.message : "unknown",
+      });
+    }
 
     await revalidatePublishing(parsed.data.clubId, parsed.data.newsletterId);
     return { ok: true, data: { newsletterId: parsed.data.newsletterId } };

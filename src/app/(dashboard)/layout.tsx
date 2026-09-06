@@ -3,6 +3,8 @@ import { ShieldCheck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { signOutAction } from "@/features/auth/actions";
+import { NotificationBell } from "@/features/notifications/components/notification-bell";
+import { listMyNotifications } from "@/features/notifications/queries";
 import { requireActiveUser } from "@/lib/auth/authorization";
 import { handleAuthorizationError } from "@/lib/auth/route-guard";
 import { createClient } from "@/lib/supabase/server";
@@ -20,11 +22,17 @@ export default async function AppShellLayout({
   }
 
   const supabase = await createClient();
-  const { data: roles } = await supabase
-    .from("platform_role_assignments")
-    .select("role")
-    .eq("user_id", user!.id)
-    .is("revoked_at", null);
+  const [{ data: roles }, inbox] = await Promise.all([
+    supabase
+      .from("platform_role_assignments")
+      .select("role")
+      .eq("user_id", user!.id)
+      .is("revoked_at", null),
+    listMyNotifications(20).catch(() => ({
+      notifications: [],
+      unreadCount: 0,
+    })),
+  ]);
 
   const isCommittee = (roles ?? []).some(
     (row) => row.role === "committee_reviewer" || row.role === "platform_admin",
@@ -57,6 +65,12 @@ export default async function AppShellLayout({
             </nav>
           </div>
           <div className="flex items-center gap-2">
+            <NotificationBell
+              key={`${inbox.unreadCount}-${inbox.notifications[0]?.id ?? "empty"}`}
+              userId={user!.id}
+              initialNotifications={inbox.notifications}
+              initialUnreadCount={inbox.unreadCount}
+            />
             <Button asChild variant="ghost" size="sm">
               <Link href="/dashboard/profile">Profile</Link>
             </Button>

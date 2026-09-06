@@ -28,6 +28,9 @@ import {
 } from "@/lib/validation/charters";
 import type { ActionResult } from "@/types/action-result";
 import type { Database, Json } from "@/types/database.generated";
+import {
+  emitNotificationToClubMembers,
+} from "@/features/notifications/queries";
 
 type CharterInsert = Database["public"]["Tables"]["club_charters"]["Insert"];
 type CharterUpdate = Database["public"]["Tables"]["club_charters"]["Update"];
@@ -250,6 +253,40 @@ export async function decideCharterAction(
       internal_notes: parsed.data.internalNotes || null,
     });
     if (error) return failure("REVIEW_FAILED", error.message);
+
+    const { data: club } = await supabase
+      .from("clubs")
+      .select("slug, name")
+      .eq("id", parsed.data.clubId)
+      .maybeSingle();
+    try {
+      await emitNotificationToClubMembers({
+        clubId: parsed.data.clubId,
+        type: "charter_feedback",
+        title: "Charter feedback",
+        body:
+          decision === "approved"
+            ? `The charter for ${club?.name ?? "your club"} was approved.`
+            : `Changes were requested on the charter for ${club?.name ?? "your club"}.`,
+        actionUrl: club?.slug ? `/clubs/${club.slug}/charter` : "/dashboard",
+        entityType: "club_charters",
+        entityId: parsed.data.charterId,
+        roles: [
+          "club_admin",
+          "president",
+          "vice_president",
+          "secretary",
+          "treasurer",
+          "officer",
+          "advisor",
+        ],
+        excludeUserId: reviewer.id,
+      });
+    } catch (notifyError) {
+      logger.error("charter.feedback.notify_failed", {
+        error: notifyError instanceof Error ? notifyError.message : "unknown",
+      });
+    }
 
     await revalidateClubCharter(parsed.data.clubId);
     return { ok: true, data: { decided: true } };
@@ -506,6 +543,42 @@ export async function decideRenewalAction(
       internal_notes: parsed.data.internalNotes || null,
     });
     if (error) return failure("REVIEW_FAILED", error.message);
+
+    const { data: club } = await supabase
+      .from("clubs")
+      .select("slug, name")
+      .eq("id", parsed.data.clubId)
+      .maybeSingle();
+    try {
+      await emitNotificationToClubMembers({
+        clubId: parsed.data.clubId,
+        type: "charter_feedback",
+        title: "Renewal feedback",
+        body:
+          parsed.data.decision === "approved"
+            ? `The renewal for ${club?.name ?? "your club"} was approved.`
+            : `Changes were requested on the renewal for ${club?.name ?? "your club"}.`,
+        actionUrl: club?.slug
+          ? `/clubs/${club.slug}/charter/renewal`
+          : "/dashboard",
+        entityType: "club_renewals",
+        entityId: parsed.data.renewalId,
+        roles: [
+          "club_admin",
+          "president",
+          "vice_president",
+          "secretary",
+          "treasurer",
+          "officer",
+          "advisor",
+        ],
+        excludeUserId: reviewer.id,
+      });
+    } catch (notifyError) {
+      logger.error("renewal.feedback.notify_failed", {
+        error: notifyError instanceof Error ? notifyError.message : "unknown",
+      });
+    }
 
     await revalidateClubCharter(parsed.data.clubId);
     return { ok: true, data: { decided: true } };

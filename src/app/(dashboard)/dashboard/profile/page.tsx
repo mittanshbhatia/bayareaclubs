@@ -1,5 +1,7 @@
 import { ProfileSettingsForm } from "@/features/auth/components/profile-settings-form";
 import { EmailPreferencesForm } from "@/features/communications/components/email-preferences-form";
+import { NotificationPreferencesForm } from "@/features/notifications/components/notification-preferences-form";
+import { getMyNotificationPreferences } from "@/features/notifications/queries";
 import { requireActiveUser } from "@/lib/auth/authorization";
 import { createClient } from "@/lib/supabase/server";
 
@@ -18,10 +20,13 @@ export default async function ProfilePage() {
     throw new Error("Active profile data is unavailable.");
   }
 
-  const { data: preferences } = await supabase
-    .from("user_email_preferences")
-    .select("category, opted_in")
-    .eq("user_id", user.id);
+  const [{ data: preferences }, notificationPrefs] = await Promise.all([
+    supabase
+      .from("user_email_preferences")
+      .select("category, opted_in")
+      .eq("user_id", user.id),
+    getMyNotificationPreferences(),
+  ]);
 
   const preferenceMap: Record<string, boolean> = {
     announcement: true,
@@ -58,6 +63,7 @@ export default async function ProfilePage() {
         }}
       />
       <EmailPreferencesForm initial={preferenceMap} />
+      <NotificationPreferencesForm initial={notificationPrefs} />
     </>
   );
 }

@@ -22,6 +22,7 @@ import {
   type EventDraftInput,
 } from "@/lib/validation/events";
 import type { ActionResult } from "@/types/action-result";
+import { emitNotificationToClubMembers } from "@/features/notifications/queries";
 
 function validationFailure(
   fieldErrors: Record<string, string[] | undefined>,
@@ -125,7 +126,7 @@ export async function saveEventDraftAction(
     if (parsed.data.eventId) {
       const { data: existing } = await supabase
         .from("events")
-        .select("id, status")
+        .select("id, status, title")
         .eq("id", parsed.data.eventId)
         .eq("club_id", parsed.data.clubId)
         .maybeSingle();
@@ -142,6 +143,33 @@ export async function saveEventDraftAction(
         logger.error("events.draft.update_failed", { message: error.message });
         return failure("SAVE_FAILED", error.message);
       }
+
+      if (existing.status === "published") {
+        const { data: club } = await supabase
+          .from("clubs")
+          .select("slug")
+          .eq("id", parsed.data.clubId)
+          .maybeSingle();
+        try {
+          await emitNotificationToClubMembers({
+            clubId: parsed.data.clubId,
+            type: "event_changed",
+            title: "Event changed",
+            body: `${payload.title} was updated. Review the latest details.`,
+            actionUrl: club?.slug
+              ? `/clubs/${club.slug}/events/${parsed.data.eventId}`
+              : "/dashboard",
+            entityType: "events",
+            entityId: parsed.data.eventId,
+            excludeUserId: actor.id,
+          });
+        } catch (notifyError) {
+          logger.error("events.changed.notify_failed", {
+            error: notifyError instanceof Error ? notifyError.message : "unknown",
+          });
+        }
+      }
+
       await revalidateEvents(parsed.data.clubId, parsed.data.eventId);
       return { ok: true, data: { eventId: parsed.data.eventId } };
     }
@@ -211,6 +239,32 @@ export async function publishEventAction(
       .eq("id", event.id);
     if (error) return failure("PUBLISH_FAILED", error.message);
 
+    if (nextStatus === "published") {
+      const { data: club } = await supabase
+        .from("clubs")
+        .select("slug")
+        .eq("id", parsed.data.clubId)
+        .maybeSingle();
+      try {
+        await emitNotificationToClubMembers({
+          clubId: parsed.data.clubId,
+          type: "upcoming_event",
+          title: "Upcoming event",
+          body: `${event.title} is published. RSVP and details are available in the club calendar.`,
+          actionUrl: club?.slug
+            ? `/clubs/${club.slug}/events/${event.id}`
+            : "/dashboard",
+          entityType: "events",
+          entityId: event.id,
+          excludeUserId: actor.id,
+        });
+      } catch (notifyError) {
+        logger.error("events.publish.notify_failed", {
+          error: notifyError instanceof Error ? notifyError.message : "unknown",
+        });
+      }
+    }
+
     await revalidateEvents(parsed.data.clubId, event.id);
     return { ok: true, data: { eventId: event.id, status: nextStatus } };
   } catch (error) {
@@ -258,6 +312,35 @@ export async function approveEventAction(
       })
       .eq("id", event.id);
     if (error) return failure("APPROVE_FAILED", error.message);
+
+    const { data: club } = await supabase
+      .from("clubs")
+      .select("slug, name")
+      .eq("id", event.club_id)
+      .maybeSingle();
+    const { data: eventRow } = await supabase
+      .from("events")
+      .select("title")
+      .eq("id", event.id)
+      .maybeSingle();
+    try {
+      await emitNotificationToClubMembers({
+        clubId: event.club_id,
+        type: "upcoming_event",
+        title: "Upcoming event",
+        body: `${eventRow?.title ?? "An event"} is published for ${club?.name ?? "your club"}.`,
+        actionUrl: club?.slug
+          ? `/clubs/${club.slug}/events/${event.id}`
+          : "/dashboard",
+        entityType: "events",
+        entityId: event.id,
+        excludeUserId: actor.id,
+      });
+    } catch (notifyError) {
+      logger.error("events.approve.notify_failed", {
+        error: notifyError instanceof Error ? notifyError.message : "unknown",
+      });
+    }
 
     await revalidateEvents(parsed.data.clubId, event.id);
     return { ok: true, data: { approved: true } };

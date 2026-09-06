@@ -3800,34 +3800,63 @@ export type Database = {
         Row: {
           action_url: string | null
           body: string
+          club_id: string | null
           created_at: string
+          entity_id: string | null
+          entity_type: string | null
           id: string
           notification_type: string
+          payload: Json
           read_at: string | null
+          school_id: string | null
           title: string
           user_id: string
         }
         Insert: {
           action_url?: string | null
           body: string
+          club_id?: string | null
           created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
           id?: string
           notification_type: string
+          payload?: Json
           read_at?: string | null
+          school_id?: string | null
           title: string
           user_id: string
         }
         Update: {
           action_url?: string | null
           body?: string
+          club_id?: string | null
           created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
           id?: string
           notification_type?: string
+          payload?: Json
           read_at?: string | null
+          school_id?: string | null
           title?: string
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "notifications_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "notifications_user_id_fkey"
             columns: ["user_id"]
@@ -3837,6 +3866,41 @@ export type Database = {
           },
           {
             foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_notification_preferences: {
+        Row: {
+          category: Database["public"]["Enums"]["in_app_notification_category"]
+          created_at: string
+          id: string
+          in_app_enabled: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["in_app_notification_category"]
+          created_at?: string
+          id?: string
+          in_app_enabled?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["in_app_notification_category"]
+          created_at?: string
+          id?: string
+          in_app_enabled?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_notification_preferences_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -5307,6 +5371,45 @@ export type Database = {
         Returns: string
       }
       count_active_platform_admins: { Args: never; Returns: number }
+      emit_in_app_notification: {
+        Args: {
+          p_action_url?: string
+          p_body: string
+          p_club_id?: string
+          p_entity_id?: string
+          p_entity_type?: string
+          p_payload?: Json
+          p_school_id?: string
+          p_title: string
+          p_type: string
+          p_user_id: string
+        }
+        Returns: string
+      }
+      emit_in_app_notifications_to_club_members: {
+        Args: {
+          p_action_url?: string
+          p_body: string
+          p_club_id: string
+          p_entity_id?: string
+          p_entity_type?: string
+          p_exclude_user_id?: string
+          p_payload?: Json
+          p_roles?: Database["public"]["Enums"]["club_role"][]
+          p_title: string
+          p_type: string
+        }
+        Returns: number
+      }
+      mark_all_notifications_read: { Args: never; Returns: number }
+      notification_category_for_type: {
+        Args: { p_type: string }
+        Returns: Database["public"]["Enums"]["in_app_notification_category"]
+      }
+      user_allows_in_app_notification: {
+        Args: { p_type: string; target_user_id: string }
+        Returns: boolean
+      }
       assign_platform_role: {
         Args: {
           target_role: Database["public"]["Enums"]["platform_role"]
@@ -5452,6 +5555,13 @@ export type Database = {
       }
     }
     Enums: {
+      in_app_notification_category:
+        | "club_ideas"
+        | "membership"
+        | "events"
+        | "governance"
+        | "communications"
+        | "resources"
       account_activation_method:
         | "self_service"
         | "guardian_authorized"
@@ -6039,6 +6149,14 @@ export const Constants = {
         "course_recommendation",
         "cta",
         "divider",
+      ],
+      in_app_notification_category: [
+        "club_ideas",
+        "membership",
+        "events",
+        "governance",
+        "communications",
+        "resources",
       ],
       platform_role: ["platform_admin", "committee_reviewer"],
       profile_display_format: [
