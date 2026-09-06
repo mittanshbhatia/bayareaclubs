@@ -63,4 +63,5 @@ pnpm db:start
 
 Git commits for this repository MUST be authored solely by **Mittansh Bhatia**.
 Never add `Co-authored-by` trailers or any co-committer attribution for agents,
-assistants, or other accounts.
+assistants, or other accounts. See `.cursor/rules/05-git-github.mdc` for push policy.
+

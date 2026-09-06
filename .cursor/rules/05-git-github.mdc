@@ -1,0 +1,33 @@
+---
+description: Sole committer Mittansh Bhatia; push completed work to GitHub
+alwaysApply: true
+---
+
+# Git authorship and GitHub sync
+
+## Sole committer
+
+All commits for `bayareaclubs` MUST be authored and committed solely by:
+
+- **Name:** Mittansh Bhatia
+- **Email:** mittanshbhatia@users.noreply.github.com
+
+Never add `Co-authored-by` trailers or any co-committer / agent / assistant attribution.
+Do not change `git config` permanently; set author/committer via environment for each commit when needed:
+
+```bash
+export GIT_AUTHOR_NAME='Mittansh Bhatia'
+export GIT_AUTHOR_EMAIL='mittanshbhatia@users.noreply.github.com'
+export GIT_COMMITTER_NAME='Mittansh Bhatia'
+export GIT_COMMITTER_EMAIL='mittanshbhatia@users.noreply.github.com'
+```
+
+## Push completed work
+
+After finishing a requested feature, fix, or design-system change that is ready:
+
+1. Commit under Mittansh Bhatia only (never secrets / `.env.local`).
+2. Push to `origin` on the current branch (`git push -u origin HEAD` when tracking is missing).
+3. Remote: `https://github.com/mittanshbhatia/bayareaclubs`
+
+Do not wait to be asked again to push routine completed work unless the user explicitly says not to push.
