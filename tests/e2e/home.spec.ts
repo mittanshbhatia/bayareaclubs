@@ -48,9 +48,37 @@ test("presents the connected club lifecycle with working public actions", async 
   await expect(
     page.getByRole("link", { name: "Discover Clubs" }).first(),
   ).toHaveAttribute("href", "#discover");
+  await expect(page.locator('a[href="/sign-in"]').first()).toHaveAttribute(
+    "href",
+    "/sign-in",
+  );
+});
+
+test("keeps the idea-to-club story in the natural page scroll", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+
+  const story = page.locator("#idea-story");
+  const geometry = await story.evaluate((section) => ({
+    height: section.getBoundingClientRect().height,
+    viewportHeight: window.innerHeight,
+    innerPosition: window.getComputedStyle(section.firstElementChild as Element)
+      .position,
+  }));
+
+  expect(geometry.innerPosition).not.toBe("sticky");
+  expect(geometry.height).toBeLessThan(geometry.viewportHeight * 1.5);
+
+  await page
+    .getByRole("heading", { name: /Everything your club needs.*Connected/i })
+    .scrollIntoViewIfNeeded();
   await expect(
-    page.locator('a[href="/sign-in"]').first(),
-  ).toHaveAttribute("href", "/sign-in");
+    page.getByRole("heading", {
+      name: /Everything your club needs.*Connected/i,
+    }),
+  ).toBeVisible();
 });
 
 test("reports liveness without exposing configuration", async ({ request }) => {

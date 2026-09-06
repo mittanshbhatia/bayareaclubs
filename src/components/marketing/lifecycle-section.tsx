@@ -80,7 +80,7 @@ export function LifecycleSection() {
   const [active, setActive] = useState(0);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start start", "end end"],
+    offset: ["start 80%", "end 20%"],
   });
 
   useMotionValueEvent(scrollYProgress, "change", (progress) => {

@@ -195,14 +195,13 @@
 
 .storyTrack {
   position: relative;
-  min-height: 320vh;
+  min-height: auto;
 }
 
 .storySticky {
-  position: sticky;
-  top: 0;
+  position: relative;
   display: flex;
-  min-height: 100vh;
+  min-height: auto;
   align-items: center;
 }
 
