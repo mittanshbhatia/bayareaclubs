@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 const navLinks = [
   { href: "#lifecycle", label: "Lifecycle" },
   { href: "#operate", label: "Operate" },
-  { href: "#stem", label: "Resources" },
+  { href: "/resources", label: "Resources" },
   { href: "#events", label: "Events" },
 ] as const;
 

@@ -1546,6 +1546,117 @@ export type Database = {
           },
         ]
       }
+      club_learning_collection_items: {
+        Row: {
+          collection_id: string
+          course_id: string
+          created_at: string
+          id: string
+          note: string | null
+          position: number
+        }
+        Insert: {
+          collection_id: string
+          course_id: string
+          created_at?: string
+          id?: string
+          note?: string | null
+          position: number
+        }
+        Update: {
+          collection_id?: string
+          course_id?: string
+          created_at?: string
+          id?: string
+          note?: string | null
+          position?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "club_learning_collection_items_collection_id_fkey"
+            columns: ["collection_id"]
+            isOneToOne: false
+            referencedRelation: "club_learning_collections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_learning_collection_items_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "published_stem_courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_learning_collection_items_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "stem_courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      club_learning_collections: {
+        Row: {
+          club_id: string
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          is_archived: boolean
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          club_id: string
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          is_archived?: boolean
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          club_id?: string
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          is_archived?: boolean
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "club_learning_collections_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_learning_collections_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "published_clubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_learning_collections_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "club_learning_collections_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       club_memberships: {
         Row: {
           club_id: string
@@ -1874,6 +1985,76 @@ export type Database = {
           {
             foreignKeyName: "club_renewals_submitted_by_fkey"
             columns: ["submitted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      club_resource_recommendations: {
+        Row: {
+          club_id: string
+          course_id: string
+          created_at: string
+          id: string
+          note: string | null
+          recommended_by: string
+        }
+        Insert: {
+          club_id: string
+          course_id: string
+          created_at?: string
+          id?: string
+          note?: string | null
+          recommended_by: string
+        }
+        Update: {
+          club_id?: string
+          course_id?: string
+          created_at?: string
+          id?: string
+          note?: string | null
+          recommended_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "club_resource_recommendations_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_resource_recommendations_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "published_clubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_resource_recommendations_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "published_stem_courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_resource_recommendations_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "stem_courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_resource_recommendations_recommended_by_fkey"
+            columns: ["recommended_by"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "club_resource_recommendations_recommended_by_fkey"
+            columns: ["recommended_by"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -3828,6 +4009,48 @@ export type Database = {
         }
         Relationships: []
       }
+      stem_course_metrics: {
+        Row: {
+          course_completion_count: number
+          course_id: string
+          resource_completion_count: number
+          start_count: number
+          subscription_count: number
+          updated_at: string
+        }
+        Insert: {
+          course_completion_count?: number
+          course_id: string
+          resource_completion_count?: number
+          start_count?: number
+          subscription_count?: number
+          updated_at?: string
+        }
+        Update: {
+          course_completion_count?: number
+          course_id?: string
+          resource_completion_count?: number
+          start_count?: number
+          subscription_count?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stem_course_metrics_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: true
+            referencedRelation: "published_stem_courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stem_course_metrics_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: true
+            referencedRelation: "stem_courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stem_course_modules: {
         Row: {
           course_id: string
@@ -3881,61 +4104,76 @@ export type Database = {
       }
       stem_courses: {
         Row: {
+          archived_at: string | null
           created_at: string
           created_by: string
           description: string
           difficulty: Database["public"]["Enums"]["course_difficulty"]
           discipline: Database["public"]["Enums"]["stem_discipline"]
+          estimated_minutes: number | null
+          format: Database["public"]["Enums"]["course_format"]
           grade_bands: Database["public"]["Enums"]["age_band"][]
           id: string
           is_free: boolean
           is_published: boolean
+          last_verified_at: string | null
           license_name: string
           license_url: string | null
           provider_name: string
           published_at: string | null
           slug: string
           source_url: string
+          status: Database["public"]["Enums"]["publication_status"]
           thumbnail_asset_id: string | null
           title: string
           updated_at: string
         }
         Insert: {
+          archived_at?: string | null
           created_at?: string
           created_by: string
           description: string
           difficulty: Database["public"]["Enums"]["course_difficulty"]
           discipline: Database["public"]["Enums"]["stem_discipline"]
+          estimated_minutes?: number | null
+          format?: Database["public"]["Enums"]["course_format"]
           grade_bands: Database["public"]["Enums"]["age_band"][]
           id?: string
           is_free?: boolean
           is_published?: boolean
+          last_verified_at?: string | null
           license_name: string
           license_url?: string | null
           provider_name: string
           published_at?: string | null
           slug: string
           source_url: string
+          status?: Database["public"]["Enums"]["publication_status"]
           thumbnail_asset_id?: string | null
           title: string
           updated_at?: string
         }
         Update: {
+          archived_at?: string | null
           created_at?: string
           created_by?: string
           description?: string
           difficulty?: Database["public"]["Enums"]["course_difficulty"]
           discipline?: Database["public"]["Enums"]["stem_discipline"]
+          estimated_minutes?: number | null
+          format?: Database["public"]["Enums"]["course_format"]
           grade_bands?: Database["public"]["Enums"]["age_band"][]
           id?: string
           is_free?: boolean
           is_published?: boolean
+          last_verified_at?: string | null
           license_name?: string
           license_url?: string | null
           provider_name?: string
           published_at?: string | null
           slug?: string
           source_url?: string
+          status?: Database["public"]["Enums"]["publication_status"]
           thumbnail_asset_id?: string | null
           title?: string
           updated_at?: string
@@ -4751,8 +4989,12 @@ export type Database = {
           description: string | null
           difficulty: Database["public"]["Enums"]["course_difficulty"] | null
           discipline: Database["public"]["Enums"]["stem_discipline"] | null
+          estimated_minutes: number | null
+          format: Database["public"]["Enums"]["course_format"] | null
           grade_bands: Database["public"]["Enums"]["age_band"][] | null
           id: string | null
+          is_free: boolean | null
+          last_verified_at: string | null
           license_name: string | null
           license_url: string | null
           provider_name: string | null
@@ -4766,8 +5008,12 @@ export type Database = {
           description?: string | null
           difficulty?: Database["public"]["Enums"]["course_difficulty"] | null
           discipline?: Database["public"]["Enums"]["stem_discipline"] | null
+          estimated_minutes?: number | null
+          format?: Database["public"]["Enums"]["course_format"] | null
           grade_bands?: Database["public"]["Enums"]["age_band"][] | null
           id?: string | null
+          is_free?: boolean | null
+          last_verified_at?: string | null
           license_name?: string | null
           license_url?: string | null
           provider_name?: string | null
@@ -4781,8 +5027,12 @@ export type Database = {
           description?: string | null
           difficulty?: Database["public"]["Enums"]["course_difficulty"] | null
           discipline?: Database["public"]["Enums"]["stem_discipline"] | null
+          estimated_minutes?: number | null
+          format?: Database["public"]["Enums"]["course_format"] | null
           grade_bands?: Database["public"]["Enums"]["age_band"][] | null
           id?: string | null
+          is_free?: boolean | null
+          last_verified_at?: string | null
           license_name?: string | null
           license_url?: string | null
           provider_name?: string | null
@@ -5020,6 +5270,10 @@ export type Database = {
         Returns: string
       }
       enqueue_renewal_reminders: { Args: { as_of?: string }; Returns: number }
+      ensure_stem_course_metrics: {
+        Args: { target_course_id: string }
+        Returns: undefined
+      }
       has_club_role: {
         Args: {
           allowed_roles: Database["public"]["Enums"]["club_role"][]
@@ -5177,6 +5431,13 @@ export type Database = {
         | "send_test_email"
       consent_status: "pending" | "granted" | "denied" | "revoked" | "expired"
       course_difficulty: "beginner" | "intermediate" | "advanced"
+      course_format:
+        | "self_paced"
+        | "video"
+        | "interactive"
+        | "reading"
+        | "project"
+        | "mixed"
       email_audience_type:
         | "all_members"
         | "officers"
@@ -5356,6 +5617,7 @@ export type Database = {
         | "cybersecurity"
         | "data_science"
         | "other"
+        | "competitive_programming"
       subscription_status: "active" | "completed" | "paused" | "cancelled"
       visibility_level: "public" | "school" | "club" | "private"
     }
@@ -5547,6 +5809,14 @@ export const Constants = {
       ],
       consent_status: ["pending", "granted", "denied", "revoked", "expired"],
       course_difficulty: ["beginner", "intermediate", "advanced"],
+      course_format: [
+        "self_paced",
+        "video",
+        "interactive",
+        "reading",
+        "project",
+        "mixed",
+      ],
       email_audience_type: [
         "all_members",
         "officers",
@@ -5746,6 +6016,7 @@ export const Constants = {
         "cybersecurity",
         "data_science",
         "other",
+        "competitive_programming",
       ],
       subscription_status: ["active", "completed", "paused", "cancelled"],
       visibility_level: ["public", "school", "club", "private"],

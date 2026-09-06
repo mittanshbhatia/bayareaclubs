@@ -4,41 +4,16 @@ import { BookOpen } from "lucide-react";
 import { CourseCard, PageContainer, SectionHeader } from "@/components/ds";
 import { Reveal } from "@/components/marketing/reveal";
 import { Button } from "@/components/ui/button";
+import { listPublishedCourses } from "@/features/stem/queries";
+import {
+  COURSE_DIFFICULTY_LABELS,
+  formatEffortMinutes,
+} from "@/lib/validation/stem";
 
-const courses = [
-  {
-    title: "AI & Machine Learning",
-    provider: "STEM Library",
-    duration: "6 weeks",
-    level: "Intermediate",
-  },
-  {
-    title: "Competitive Programming",
-    provider: "STEM Library",
-    duration: "8 weeks",
-    level: "Intermediate",
-  },
-  {
-    title: "Robotics",
-    provider: "STEM Library",
-    duration: "5 weeks",
-    level: "Beginner",
-  },
-  {
-    title: "Physics",
-    provider: "STEM Library",
-    duration: "4 weeks",
-    level: "Beginner",
-  },
-  {
-    title: "Data Science",
-    provider: "STEM Library",
-    duration: "6 weeks",
-    level: "Intermediate",
-  },
-] as const;
+export async function StemSection() {
+  const courses = await listPublishedCourses({});
+  const featured = courses.slice(0, 6);
 
-export function StemSection() {
   return (
     <section
       id="stem"
@@ -54,26 +29,49 @@ export function StemSection() {
           </div>
           <SectionHeader
             title="Turn club meetings into learning."
-            description="Subscribe to courses and keep resources inside the club dashboard—ready for the next meeting agenda."
+            description="Browse free STEM resources, add them to My Learning, and keep progress inside your dashboard—never hosting copyrighted third-party course files."
             actions={
               <Button asChild variant="outline">
-                <Link href="/sign-up">Explore Resources</Link>
+                <Link href="/resources">Explore Resources</Link>
               </Button>
             }
           />
         </Reveal>
 
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {courses.map((course, index) => (
-            <Reveal key={course.title} delay={index * 0.04}>
-              <CourseCard
-                {...course}
-                className="h-full"
-                href="/sign-up"
-                actionLabel="Subscribe via account"
-              />
-            </Reveal>
-          ))}
+          {featured.length > 0
+            ? featured.map((course, index) => (
+                <Reveal key={course.id} delay={index * 0.04}>
+                  <CourseCard
+                    title={course.title ?? "Course"}
+                    provider={`${course.provider_name ?? "Provider"} · Free`}
+                    duration={formatEffortMinutes(course.estimated_minutes)}
+                    level={
+                      course.difficulty
+                        ? COURSE_DIFFICULTY_LABELS[
+                            course.difficulty as keyof typeof COURSE_DIFFICULTY_LABELS
+                          ]
+                        : "Level varies"
+                    }
+                    className="h-full"
+                    href={`/resources/${course.slug}`}
+                    actionLabel="View resource"
+                  />
+                </Reveal>
+              ))
+            : [0, 1, 2].map((index) => (
+                <Reveal key={index} delay={index * 0.04}>
+                  <CourseCard
+                    title="Free STEM catalog"
+                    provider="BayAreaClubs"
+                    duration="Browse anytime"
+                    level="All levels"
+                    className="h-full"
+                    href="/resources"
+                    actionLabel="Open catalog"
+                  />
+                </Reveal>
+              ))}
         </div>
       </PageContainer>
     </section>

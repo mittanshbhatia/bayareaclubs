@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { Building2, Lightbulb, Shield, UsersRound } from "lucide-react";
+import { Building2, GraduationCap, Lightbulb, Shield, UsersRound } from "lucide-react";
 
 import { StatusBadge } from "@/components/ds/badges";
 import { Button } from "@/components/ui/button";
 import { listMyIdeas } from "@/features/ideas/queries";
 import { ideaStatusToBadge } from "@/features/ideas/status";
+import { listMyLearning } from "@/features/stem/queries";
 import { requireActiveUser } from "@/lib/auth/authorization";
 import { createClient } from "@/lib/supabase/server";
 
@@ -15,7 +16,7 @@ function formatRole(role: string) {
 export default async function DashboardPage() {
   const user = await requireActiveUser();
   const supabase = await createClient();
-  const [profileResult, platformResult, schoolResult, clubResult, ideas] =
+  const [profileResult, platformResult, schoolResult, clubResult, ideas, learning] =
     await Promise.all([
       supabase
         .from("profiles")
@@ -38,9 +39,13 @@ export default async function DashboardPage() {
         .eq("user_id", user.id)
         .eq("status", "active"),
       listMyIdeas(user.id),
+      listMyLearning(user.id),
     ]);
 
   const trackedIdeas = ideas.filter((idea) => idea.status !== "draft");
+  const isPlatformAdmin = (platformResult.data ?? []).some(
+    (assignment) => assignment.role === "platform_admin",
+  );
 
   return (
     <>
@@ -51,6 +56,58 @@ export default async function DashboardPage() {
       <p className="mt-3 max-w-2xl leading-7 text-muted-foreground">
         Access is derived from active platform, school, and club assignments.
       </p>
+
+      <section className="mt-10 border-t pt-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <GraduationCap aria-hidden="true" className="size-4 text-primary" />
+            <h2 className="font-semibold">My Learning</h2>
+          </div>
+          <Button asChild size="sm" variant="outline">
+            <Link href="/dashboard/learning">Open learning</Link>
+          </Button>
+        </div>
+        {learning.length ? (
+          <ul className="mt-4 space-y-3">
+            {learning.slice(0, 3).map((item) => (
+              <li key={item.subscription.id}>
+                <Link
+                  href={
+                    item.course?.slug
+                      ? `/resources/${item.course.slug}`
+                      : "/dashboard/learning"
+                  }
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border p-3 hover:bg-surface-muted"
+                >
+                  <div>
+                    <p className="font-medium">{item.course?.title ?? "Course"}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {item.nextResource
+                        ? `Next: ${item.nextResource.title}`
+                        : `${item.completedCount} lessons complete`}
+                    </p>
+                  </div>
+                  <StatusBadge
+                    status={
+                      item.subscription.status === "completed"
+                        ? "approved"
+                        : "active"
+                    }
+                  />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-4 text-sm text-muted-foreground">
+            No subscribed courses yet.{" "}
+            <Link href="/resources" className="underline">
+              Browse free STEM resources
+            </Link>
+            .
+          </p>
+        )}
+      </section>
 
       <section className="mt-10 border-t pt-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -102,6 +159,13 @@ export default async function DashboardPage() {
                   {formatRole(assignment.role)}
                 </li>
               ))}
+              {isPlatformAdmin ? (
+                <li>
+                  <Link href="/dashboard/platform/stem" className="underline">
+                    STEM Resources admin
+                  </Link>
+                </li>
+              ) : null}
             </ul>
           ) : (
             <p className="text-muted-foreground mt-4 text-sm">

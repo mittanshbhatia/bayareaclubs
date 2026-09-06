@@ -28,12 +28,12 @@ export function SiteFooter() {
           >
             Sign in
           </Link>
-          <a
-            href="#stem"
+          <Link
+            href="/resources"
             className="text-muted-foreground underline-offset-4 hover:underline"
           >
             Resources
-          </a>
+          </Link>
         </nav>
       </PageContainer>
     </footer>

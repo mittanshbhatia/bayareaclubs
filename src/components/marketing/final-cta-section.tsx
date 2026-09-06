@@ -25,7 +25,7 @@ export function FinalCtaSection() {
               <Link href="/sign-up">Start a Club</Link>
             </Button>
             <Button asChild size="lg" variant="outline">
-              <Link href="#stem">Explore Resources</Link>
+              <Link href="/resources">Explore Resources</Link>
             </Button>
           </div>
         </Reveal>
