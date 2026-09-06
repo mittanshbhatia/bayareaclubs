@@ -1,6 +1,8 @@
 "use client";
 
 import {
+  Bar,
+  BarChart,
   CartesianGrid,
   Line,
   LineChart,
@@ -16,6 +18,7 @@ import { cn } from "@/lib/utils";
 export type ChartPoint = {
   label: string;
   value: number;
+  secondary?: number;
 };
 
 type ChartCardProps = {
@@ -23,6 +26,10 @@ type ChartCardProps = {
   description?: string;
   data: ChartPoint[];
   className?: string;
+  variant?: "line" | "bar";
+  valueLabel?: string;
+  secondaryLabel?: string;
+  summary?: string;
 };
 
 export function ChartCard({
@@ -30,7 +37,17 @@ export function ChartCard({
   description,
   data,
   className,
+  variant = "line",
+  valueLabel = "Value",
+  secondaryLabel,
+  summary,
 }: ChartCardProps) {
+  const chartSummary =
+    summary ??
+    (data.length
+      ? `${title}: ${data.map((point) => `${point.label} ${point.value}`).join("; ")}.`
+      : `${title}: no data in range.`);
+
   return (
     <div
       data-slot="chart-card"
@@ -45,49 +62,114 @@ export function ChartCard({
           <p className="mt-1 text-sm text-muted-foreground">{description}</p>
         ) : null}
       </div>
-      <div className="h-56 w-full" role="img" aria-label={`${title} chart`}>
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-            <CartesianGrid stroke="var(--chart-grid)" strokeDasharray="3 3" />
-            <XAxis
-              dataKey="label"
-              stroke="var(--chart-axis)"
-              fontSize={12}
-              tickLine={false}
-              axisLine={false}
-            />
-            <YAxis
-              stroke="var(--chart-axis)"
-              fontSize={12}
-              tickLine={false}
-              axisLine={false}
-              width={32}
-            />
-            <Tooltip
-              contentStyle={{
-                background: "var(--chart-tooltip-bg)",
-                color: "var(--chart-tooltip-fg)",
-                border: "1px solid var(--border)",
-                borderRadius: "0.5rem",
-              }}
-            />
-            <Line
-              type="monotone"
-              dataKey="value"
-              stroke={chartCssVars["chart-1"]}
-              strokeWidth={2}
-              dot={false}
-              activeDot={{ r: 4 }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+      {data.length === 0 ? (
+        <p className="flex h-56 items-center justify-center text-sm text-muted-foreground">
+          No data for this range yet.
+        </p>
+      ) : (
+        <div
+          className="h-56 w-full"
+          role="img"
+          aria-label={chartSummary}
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            {variant === "bar" ? (
+              <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                <CartesianGrid stroke="var(--chart-grid)" strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="label"
+                  stroke="var(--chart-axis)"
+                  fontSize={12}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis
+                  stroke="var(--chart-axis)"
+                  fontSize={12}
+                  tickLine={false}
+                  axisLine={false}
+                  width={32}
+                />
+                <Tooltip
+                  contentStyle={{
+                    background: "var(--chart-tooltip-bg)",
+                    color: "var(--chart-tooltip-fg)",
+                    border: "1px solid var(--border)",
+                    borderRadius: "0.5rem",
+                  }}
+                />
+                <Bar
+                  dataKey="value"
+                  fill={chartCssVars["chart-1"]}
+                  radius={[4, 4, 0, 0]}
+                  name={valueLabel}
+                />
+                {secondaryLabel ? (
+                  <Bar
+                    dataKey="secondary"
+                    fill={chartCssVars["chart-2"]}
+                    radius={[4, 4, 0, 0]}
+                    name={secondaryLabel}
+                  />
+                ) : null}
+              </BarChart>
+            ) : (
+              <LineChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                <CartesianGrid stroke="var(--chart-grid)" strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="label"
+                  stroke="var(--chart-axis)"
+                  fontSize={12}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis
+                  stroke="var(--chart-axis)"
+                  fontSize={12}
+                  tickLine={false}
+                  axisLine={false}
+                  width={32}
+                />
+                <Tooltip
+                  contentStyle={{
+                    background: "var(--chart-tooltip-bg)",
+                    color: "var(--chart-tooltip-fg)",
+                    border: "1px solid var(--border)",
+                    borderRadius: "0.5rem",
+                  }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="value"
+                  stroke={chartCssVars["chart-1"]}
+                  strokeWidth={2}
+                  dot={false}
+                  activeDot={{ r: 4 }}
+                  name={valueLabel}
+                />
+                {secondaryLabel ? (
+                  <Line
+                    type="monotone"
+                    dataKey="secondary"
+                    stroke={chartCssVars["chart-2"]}
+                    strokeWidth={2}
+                    dot={false}
+                    name={secondaryLabel}
+                  />
+                ) : null}
+              </LineChart>
+            )}
+          </ResponsiveContainer>
+        </div>
+      )}
+      <p className="mt-3 text-xs text-muted-foreground">{chartSummary}</p>
       <table className="sr-only">
         <caption>{title} data</caption>
         <thead>
           <tr>
             <th scope="col">Label</th>
-            <th scope="col">Value</th>
+            <th scope="col">{valueLabel}</th>
+            {secondaryLabel ? <th scope="col">{secondaryLabel}</th> : null}
           </tr>
         </thead>
         <tbody>
@@ -95,6 +177,7 @@ export function ChartCard({
             <tr key={point.label}>
               <td>{point.label}</td>
               <td>{point.value}</td>
+              {secondaryLabel ? <td>{point.secondary ?? 0}</td> : null}
             </tr>
           ))}
         </tbody>

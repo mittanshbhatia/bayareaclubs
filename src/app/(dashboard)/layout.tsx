@@ -29,6 +29,9 @@ export default async function AppShellLayout({
   const isCommittee = (roles ?? []).some(
     (row) => row.role === "committee_reviewer" || row.role === "platform_admin",
   );
+  const isPlatformAdmin = (roles ?? []).some(
+    (row) => row.role === "platform_admin",
+  );
 
   return (
     <div className="min-h-screen">
@@ -46,6 +49,9 @@ export default async function AppShellLayout({
               <Button asChild variant="ghost" size="sm">
                 <Link href="/start-a-club">Club ideas</Link>
               </Button>
+              <Button asChild variant="ghost" size="sm">
+                <Link href="/dashboard/insights">My Insights</Link>
+              </Button>
               {isCommittee ? (
                 <>
                   <Button asChild variant="ghost" size="sm">
@@ -57,6 +63,11 @@ export default async function AppShellLayout({
                   <Button asChild variant="ghost" size="sm">
                     <Link href="/admin/renewals">Renewals</Link>
                   </Button>
+                  {isPlatformAdmin ? (
+                    <Button asChild variant="ghost" size="sm">
+                      <Link href="/admin/insights">Insights</Link>
+                    </Button>
+                  ) : null}
                 </>
               ) : null}
             </nav>

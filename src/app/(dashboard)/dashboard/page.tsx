@@ -165,6 +165,11 @@ export default async function DashboardPage() {
                     STEM Resources admin
                   </Link>
                 </li>
+                <li>
+                  <Link href="/admin/insights" className="underline">
+                    Platform Insights
+                  </Link>
+                </li>
               ) : null}
             </ul>
           ) : (

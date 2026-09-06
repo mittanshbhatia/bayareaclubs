@@ -188,8 +188,12 @@ export type Database = {
           calculated_at: string
           club_id: string
           events: number
+          meetings: number
           metric_date: string
           new_members: number
+          renewals_completed: number
+          renewals_due: number
+          resource_subscriptions: number
           rsvps: number
         }
         Insert: {
@@ -201,8 +205,12 @@ export type Database = {
           calculated_at?: string
           club_id: string
           events?: number
+          meetings?: number
           metric_date: string
           new_members?: number
+          renewals_completed?: number
+          renewals_due?: number
+          resource_subscriptions?: number
           rsvps?: number
         }
         Update: {
@@ -214,8 +222,12 @@ export type Database = {
           calculated_at?: string
           club_id?: string
           events?: number
+          meetings?: number
           metric_date?: string
           new_members?: number
+          renewals_completed?: number
+          renewals_due?: number
+          resource_subscriptions?: number
           rsvps?: number
         }
         Relationships: [
@@ -240,34 +252,55 @@ export type Database = {
           active_clubs: number
           active_members: number
           active_schools: number
+          attendance_present: number
           attendance_recorded: number
+          attendance_sessions: number
           calculated_at: string
           events: number
           ideas_approved: number
           ideas_submitted: number
           metric_date: string
+          new_clubs: number
+          new_members: number
+          renewals_completed: number
+          renewals_due: number
+          resource_subscriptions: number
         }
         Insert: {
           active_clubs?: number
           active_members?: number
           active_schools?: number
+          attendance_present?: number
           attendance_recorded?: number
+          attendance_sessions?: number
           calculated_at?: string
           events?: number
           ideas_approved?: number
           ideas_submitted?: number
           metric_date: string
+          new_clubs?: number
+          new_members?: number
+          renewals_completed?: number
+          renewals_due?: number
+          resource_subscriptions?: number
         }
         Update: {
           active_clubs?: number
           active_members?: number
           active_schools?: number
+          attendance_present?: number
           attendance_recorded?: number
+          attendance_sessions?: number
           calculated_at?: string
           events?: number
           ideas_approved?: number
           ideas_submitted?: number
           metric_date?: string
+          new_clubs?: number
+          new_members?: number
+          renewals_completed?: number
+          renewals_due?: number
+          resource_subscriptions?: number
         }
         Relationships: []
       }
@@ -275,34 +308,55 @@ export type Database = {
         Row: {
           active_clubs: number
           active_members: number
+          attendance_present: number
           attendance_recorded: number
+          attendance_sessions: number
           calculated_at: string
           events: number
           ideas_approved: number
           ideas_submitted: number
           metric_date: string
+          new_clubs: number
+          new_members: number
+          renewals_completed: number
+          renewals_due: number
+          resource_subscriptions: number
           school_id: string
         }
         Insert: {
           active_clubs?: number
           active_members?: number
+          attendance_present?: number
           attendance_recorded?: number
+          attendance_sessions?: number
           calculated_at?: string
           events?: number
           ideas_approved?: number
           ideas_submitted?: number
           metric_date: string
+          new_clubs?: number
+          new_members?: number
+          renewals_completed?: number
+          renewals_due?: number
+          resource_subscriptions?: number
           school_id: string
         }
         Update: {
           active_clubs?: number
           active_members?: number
+          attendance_present?: number
           attendance_recorded?: number
+          attendance_sessions?: number
           calculated_at?: string
           events?: number
           ideas_approved?: number
           ideas_submitted?: number
           metric_date?: string
+          new_clubs?: number
+          new_members?: number
+          renewals_completed?: number
+          renewals_due?: number
+          resource_subscriptions?: number
           school_id?: string
         }
         Relationships: [
@@ -5339,6 +5393,10 @@ export type Database = {
       redeem_attendance_check_in: {
         Args: { raw_token: string }
         Returns: string
+      }
+      refresh_analytics_for_date: {
+        Args: { target_date?: string }
+        Returns: Json
       }
       refresh_event_club_analytics: {
         Args: { target_event_id: string }

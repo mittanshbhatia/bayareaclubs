@@ -11,3 +11,8 @@ COPPA or FERPA compliance.
 
 Add reviewed workflow specifications and acceptance criteria in this directory
 before implementing each domain capability.
+
+## Metrics
+
+- [Analytics metrics definitions](./analytics-metrics.md) — Insights rollup
+  formulas, Club Momentum components, and edge cases.
