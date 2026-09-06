@@ -76,8 +76,31 @@ export function requirePlatformAdmin(): Promise<User> {
   return requirePlatformRole("platform_admin");
 }
 
-export function requireCommitteeReviewer(): Promise<User> {
-  return requirePlatformRole("committee_reviewer");
+/** Committee reviewer or platform administrator (RLS mirrors this OR). */
+export async function requireCommitteeReviewer(): Promise<User> {
+  const user = await requireActiveUser();
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("platform_role_assignments")
+    .select("id")
+    .eq("user_id", user.id)
+    .in("role", ["committee_reviewer", "platform_admin"])
+    .is("revoked_at", null)
+    .limit(1)
+    .maybeSingle();
+
+  if (error || !data) {
+    throw new AuthorizationError(
+      "FORBIDDEN",
+      "Committee reviewer or platform administrator access is required.",
+    );
+  }
+  return user;
+}
+
+/** Platform admin or committee reviewer for the administration console. */
+export async function requireAdminConsoleAccess(): Promise<User> {
+  return requireCommitteeReviewer();
 }
 
 export async function requireSchoolAccess(schoolId: string): Promise<User> {

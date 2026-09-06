@@ -380,7 +380,7 @@ export function AdminCourseEditor({
               });
               setMessage(result.ok ? "Draft saved." : result.error.message);
               if (result.ok) {
-                router.push(`/dashboard/platform/stem/${result.data.courseId}`);
+                router.push(`/admin/resources/${result.data.courseId}`);
                 router.refresh();
               }
             });

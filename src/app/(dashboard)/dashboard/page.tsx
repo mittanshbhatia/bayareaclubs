@@ -160,16 +160,23 @@ export default async function DashboardPage() {
                 </li>
               ))}
               {isPlatformAdmin ? (
-                <li>
-                  <Link href="/dashboard/platform/stem" className="underline">
-                    STEM Resources admin
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/admin/insights" className="underline">
-                    Platform Insights
-                  </Link>
-                </li>
+                <>
+                  <li>
+                    <Link href="/admin/resources" className="underline">
+                      STEM Resources admin
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/admin" className="underline">
+                      Administration console
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/admin/insights" className="underline">
+                      Platform Insights
+                    </Link>
+                  </li>
+                </>
               ) : null}
             </ul>
           ) : (

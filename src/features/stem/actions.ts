@@ -438,7 +438,7 @@ export async function saveAdminCourse(
       if (resourcesError) return failure("RESOURCE_FAILED", resourcesError.message);
     }
 
-    revalidateStem(["/dashboard/platform/stem", "/resources", `/resources/${parsed.data.slug}`]);
+    revalidateStem(["/admin/resources", "/dashboard/platform/stem", "/resources", `/resources/${parsed.data.slug}`]);
     return { ok: true, data: { courseId } };
   } catch (error) {
     if (error instanceof AuthorizationError) return failure(error.code, error.message);
@@ -479,6 +479,7 @@ export async function setAdminCourseStatus(
     });
 
     revalidateStem([
+      "/admin/resources",
       "/dashboard/platform/stem",
       "/resources",
       course.slug ? `/resources/${course.slug}` : "/resources",

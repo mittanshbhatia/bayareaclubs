@@ -95,6 +95,18 @@ describe("server authorization helpers", () => {
     });
   });
 
+  it("allows committee surfaces for platform administrators", async () => {
+    setupClient({
+      account_onboarding: [query({ data: { status: "active" }, error: null })],
+      platform_role_assignments: [
+        query({ data: { id: "assignment-admin" }, error: null }),
+      ],
+    });
+    await expect(requireCommitteeReviewer()).resolves.toMatchObject({
+      id: "user-1",
+    });
+  });
+
   it("allows school access through active school membership", async () => {
     setupClient({
       account_onboarding: [query({ data: { status: "active" }, error: null })],

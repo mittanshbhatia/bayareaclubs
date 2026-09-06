@@ -4025,6 +4025,7 @@ export type Database = {
         Row: {
           city: string
           created_at: string
+          email_domain: string | null
           id: string
           is_active: boolean
           level: Database["public"]["Enums"]["school_level"]
@@ -4038,6 +4039,7 @@ export type Database = {
         Insert: {
           city: string
           created_at?: string
+          email_domain?: string | null
           id?: string
           is_active?: boolean
           level: Database["public"]["Enums"]["school_level"]
@@ -4051,6 +4053,7 @@ export type Database = {
         Update: {
           city?: string
           created_at?: string
+          email_domain?: string | null
           id?: string
           is_active?: boolean
           level?: Database["public"]["Enums"]["school_level"]
@@ -5301,6 +5304,18 @@ export type Database = {
           confirm_slug: string
           target_idea_id: string
         }
+        Returns: string
+      }
+      count_active_platform_admins: { Args: never; Returns: number }
+      assign_platform_role: {
+        Args: {
+          target_role: Database["public"]["Enums"]["platform_role"]
+          target_user_id: string
+        }
+        Returns: string
+      }
+      revoke_platform_role: {
+        Args: { target_assignment_id: string }
         Returns: string
       }
       count_email_audience: {
