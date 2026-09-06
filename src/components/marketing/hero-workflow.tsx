@@ -57,7 +57,8 @@ const checklist = [
 
 const stops = [11.5, 39.5, 63, 86.5] as const;
 const traversalDuration = 8800;
-const desktopPath = "M0 20 H220 Q260 20 260 52 V58 Q260 76 282 76 H1200";
+const desktopPath =
+  "M0 20 H205 C236 20 236 28 236 48 C236 68 236 76 267 76 H1200";
 
 function wait(duration: number) {
   return new Promise((resolve) => window.setTimeout(resolve, duration));
@@ -137,7 +138,7 @@ export function HeroWorkflow() {
       className="relative w-full"
       aria-label="Animated club idea to community workflow demonstration"
     >
-      <div className="hidden min-h-[19rem] md:block">
+      <div className="hidden min-h-[19rem] lg:block">
         <svg
           aria-hidden
           className="absolute top-0 left-0 h-[6.25rem] w-full overflow-visible"
@@ -147,7 +148,14 @@ export function HeroWorkflow() {
           <path
             d={desktopPath}
             className={styles.connector}
-            stroke="rgba(203, 211, 226, 0.46)"
+            stroke="rgba(203, 211, 226, 0.2)"
+            strokeWidth="3"
+          />
+          <path
+            d={desktopPath}
+            className={styles.connector}
+            stroke="rgba(203, 211, 226, 0.62)"
+            strokeWidth="1"
           />
           {!reduced ? (
             <motion.circle
@@ -174,13 +182,13 @@ export function HeroWorkflow() {
           ) : null}
         </svg>
 
-        <ol className="relative grid grid-cols-4 gap-7 pt-1">
+        <ol className="relative grid grid-cols-4 pt-1">
           {stages.map((item, index) => {
             const Icon = item.icon;
             const isReached = index <= visibleReached;
 
             return (
-              <li key={item.label} className="min-w-0">
+              <li key={item.label} className="min-w-0 px-3">
                 <div
                   className={cn(
                     "flex h-10 justify-center",
@@ -246,11 +254,11 @@ export function HeroWorkflow() {
         </ol>
       </div>
 
-      <div className="md:hidden">
+      <div className="lg:hidden">
         <div className="relative pl-5">
           <div
             aria-hidden
-            className="absolute top-4 bottom-4 left-[0.7rem] w-px bg-white/26"
+            className="absolute top-4 bottom-4 left-12 w-px bg-white/30"
           />
           {!reduced ? (
             <motion.span
@@ -270,7 +278,7 @@ export function HeroWorkflow() {
                 },
                 opacity: { duration: 0.22 },
               }}
-              className="absolute left-[0.47rem] z-20 size-2 rounded-full bg-[var(--home-cyan)] shadow-[0_0_12px_var(--home-cyan)]"
+              className="absolute left-[2.75rem] z-20 size-2 rounded-full bg-[var(--home-cyan)] shadow-[0_0_12px_var(--home-cyan)]"
             />
           ) : null}
           <ol className="space-y-2">
@@ -344,7 +352,7 @@ export function HeroWorkflow() {
         </AnimatePresence>
       </div>
 
-      <div className="mt-5 hidden items-center justify-end gap-2 md:flex">
+      <div className="mt-5 hidden items-center justify-end gap-2 lg:flex">
         <CalendarCheck
           className="size-3.5 text-[var(--home-indigo)]"
           aria-hidden
@@ -366,7 +374,7 @@ function DesktopStageContent({
 }) {
   if (index === 0) {
     return (
-      <div className="mt-8 rounded-xl border border-[#17213a]/10 bg-white p-4 text-[var(--home-ink)] shadow-[0_14px_35px_rgb(20_38_70_/_13%)]">
+      <div className="mt-14 rounded-xl border border-[#17213a]/10 bg-white p-4 text-[var(--home-ink)] shadow-[0_14px_35px_rgb(20_38_70_/_13%)]">
         <p className="font-mono text-[0.58rem] text-[#657087] uppercase">
           New club idea
         </p>
