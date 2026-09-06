@@ -1,6 +1,11 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import {
+  AnimatePresence,
+  motion,
+  useInView,
+  useReducedMotion,
+} from "motion/react";
 import {
   BarChart3,
   BookOpen,
@@ -83,6 +88,7 @@ const downstream = [
 export function CommandCenterSection() {
   const reduced = useReducedMotion();
   const [active, setActive, ref] = useVisibleCycle(modes.length, 2400);
+  const inView = useInView(ref, { amount: 0.3 });
   const mode = modes[active];
   const ActiveIcon = mode.icon;
 
@@ -273,13 +279,13 @@ export function CommandCenterSection() {
                                 <motion.span
                                   className="absolute inset-y-0 w-8 bg-gradient-to-r from-transparent via-[var(--home-cyan)] to-transparent"
                                   animate={
-                                    reduced
+                                    reduced || !inView
                                       ? undefined
                                       : { x: ["-100%", "500%"] }
                                   }
                                   transition={{
                                     duration: 1.8,
-                                    repeat: Infinity,
+                                    repeat: inView ? Infinity : 0,
                                     ease: "linear",
                                   }}
                                 />

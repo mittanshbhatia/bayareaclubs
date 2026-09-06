@@ -75,6 +75,7 @@ const scenes = [
 
 export function LifecycleSection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const manualSelectionUntil = useRef(0);
   const reduced = useReducedMotion();
   const [active, setActive] = useState(0);
   const { scrollYProgress } = useScroll({
@@ -84,6 +85,7 @@ export function LifecycleSection() {
 
   useMotionValueEvent(scrollYProgress, "change", (progress) => {
     if (reduced || window.matchMedia("(max-width: 1023px)").matches) return;
+    if (Date.now() < manualSelectionUntil.current) return;
     setActive(
       Math.min(scenes.length - 1, Math.floor(progress * scenes.length)),
     );
@@ -124,7 +126,7 @@ export function LifecycleSection() {
             <h2 className={cn(styles.sectionDisplay, "mt-5 text-balance")}>
               An idea shouldn&apos;t get lost in a form.
             </h2>
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="popLayout" initial={false}>
               <motion.div
                 key={scene.label}
                 initial={reduced ? false : { opacity: 0, y: 14 }}
@@ -149,7 +151,10 @@ export function LifecycleSection() {
                 <li key={item.label}>
                   <button
                     type="button"
-                    onClick={() => setActive(index)}
+                    onClick={() => {
+                      setActive(index);
+                      manualSelectionUntil.current = Date.now() + 4000;
+                    }}
                     className={cn(
                       "min-h-10 border-b-2 px-1 text-xs font-semibold whitespace-nowrap transition-colors",
                       index === active

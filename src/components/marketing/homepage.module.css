@@ -415,4 +415,13 @@
   .ambientOrb {
     animation: none;
   }
+
+  .storyTrack {
+    min-height: auto;
+  }
+
+  .storySticky {
+    position: relative;
+    min-height: auto;
+  }
 }

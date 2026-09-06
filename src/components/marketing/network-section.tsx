@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useInView, useReducedMotion } from "motion/react";
 import {
   BookOpen,
   Building2,
@@ -9,6 +9,7 @@ import {
   Sparkles,
   UsersRound,
 } from "lucide-react";
+import { useRef } from "react";
 
 import { PageContainer } from "@/components/ds";
 import styles from "@/components/marketing/homepage.module.css";
@@ -38,9 +39,12 @@ const connections = [
 
 export function NetworkSection() {
   const reduced = useReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
+  const inView = useInView(sectionRef, { amount: 0.3 });
 
   return (
     <section
+      ref={sectionRef}
       id="network"
       className={cn(
         styles.scene,
@@ -104,10 +108,14 @@ export function NetworkSection() {
                       fill="var(--home-cyan)"
                       className={styles.signal}
                       style={{ offsetPath: `path("${path}")` }}
-                      animate={{ offsetDistance: ["0%", "100%"] }}
+                      animate={
+                        inView
+                          ? { offsetDistance: ["0%", "100%"] }
+                          : { offsetDistance: "0%" }
+                      }
                       transition={{
                         duration: 2.4 + index * 0.12,
-                        repeat: Infinity,
+                        repeat: inView ? Infinity : 0,
                         ease: "linear",
                         delay: index * 0.2,
                       }}

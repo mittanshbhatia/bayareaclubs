@@ -77,7 +77,7 @@ const clubs = [
 
 export function DiscoverySection() {
   const reduced = useReducedMotion();
-  const [typingStep, , ref] = useVisibleCycle(15, 360);
+  const [typingStep, , ref] = useVisibleCycle(15, 360, { loop: false });
   const [manualQuery, setManualQuery] = useState<string | null>(null);
   const [selected, setSelected] = useState(0);
   const demoQuery =

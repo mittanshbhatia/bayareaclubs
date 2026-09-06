@@ -6,10 +6,48 @@ import {
   useEffect,
   useRef,
   useState,
+  useSyncExternalStore,
   type RefObject,
 } from "react";
 
 import { cn } from "@/lib/utils";
+
+type CycleToken = symbol;
+
+const cycleVisibility = new Map<CycleToken, number>();
+const cycleSubscribers = new Set<() => void>();
+let directedCycle: CycleToken | null = null;
+
+function notifyCycleSubscribers() {
+  cycleSubscribers.forEach((subscriber) => subscriber());
+}
+
+function selectDirectedCycle() {
+  let next: CycleToken | null = null;
+  let nextRatio = 0;
+
+  cycleVisibility.forEach((ratio, token) => {
+    if (ratio > nextRatio) {
+      next = token;
+      nextRatio = ratio;
+    }
+  });
+
+  if (nextRatio < 0.18) next = null;
+  if (next !== directedCycle) {
+    directedCycle = next;
+    notifyCycleSubscribers();
+  }
+}
+
+function subscribeToDirectedCycle(subscriber: () => void) {
+  cycleSubscribers.add(subscriber);
+  return () => cycleSubscribers.delete(subscriber);
+}
+
+function getDirectedCycle() {
+  return directedCycle;
+}
 
 export function MotionReveal({
   children,
@@ -25,10 +63,8 @@ export function MotionReveal({
 
   return (
     <motion.div
-      initial={
-        reduced ? false : { opacity: 0, y: distance, filter: "blur(5px)" }
-      }
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      initial={reduced ? false : { opacity: 0, y: distance }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.16 }}
       transition={{
         duration: reduced ? 0 : 0.88,
@@ -100,36 +136,68 @@ export function StaggerItem({
 export function useVisibleCycle(
   length: number,
   intervalMs: number,
+  options: { loop?: boolean } = {},
 ): [number, (index: number) => void, RefObject<HTMLDivElement | null>] {
   const reduced = useReducedMotion();
   const [active, setActive] = useState(0);
-  const [visible, setVisible] = useState(false);
+  const [pausedUntil, setPausedUntil] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
+  const [token] = useState<CycleToken>(() => Symbol("home-cycle"));
+  const activeToken = useSyncExternalStore(
+    subscribeToDirectedCycle,
+    getDirectedCycle,
+    () => null,
+  );
+  const isDirected = activeToken === token;
+  const loop = options.loop ?? true;
 
   useEffect(() => {
     const node = ref.current;
     if (!node) return;
     const observer = new IntersectionObserver(
-      ([entry]) => setVisible(Boolean(entry?.isIntersecting)),
-      { threshold: 0.16 },
+      ([entry]) => {
+        cycleVisibility.set(
+          token,
+          entry?.isIntersecting ? entry.intersectionRatio : 0,
+        );
+        selectDirectedCycle();
+      },
+      { threshold: [0, 0.18, 0.35, 0.5, 0.7, 0.9, 1] },
     );
     observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
+    return () => {
+      observer.disconnect();
+      cycleVisibility.delete(token);
+      selectDirectedCycle();
+    };
+  }, [token]);
 
   useEffect(() => {
-    if (reduced || !visible || length < 2) return;
+    if (reduced || !isDirected || length < 2) return;
+    const remainingPause = pausedUntil - Date.now();
+    if (remainingPause > 0) {
+      const resumeTimer = window.setTimeout(
+        () => setPausedUntil(0),
+        remainingPause,
+      );
+      return () => window.clearTimeout(resumeTimer);
+    }
     const tick = () => {
       if (!document.hidden) {
-        setActive((current) => (current + 1) % length);
+        setActive((current) =>
+          loop ? (current + 1) % length : Math.min(current + 1, length - 1),
+        );
       }
     };
     const timer = window.setInterval(tick, intervalMs);
     return () => window.clearInterval(timer);
-  }, [intervalMs, length, reduced, visible]);
+  }, [intervalMs, isDirected, length, loop, pausedUntil, reduced]);
 
   const choose = useCallback(
-    (index: number) => setActive(Math.max(0, Math.min(index, length - 1))),
+    (index: number) => {
+      setActive(Math.max(0, Math.min(index, length - 1)));
+      setPausedUntil(Date.now() + 6500);
+    },
     [length],
   );
 

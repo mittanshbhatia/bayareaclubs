@@ -1,13 +1,17 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useInView, useReducedMotion } from "motion/react";
 import { Lightbulb, Sparkles, UsersRound } from "lucide-react";
+import { useRef } from "react";
 
 export function FinalNetwork() {
   const reduced = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { amount: 0.35 });
 
   return (
     <div
+      ref={ref}
       className="relative mx-auto h-64 w-full max-w-3xl"
       aria-label="A new club idea joining the community network"
     >
@@ -33,8 +37,18 @@ export function FinalNetwork() {
             offsetPath:
               'path("M100 125 C230 125 260 78 360 78 S510 155 620 125")',
           }}
-          animate={reduced ? undefined : { offsetDistance: ["0%", "100%"] }}
-          transition={{ duration: 3.5, repeat: Infinity, ease: "linear" }}
+          animate={
+            reduced
+              ? undefined
+              : inView
+                ? { offsetDistance: ["0%", "100%"] }
+                : { offsetDistance: "0%" }
+          }
+          transition={{
+            duration: 3.5,
+            repeat: inView ? Infinity : 0,
+            ease: "linear",
+          }}
         />
       </svg>
       {[
