@@ -1072,6 +1072,44 @@ export type Database = {
           },
         ]
       }
+      club_idea_versions: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          idea_id: string
+          snapshot: Record<string, unknown>
+          status_at_freeze: Database["public"]["Enums"]["club_idea_status"]
+          version_number: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          idea_id: string
+          snapshot: Record<string, unknown>
+          status_at_freeze: Database["public"]["Enums"]["club_idea_status"]
+          version_number: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          idea_id?: string
+          snapshot?: Record<string, unknown>
+          status_at_freeze?: Database["public"]["Enums"]["club_idea_status"]
+          version_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "club_idea_versions_idea_id_fkey"
+            columns: ["idea_id"]
+            isOneToOne: false
+            referencedRelation: "club_ideas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       club_ideas: {
         Row: {
           category: string
@@ -1079,6 +1117,7 @@ export type Database = {
           created_at: string
           decided_at: string | null
           description: string
+          draft_step: number
           expected_activities: string[]
           expected_membership: number | null
           grade_max: number | null
@@ -1102,6 +1141,7 @@ export type Database = {
           created_at?: string
           decided_at?: string | null
           description?: string
+          draft_step?: number
           expected_activities?: string[]
           expected_membership?: number | null
           grade_max?: number | null
@@ -1125,6 +1165,7 @@ export type Database = {
           created_at?: string
           decided_at?: string | null
           description?: string
+          draft_step?: number
           expected_activities?: string[]
           expected_membership?: number | null
           grade_max?: number | null
@@ -3811,6 +3852,14 @@ export type Database = {
       can_review_school: {
         Args: { target_school_id: string; user_id?: string }
         Returns: boolean
+      }
+      convert_approved_idea_to_club: {
+        Args: {
+          confirm_name: string
+          confirm_slug: string
+          target_idea_id: string
+        }
+        Returns: string
       }
       can_view_club: {
         Args: { target_club_id: string; user_id?: string }
