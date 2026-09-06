@@ -21,6 +21,7 @@ export const CLUB_SECTIONS = [
   { key: "events", label: "Events", href: "/events" },
   { key: "charter", label: "Charter", href: "/charter" },
   { key: "media", label: "Media", href: "/media" },
+  { key: "highlights", label: "Highlights", href: "/highlights" },
   { key: "communications", label: "Communications", href: "/communications" },
   { key: "newsletter", label: "Newsletter", href: "/newsletter" },
   { key: "resources", label: "Resources", href: "/resources" },

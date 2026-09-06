@@ -3,6 +3,7 @@ import "server-only";
 import { render } from "@react-email/render";
 
 import { ClubCommunicationEmail } from "../../../emails/club-communication";
+import { NewsletterEmail } from "../../../emails/newsletter";
 import { createCommunicationDispatcher } from "@/lib/email/job-dispatcher";
 import {
   getEmailFromAddress,
@@ -12,7 +13,7 @@ import {
 import { logger } from "@/lib/logging/logger";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { KIND_LABELS } from "@/lib/validation/communications";
-import type { Database } from "@/types/database.generated";
+import type { Database, Json } from "@/types/database.generated";
 
 type Campaign = Database["public"]["Tables"]["email_campaigns"]["Row"];
 type Recipient = Database["public"]["Tables"]["email_recipients"]["Row"];
@@ -20,6 +21,64 @@ type Job = Database["public"]["Tables"]["communication_jobs"]["Row"];
 
 function appUrl() {
   return (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, "");
+}
+
+function newsletterBlocksFromJson(content: Json | null) {
+  if (!content || typeof content !== "object" || Array.isArray(content)) return null;
+  const blocks = (content as { blocks?: unknown }).blocks;
+  if (!Array.isArray(blocks)) return null;
+  return blocks.map((block) => {
+    const row = block as {
+      block_type?: string;
+      blockType?: string;
+      content?: Record<string, unknown>;
+    };
+    return {
+      blockType: String(row.block_type ?? row.blockType ?? "text"),
+      content:
+        row.content && typeof row.content === "object" && !Array.isArray(row.content)
+          ? row.content
+          : {},
+    };
+  });
+}
+
+async function renderCampaignHtml(
+  campaign: Campaign,
+  clubName: string,
+  displayName: string,
+) {
+  const kindLabel =
+    KIND_LABELS[campaign.campaign_kind as keyof typeof KIND_LABELS] ??
+    campaign.campaign_kind.replaceAll("_", " ");
+
+  if (campaign.campaign_kind === "newsletter") {
+    const blocks = newsletterBlocksFromJson(campaign.content_json);
+    if (blocks) {
+      return render(
+        NewsletterEmail({
+          clubName,
+          title: campaign.subject,
+          previewText: campaign.preview_text ?? campaign.subject,
+          issueLabel: null,
+          blocks,
+        }),
+      );
+    }
+  }
+
+  return render(
+    ClubCommunicationEmail({
+      clubName,
+      recipientName: displayName,
+      previewText: campaign.preview_text ?? campaign.subject,
+      messageBody: campaign.message_body,
+      ctaLabel: campaign.cta_label,
+      ctaUrl: campaign.cta_url,
+      preferencesUrl: `${appUrl()}/dashboard/profile`,
+      kindLabel,
+    }),
+  );
 }
 
 function preferenceCategoryForKind(
@@ -154,22 +213,8 @@ async function sendOneRecipient(campaign: Campaign, recipient: Recipient) {
 
   const displayName = await loadDisplayName(recipient.recipient_user_id);
   const clubName = await loadClubName(campaign.club_id);
-  const kindLabel =
-    KIND_LABELS[campaign.campaign_kind as keyof typeof KIND_LABELS] ??
-    campaign.campaign_kind.replaceAll("_", " ");
 
-  const html = await render(
-    ClubCommunicationEmail({
-      clubName,
-      recipientName: displayName,
-      previewText: campaign.preview_text ?? campaign.subject,
-      messageBody: campaign.message_body,
-      ctaLabel: campaign.cta_label,
-      ctaUrl: campaign.cta_url,
-      preferencesUrl: `${appUrl()}/dashboard/profile`,
-      kindLabel,
-    }),
-  );
+  const html = await renderCampaignHtml(campaign, clubName, displayName);
 
   const resend = getResendClient();
   const result = await resend.emails.send({

@@ -1059,7 +1059,11 @@ export type Database = {
           created_at: string
           created_by: string
           id: string
+          occurred_on: string
           published_at: string | null
+          related_activity_id: string | null
+          related_event_id: string | null
+          source_type: Database["public"]["Enums"]["highlight_source_type"]
           status: Database["public"]["Enums"]["publication_status"]
           summary: string
           title: string
@@ -1073,7 +1077,11 @@ export type Database = {
           created_at?: string
           created_by: string
           id?: string
+          occurred_on?: string
           published_at?: string | null
+          related_activity_id?: string | null
+          related_event_id?: string | null
+          source_type?: Database["public"]["Enums"]["highlight_source_type"]
           status?: Database["public"]["Enums"]["publication_status"]
           summary: string
           title: string
@@ -1087,7 +1095,11 @@ export type Database = {
           created_at?: string
           created_by?: string
           id?: string
+          occurred_on?: string
           published_at?: string | null
+          related_activity_id?: string | null
+          related_event_id?: string | null
+          source_type?: Database["public"]["Enums"]["highlight_source_type"]
           status?: Database["public"]["Enums"]["publication_status"]
           summary?: string
           title?: string
@@ -1135,6 +1147,27 @@ export type Database = {
             columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_highlights_related_activity_id_fkey"
+            columns: ["related_activity_id"]
+            isOneToOne: false
+            referencedRelation: "club_activities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_highlights_related_event_id_fkey"
+            columns: ["related_event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_highlights_related_event_id_fkey"
+            columns: ["related_event_id"]
+            isOneToOne: false
+            referencedRelation: "published_events"
             referencedColumns: ["id"]
           },
         ]
@@ -3315,6 +3348,51 @@ export type Database = {
           },
         ]
       }
+      newsletter_blocks: {
+        Row: {
+          block_type: Database["public"]["Enums"]["newsletter_block_type"]
+          content: Json
+          created_at: string
+          id: string
+          newsletter_id: string
+          position: number
+          updated_at: string
+        }
+        Insert: {
+          block_type: Database["public"]["Enums"]["newsletter_block_type"]
+          content?: Json
+          created_at?: string
+          id?: string
+          newsletter_id: string
+          position: number
+          updated_at?: string
+        }
+        Update: {
+          block_type?: Database["public"]["Enums"]["newsletter_block_type"]
+          content?: Json
+          created_at?: string
+          id?: string
+          newsletter_id?: string
+          position?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "newsletter_blocks_newsletter_id_fkey"
+            columns: ["newsletter_id"]
+            isOneToOne: false
+            referencedRelation: "newsletters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "newsletter_blocks_newsletter_id_fkey"
+            columns: ["newsletter_id"]
+            isOneToOne: false
+            referencedRelation: "published_newsletters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       newsletter_sections: {
         Row: {
           body: string
@@ -3379,45 +3457,60 @@ export type Database = {
       }
       newsletters: {
         Row: {
+          archived_at: string | null
           club_id: string | null
           created_at: string
           created_by: string
           email_campaign_id: string | null
           id: string
           issue_label: string | null
+          period_end: string | null
+          period_start: string | null
+          preview_text: string | null
           published_at: string | null
           scheduled_for: string | null
           school_id: string
+          selected_facts: Json
           status: Database["public"]["Enums"]["publication_status"]
           title: string
           updated_at: string
           visibility: Database["public"]["Enums"]["visibility_level"]
         }
         Insert: {
+          archived_at?: string | null
           club_id?: string | null
           created_at?: string
           created_by: string
           email_campaign_id?: string | null
           id?: string
           issue_label?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          preview_text?: string | null
           published_at?: string | null
           scheduled_for?: string | null
           school_id: string
+          selected_facts?: Json
           status?: Database["public"]["Enums"]["publication_status"]
           title: string
           updated_at?: string
           visibility?: Database["public"]["Enums"]["visibility_level"]
         }
         Update: {
+          archived_at?: string | null
           club_id?: string | null
           created_at?: string
           created_by?: string
           email_campaign_id?: string | null
           id?: string
           issue_label?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          preview_text?: string | null
           published_at?: string | null
           scheduled_for?: string | null
           school_id?: string
+          selected_facts?: Json
           status?: Database["public"]["Enums"]["publication_status"]
           title?: string
           updated_at?: string
@@ -4242,7 +4335,13 @@ export type Database = {
           club_id: string | null
           cover_asset_id: string | null
           id: string | null
+          occurred_on: string | null
           published_at: string | null
+          related_activity_id: string | null
+          related_event_id: string | null
+          source_type:
+            | Database["public"]["Enums"]["highlight_source_type"]
+            | null
           summary: string | null
           title: string | null
         }
@@ -4251,7 +4350,13 @@ export type Database = {
           club_id?: string | null
           cover_asset_id?: string | null
           id?: string | null
+          occurred_on?: string | null
           published_at?: string | null
+          related_activity_id?: string | null
+          related_event_id?: string | null
+          source_type?:
+            | Database["public"]["Enums"]["highlight_source_type"]
+            | null
           summary?: string | null
           title?: string | null
         }
@@ -4260,7 +4365,13 @@ export type Database = {
           club_id?: string | null
           cover_asset_id?: string | null
           id?: string | null
+          occurred_on?: string | null
           published_at?: string | null
+          related_activity_id?: string | null
+          related_event_id?: string | null
+          source_type?:
+            | Database["public"]["Enums"]["highlight_source_type"]
+            | null
           summary?: string | null
           title?: string | null
         }
@@ -4291,6 +4402,27 @@ export type Database = {
             columns: ["cover_asset_id"]
             isOneToOne: false
             referencedRelation: "published_media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_highlights_related_activity_id_fkey"
+            columns: ["related_activity_id"]
+            isOneToOne: false
+            referencedRelation: "club_activities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_highlights_related_event_id_fkey"
+            columns: ["related_event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_highlights_related_event_id_fkey"
+            columns: ["related_event_id"]
+            isOneToOne: false
+            referencedRelation: "published_events"
             referencedColumns: ["id"]
           },
         ]
@@ -4483,6 +4615,33 @@ export type Database = {
           },
         ]
       }
+      published_newsletter_blocks: {
+        Row: {
+          block_type:
+            | Database["public"]["Enums"]["newsletter_block_type"]
+            | null
+          content: Json | null
+          id: string | null
+          newsletter_id: string | null
+          position: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "newsletter_blocks_newsletter_id_fkey"
+            columns: ["newsletter_id"]
+            isOneToOne: false
+            referencedRelation: "newsletters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "newsletter_blocks_newsletter_id_fkey"
+            columns: ["newsletter_id"]
+            isOneToOne: false
+            referencedRelation: "published_newsletters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       published_newsletter_sections: {
         Row: {
           body: string | null
@@ -4526,27 +4685,16 @@ export type Database = {
       published_newsletters: {
         Row: {
           club_id: string | null
+          club_name: string | null
+          club_slug: string | null
           id: string | null
           issue_label: string | null
+          period_end: string | null
+          period_start: string | null
+          preview_text: string | null
           published_at: string | null
           school_id: string | null
           title: string | null
-        }
-        Insert: {
-          club_id?: string | null
-          id?: string | null
-          issue_label?: string | null
-          published_at?: string | null
-          school_id?: string | null
-          title?: string | null
-        }
-        Update: {
-          club_id?: string | null
-          id?: string | null
-          issue_label?: string | null
-          published_at?: string | null
-          school_id?: string | null
-          title?: string | null
         }
         Relationships: [
           {
@@ -4816,6 +4964,10 @@ export type Database = {
           isOneToOne: false
           isSetofReturn: true
         }
+      }
+      club_month_facts: {
+        Args: { range_end: string; range_start: string; target_club_id: string }
+        Returns: Json
       }
       complete_communication_job: {
         Args: {
@@ -5107,6 +5259,15 @@ export type Database = {
         | "college"
         | "adult"
         | "other"
+      highlight_source_type:
+        | "activity"
+        | "event"
+        | "media"
+        | "achievement"
+        | "competition"
+        | "community_service"
+        | "project"
+        | "other"
       logistics_item_status:
         | "not_started"
         | "in_progress"
@@ -5138,6 +5299,18 @@ export type Database = {
         | "declined"
         | "suspended"
         | "exited"
+      newsletter_block_type:
+        | "hero"
+        | "text"
+        | "highlight"
+        | "event_recap"
+        | "upcoming_event"
+        | "image"
+        | "gallery"
+        | "stats"
+        | "course_recommendation"
+        | "cta"
+        | "divider"
       platform_role: "platform_admin" | "committee_reviewer"
       profile_display_format:
         | "first_name_last_initial"
@@ -5466,6 +5639,16 @@ export const Constants = {
         "adult",
         "other",
       ],
+      highlight_source_type: [
+        "activity",
+        "event",
+        "media",
+        "achievement",
+        "competition",
+        "community_service",
+        "project",
+        "other",
+      ],
       logistics_item_status: [
         "not_started",
         "in_progress",
@@ -5500,6 +5683,19 @@ export const Constants = {
         "declined",
         "suspended",
         "exited",
+      ],
+      newsletter_block_type: [
+        "hero",
+        "text",
+        "highlight",
+        "event_recap",
+        "upcoming_event",
+        "image",
+        "gallery",
+        "stats",
+        "course_recommendation",
+        "cta",
+        "divider",
       ],
       platform_role: ["platform_admin", "committee_reviewer"],
       profile_display_format: [
