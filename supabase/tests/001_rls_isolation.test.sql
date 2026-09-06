@@ -600,7 +600,7 @@ select throws_ok(
       '00000000-0000-0000-0000-000000000005'
     )$$,
   '23514',
-  'Campaign recipient must be an active club member',
+  'Campaign recipient must be an authorized club or event audience member',
   'email campaign rejects a recipient outside its club'
 );
 

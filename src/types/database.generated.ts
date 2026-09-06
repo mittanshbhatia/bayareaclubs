@@ -1959,6 +1959,95 @@ export type Database = {
           },
         ]
       }
+      communication_jobs: {
+        Row: {
+          attempt_count: number
+          campaign_id: string | null
+          club_id: string | null
+          completed_at: string | null
+          created_at: string
+          id: string
+          idempotency_key: string
+          job_type: Database["public"]["Enums"]["communication_job_type"]
+          last_error: string | null
+          locked_at: string | null
+          locked_by: string | null
+          max_attempts: number
+          payload: Json
+          run_after: string
+          school_id: string | null
+          status: Database["public"]["Enums"]["communication_job_status"]
+          updated_at: string
+        }
+        Insert: {
+          attempt_count?: number
+          campaign_id?: string | null
+          club_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          idempotency_key: string
+          job_type: Database["public"]["Enums"]["communication_job_type"]
+          last_error?: string | null
+          locked_at?: string | null
+          locked_by?: string | null
+          max_attempts?: number
+          payload?: Json
+          run_after?: string
+          school_id?: string | null
+          status?: Database["public"]["Enums"]["communication_job_status"]
+          updated_at?: string
+        }
+        Update: {
+          attempt_count?: number
+          campaign_id?: string | null
+          club_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          idempotency_key?: string
+          job_type?: Database["public"]["Enums"]["communication_job_type"]
+          last_error?: string | null
+          locked_at?: string | null
+          locked_by?: string | null
+          max_attempts?: number
+          payload?: Json
+          run_after?: string
+          school_id?: string | null
+          status?: Database["public"]["Enums"]["communication_job_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "communication_jobs_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "email_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "communication_jobs_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "communication_jobs_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "published_clubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "communication_jobs_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       course_progress: {
         Row: {
           completed: boolean
@@ -2075,49 +2164,85 @@ export type Database = {
       }
       email_campaigns: {
         Row: {
+          audience_filter: Json
+          audience_type: Database["public"]["Enums"]["email_audience_type"]
+          campaign_kind: Database["public"]["Enums"]["email_campaign_kind"]
           club_id: string | null
+          completed_at: string | null
           content_json: Json
           created_at: string
           created_by: string
+          cta_label: string | null
+          cta_url: string | null
           id: string
+          idempotency_key: string | null
+          last_error: string | null
+          message_body: string
           name: string
+          preference_category: Database["public"]["Enums"]["email_preference_category"]
           preview_text: string | null
           provider_message_id: string | null
+          recipient_count: number
           scheduled_for: string | null
           school_id: string
           sent_at: string | null
+          started_sending_at: string | null
           status: Database["public"]["Enums"]["email_campaign_status"]
           subject: string
           updated_at: string
         }
         Insert: {
+          audience_filter?: Json
+          audience_type?: Database["public"]["Enums"]["email_audience_type"]
+          campaign_kind?: Database["public"]["Enums"]["email_campaign_kind"]
           club_id?: string | null
+          completed_at?: string | null
           content_json?: Json
           created_at?: string
           created_by: string
+          cta_label?: string | null
+          cta_url?: string | null
           id?: string
+          idempotency_key?: string | null
+          last_error?: string | null
+          message_body?: string
           name: string
+          preference_category?: Database["public"]["Enums"]["email_preference_category"]
           preview_text?: string | null
           provider_message_id?: string | null
+          recipient_count?: number
           scheduled_for?: string | null
           school_id: string
           sent_at?: string | null
+          started_sending_at?: string | null
           status?: Database["public"]["Enums"]["email_campaign_status"]
           subject: string
           updated_at?: string
         }
         Update: {
+          audience_filter?: Json
+          audience_type?: Database["public"]["Enums"]["email_audience_type"]
+          campaign_kind?: Database["public"]["Enums"]["email_campaign_kind"]
           club_id?: string | null
+          completed_at?: string | null
           content_json?: Json
           created_at?: string
           created_by?: string
+          cta_label?: string | null
+          cta_url?: string | null
           id?: string
+          idempotency_key?: string | null
+          last_error?: string | null
+          message_body?: string
           name?: string
+          preference_category?: Database["public"]["Enums"]["email_preference_category"]
           preview_text?: string | null
           provider_message_id?: string | null
+          recipient_count?: number
           scheduled_for?: string | null
           school_id?: string
           sent_at?: string | null
+          started_sending_at?: string | null
           status?: Database["public"]["Enums"]["email_campaign_status"]
           subject?: string
           updated_at?: string
@@ -2200,11 +2325,17 @@ export type Database = {
       }
       email_recipients: {
         Row: {
+          attempt_count: number
           campaign_id: string
           created_at: string
           delivered_at: string | null
           failed_at: string | null
           id: string
+          idempotency_key: string | null
+          last_error: string | null
+          max_attempts: number
+          next_attempt_at: string
+          permanent_failure: boolean
           provider_message_id: string | null
           recipient_user_id: string
           sent_at: string | null
@@ -2212,11 +2343,17 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          attempt_count?: number
           campaign_id: string
           created_at?: string
           delivered_at?: string | null
           failed_at?: string | null
           id?: string
+          idempotency_key?: string | null
+          last_error?: string | null
+          max_attempts?: number
+          next_attempt_at?: string
+          permanent_failure?: boolean
           provider_message_id?: string | null
           recipient_user_id: string
           sent_at?: string | null
@@ -2224,11 +2361,17 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          attempt_count?: number
           campaign_id?: string
           created_at?: string
           delivered_at?: string | null
           failed_at?: string | null
           id?: string
+          idempotency_key?: string | null
+          last_error?: string | null
+          max_attempts?: number
+          next_attempt_at?: string
+          permanent_failure?: boolean
           provider_message_id?: string | null
           recipient_user_id?: string
           sent_at?: string | null
@@ -3809,6 +3952,51 @@ export type Database = {
           },
         ]
       }
+      user_email_preferences: {
+        Row: {
+          category: Database["public"]["Enums"]["email_preference_category"]
+          created_at: string
+          id: string
+          opted_in: boolean
+          unsubscribed_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["email_preference_category"]
+          created_at?: string
+          id?: string
+          opted_in?: boolean
+          unsubscribed_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["email_preference_category"]
+          created_at?: string
+          id?: string
+          opted_in?: boolean
+          unsubscribed_at?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_email_preferences_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "user_email_preferences_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_guardian_relationships: {
         Row: {
           created_at: string
@@ -4574,6 +4762,69 @@ export type Database = {
         Args: { target_profile_id: string; user_id?: string }
         Returns: boolean
       }
+      claim_communication_jobs: {
+        Args: { batch_size?: number; worker_id: string }
+        Returns: {
+          attempt_count: number
+          campaign_id: string | null
+          club_id: string | null
+          completed_at: string | null
+          created_at: string
+          id: string
+          idempotency_key: string
+          job_type: Database["public"]["Enums"]["communication_job_type"]
+          last_error: string | null
+          locked_at: string | null
+          locked_by: string | null
+          max_attempts: number
+          payload: Json
+          run_after: string
+          school_id: string | null
+          status: Database["public"]["Enums"]["communication_job_status"]
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "communication_jobs"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      claim_pending_email_recipients: {
+        Args: { batch_size?: number; target_campaign_id: string }
+        Returns: {
+          attempt_count: number
+          campaign_id: string
+          created_at: string
+          delivered_at: string | null
+          failed_at: string | null
+          id: string
+          idempotency_key: string | null
+          last_error: string | null
+          max_attempts: number
+          next_attempt_at: string
+          permanent_failure: boolean
+          provider_message_id: string | null
+          recipient_user_id: string
+          sent_at: string | null
+          status: Database["public"]["Enums"]["email_recipient_status"]
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "email_recipients"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      complete_communication_job: {
+        Args: {
+          error_message?: string
+          succeeded: boolean
+          target_job_id: string
+        }
+        Returns: undefined
+      }
       complete_oauth_profile: {
         Args: {
           first_name: string
@@ -4596,7 +4847,26 @@ export type Database = {
         }
         Returns: string
       }
+      count_email_audience: {
+        Args: {
+          audience: Database["public"]["Enums"]["email_audience_type"]
+          category?: Database["public"]["Enums"]["email_preference_category"]
+          filter?: Json
+          target_club_id: string
+        }
+        Returns: number
+      }
       count_event_going: { Args: { target_event_id: string }; Returns: number }
+      enqueue_communication_job: {
+        Args: {
+          p_campaign_id?: string
+          p_idempotency_key: string
+          p_job_type: Database["public"]["Enums"]["communication_job_type"]
+          p_payload?: Json
+          p_run_after?: string
+        }
+        Returns: string
+      }
       enqueue_renewal_reminders: { Args: { as_of?: string }; Returns: number }
       has_club_role: {
         Args: {
@@ -4640,6 +4910,14 @@ export type Database = {
           user_id: string
         }[]
       }
+      officer_enqueue_campaign_send: {
+        Args: { send_immediately?: boolean; target_campaign_id: string }
+        Returns: string
+      }
+      preference_category_for_campaign_kind: {
+        Args: { kind: Database["public"]["Enums"]["email_campaign_kind"] }
+        Returns: Database["public"]["Enums"]["email_preference_category"]
+      }
       process_due_renewal_reminders: {
         Args: { as_of?: string }
         Returns: number
@@ -4664,6 +4942,16 @@ export type Database = {
         Args: { target_asset_id: string }
         Returns: Database["public"]["Enums"]["media_consent_state"]
       }
+      resolve_email_audience_user_ids: {
+        Args: {
+          audience: Database["public"]["Enums"]["email_audience_type"]
+          filter?: Json
+          target_club_id: string
+        }
+        Returns: {
+          user_id: string
+        }[]
+      }
       restrict_under_13_self_signup: { Args: { event: Json }; Returns: Json }
       soft_delete_media_asset: {
         Args: { reason: string; target_asset_id: string }
@@ -4675,6 +4963,13 @@ export type Database = {
           target_event_id: string
         }
         Returns: string
+      }
+      user_allows_email_category: {
+        Args: {
+          category: Database["public"]["Enums"]["email_preference_category"]
+          target_user_id: string
+        }
+        Returns: boolean
       }
     }
     Enums: {
@@ -4718,8 +5013,34 @@ export type Database = {
         | "advisor"
         | "member"
       club_status: "active" | "inactive" | "archived"
+      communication_job_status:
+        | "pending"
+        | "processing"
+        | "completed"
+        | "failed"
+        | "cancelled"
+      communication_job_type:
+        | "prepare_campaign_recipients"
+        | "send_campaign_batch"
+        | "send_test_email"
       consent_status: "pending" | "granted" | "denied" | "revoked" | "expired"
       course_difficulty: "beginner" | "intermediate" | "advanced"
+      email_audience_type:
+        | "all_members"
+        | "officers"
+        | "membership_segment"
+        | "event_attendees"
+        | "event_registrants"
+      email_campaign_kind:
+        | "invitation"
+        | "approval"
+        | "event_update"
+        | "charter_status"
+        | "renewal_reminder"
+        | "announcement"
+        | "newsletter"
+        | "event_promotion"
+        | "highlight_digest"
       email_campaign_status:
         | "draft"
         | "scheduled"
@@ -4736,6 +5057,12 @@ export type Database = {
         | "opened"
         | "clicked"
         | "failed"
+      email_preference_category:
+        | "transactional"
+        | "announcement"
+        | "newsletter"
+        | "event_promotion"
+        | "highlight_digest"
       email_recipient_status:
         | "pending"
         | "sent"
@@ -5033,8 +5360,38 @@ export const Constants = {
         "member",
       ],
       club_status: ["active", "inactive", "archived"],
+      communication_job_status: [
+        "pending",
+        "processing",
+        "completed",
+        "failed",
+        "cancelled",
+      ],
+      communication_job_type: [
+        "prepare_campaign_recipients",
+        "send_campaign_batch",
+        "send_test_email",
+      ],
       consent_status: ["pending", "granted", "denied", "revoked", "expired"],
       course_difficulty: ["beginner", "intermediate", "advanced"],
+      email_audience_type: [
+        "all_members",
+        "officers",
+        "membership_segment",
+        "event_attendees",
+        "event_registrants",
+      ],
+      email_campaign_kind: [
+        "invitation",
+        "approval",
+        "event_update",
+        "charter_status",
+        "renewal_reminder",
+        "announcement",
+        "newsletter",
+        "event_promotion",
+        "highlight_digest",
+      ],
       email_campaign_status: [
         "draft",
         "scheduled",
@@ -5052,6 +5409,13 @@ export const Constants = {
         "opened",
         "clicked",
         "failed",
+      ],
+      email_preference_category: [
+        "transactional",
+        "announcement",
+        "newsletter",
+        "event_promotion",
+        "highlight_digest",
       ],
       email_recipient_status: [
         "pending",

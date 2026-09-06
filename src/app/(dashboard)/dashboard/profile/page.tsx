@@ -1,4 +1,5 @@
 import { ProfileSettingsForm } from "@/features/auth/components/profile-settings-form";
+import { EmailPreferencesForm } from "@/features/communications/components/email-preferences-form";
 import { requireActiveUser } from "@/lib/auth/authorization";
 import { createClient } from "@/lib/supabase/server";
 
@@ -15,6 +16,21 @@ export default async function ProfilePage() {
 
   if (error || !profile?.first_name || !profile.last_initial) {
     throw new Error("Active profile data is unavailable.");
+  }
+
+  const { data: preferences } = await supabase
+    .from("user_email_preferences")
+    .select("category, opted_in")
+    .eq("user_id", user.id);
+
+  const preferenceMap: Record<string, boolean> = {
+    announcement: true,
+    newsletter: true,
+    event_promotion: true,
+    highlight_digest: true,
+  };
+  for (const row of preferences ?? []) {
+    preferenceMap[row.category] = row.opted_in;
   }
 
   return (
@@ -41,6 +57,7 @@ export default async function ProfilePage() {
           showSchoolToClubMembers: profile.show_school_to_club_members,
         }}
       />
+      <EmailPreferencesForm initial={preferenceMap} />
     </>
   );
 }
