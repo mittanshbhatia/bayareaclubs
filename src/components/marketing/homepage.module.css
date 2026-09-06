@@ -259,12 +259,57 @@
 
 .discoveryUniverse {
   position: relative;
-  min-height: 42rem;
+  display: grid;
+  min-height: 40rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 7rem 2.25rem;
+  padding: 2.5rem 1rem;
+}
+
+.discoveryLines {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  color: rgb(255 255 255 / 24%);
+}
+
+.discoveryHub {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 4;
+  display: flex;
+  min-width: 9rem;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0.6rem 0.9rem;
+  color: #062f51;
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgb(224 249 255 / 94%);
+  border: 1px solid rgb(255 255 255 / 55%);
+  border-radius: 999px;
+  box-shadow:
+    0 0 0 0.5rem rgb(86 217 255 / 8%),
+    0 18px 50px rgb(2 47 81 / 24%);
+  transform: translate(-50%, -50%);
 }
 
 .clubNode {
-  position: absolute;
-  width: min(18rem, 37%);
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  min-height: 9rem;
+  align-self: center;
   transform-origin: center;
 }
 
@@ -376,7 +421,16 @@
   }
 
   .discoveryUniverse {
-    min-height: 34rem;
+    min-height: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+    gap: 1.25rem;
+    padding: 0;
+  }
+
+  .discoveryLines,
+  .discoveryHub {
+    display: none;
   }
 }
 
@@ -395,14 +449,11 @@
   }
 
   .clubNode {
-    position: relative;
-    inset: auto !important;
     width: 100%;
   }
 
   .discoveryUniverse {
-    display: grid;
-    min-height: auto;
+    grid-template-columns: minmax(0, 1fr);
     gap: 0.75rem;
   }
 

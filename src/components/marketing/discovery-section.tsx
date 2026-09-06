@@ -30,7 +30,6 @@ const clubs = [
     topic: "robotics engineering",
     icon: Orbit,
     tone: "var(--home-cyan)",
-    position: { left: "4%", top: "22%" },
     event: "Bay Area Student Robotics Workshop",
   },
   {
@@ -38,7 +37,6 @@ const clubs = [
     topic: "artificial intelligence",
     icon: BrainCircuit,
     tone: "var(--home-cyan)",
-    position: { right: "7%", top: "8%" },
     event: "Model Lab",
   },
   {
@@ -46,7 +44,6 @@ const clubs = [
     topic: "coding algorithms",
     icon: Code2,
     tone: "var(--home-lime)",
-    position: { right: "2%", top: "48%" },
     event: "Practice Sprint",
   },
   {
@@ -54,7 +51,6 @@ const clubs = [
     topic: "physics astronomy",
     icon: Atom,
     tone: "var(--home-coral)",
-    position: { left: "31%", top: "3%" },
     event: "Physics Demo Night",
   },
   {
@@ -62,7 +58,6 @@ const clubs = [
     topic: "biology engineering",
     icon: Microscope,
     tone: "var(--home-cyan)",
-    position: { left: "35%", top: "61%" },
     event: "Design Studio",
   },
   {
@@ -70,7 +65,6 @@ const clubs = [
     topic: "service community",
     icon: HeartHandshake,
     tone: "var(--home-coral)",
-    position: { left: "3%", top: "62%" },
     event: "Community Build Day",
   },
 ] as const;
@@ -150,15 +144,52 @@ export function DiscoverySection() {
           <div className={styles.discoveryUniverse}>
             <svg
               aria-hidden
-              viewBox="0 0 920 620"
-              className="absolute inset-0 hidden h-full w-full text-white/22 sm:block"
+              viewBox="0 0 900 620"
+              className={styles.discoveryLines}
             >
+              <defs>
+                <radialGradient id="discovery-hub-glow">
+                  <stop offset="0%" stopColor="rgba(86,217,255,.28)" />
+                  <stop offset="100%" stopColor="rgba(86,217,255,0)" />
+                </radialGradient>
+              </defs>
+              <circle
+                cx="450"
+                cy="310"
+                r="138"
+                fill="url(#discovery-hub-glow)"
+              />
+              {[92, 152, 224].map((radius) => (
+                <motion.circle
+                  key={radius}
+                  cx="450"
+                  cy="310"
+                  r={radius}
+                  fill="none"
+                  stroke="rgba(255,255,255,.1)"
+                  initial={reduced ? false : { opacity: 0, scale: 0.82 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{
+                    duration: reduced ? 0 : 1,
+                    delay: radius / 900,
+                  }}
+                  style={{ transformOrigin: "450px 310px" }}
+                />
+              ))}
               {[
-                "M150 180 C310 130 400 90 500 120",
-                "M500 120 C680 90 730 190 785 250",
-                "M150 180 C250 330 330 405 470 450",
-                "M470 450 C620 430 720 390 785 250",
-                "M150 430 C260 410 330 430 470 450",
+                "M450 310 C380 238 270 170 150 112",
+                "M450 310 C450 238 450 170 450 112",
+                "M450 310 C530 238 640 170 750 112",
+                "M450 310 C370 382 260 450 150 508",
+                "M450 310 C450 382 450 450 450 508",
+                "M450 310 C530 382 640 450 750 508",
+                "M150 112 C285 58 340 76 450 112",
+                "M450 112 C570 76 630 58 750 112",
+                "M150 508 C285 562 340 544 450 508",
+                "M450 508 C570 544 630 562 750 508",
+                "M150 112 C80 220 80 400 150 508",
+                "M750 112 C820 220 820 400 750 508",
               ].map((path, index) => (
                 <motion.path
                   key={path}
@@ -168,12 +199,30 @@ export function DiscoverySection() {
                   whileInView={{ pathLength: 1, opacity: 1 }}
                   viewport={{ once: true }}
                   transition={{
-                    duration: reduced ? 0 : 1.2,
-                    delay: index * 0.12,
+                    duration: reduced ? 0 : 1.05,
+                    delay: index * 0.075,
+                    ease: [0.2, 0.8, 0.2, 1],
                   }}
                 />
               ))}
             </svg>
+
+            <motion.div
+              aria-hidden
+              initial={reduced ? false : { opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{
+                type: "spring",
+                stiffness: 220,
+                damping: 22,
+                delay: reduced ? 0 : 0.45,
+              }}
+              className={styles.discoveryHub}
+            >
+              <Search className="size-5" />
+              <span>Discovery signal</span>
+            </motion.div>
 
             {clubs.map((club, index) => {
               const Icon = club.icon;
@@ -187,10 +236,10 @@ export function DiscoverySection() {
                   onClick={() => setSelected(index)}
                   animate={{
                     opacity: matched ? 1 : 0.28,
-                    scale: isSelected ? 1.07 : matched ? 1 : 0.94,
+                    scale: isSelected ? 1.025 : matched ? 1 : 0.97,
                     zIndex: isSelected ? 20 : 1,
                   }}
-                  whileHover={reduced ? undefined : { y: -5, scale: 1.04 }}
+                  whileHover={reduced ? undefined : { y: -4, scale: 1.025 }}
                   transition={{ type: "spring", stiffness: 260, damping: 24 }}
                   className={cn(
                     styles.clubNode,
@@ -199,7 +248,6 @@ export function DiscoverySection() {
                       ? "border-white/45 bg-white text-[var(--home-ink)]"
                       : "border-white/16 bg-[#07365c]/78 text-white",
                   )}
-                  style={club.position}
                   aria-pressed={isSelected}
                 >
                   <span
