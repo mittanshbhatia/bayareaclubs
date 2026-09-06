@@ -1,4 +1,5 @@
 import { CalendarDays, GraduationCap, ImageIcon, Users } from "lucide-react";
+import Link from "next/link";
 
 import { StatusBadge, type StatusKey } from "@/components/ds/badges";
 import { Button } from "@/components/ui/button";
@@ -49,6 +50,8 @@ type CourseCardProps = {
   duration: string;
   level: string;
   className?: string;
+  href?: string;
+  actionLabel?: string;
 };
 
 export function CourseCard({
@@ -57,6 +60,8 @@ export function CourseCard({
   duration,
   level,
   className,
+  href,
+  actionLabel = "View course",
 }: CourseCardProps) {
   return (
     <article
@@ -81,9 +86,15 @@ export function CourseCard({
           <dd>{level}</dd>
         </div>
       </dl>
-      <Button type="button" className="mt-5 w-full" variant="outline">
-        View course
-      </Button>
+      {href ? (
+        <Button asChild className="mt-5 w-full" variant="outline">
+          <Link href={href}>{actionLabel}</Link>
+        </Button>
+      ) : (
+        <p className="mt-5 text-xs text-muted-foreground">
+          Available after sign-in inside your club dashboard.
+        </p>
+      )}
     </article>
   );
 }
@@ -94,6 +105,7 @@ type EventCardProps = {
   where: string;
   status?: StatusKey;
   className?: string;
+  href?: string;
 };
 
 export function EventCard({
@@ -102,6 +114,7 @@ export function EventCard({
   where,
   status = "active",
   className,
+  href,
 }: EventCardProps) {
   return (
     <article
@@ -120,9 +133,11 @@ export function EventCard({
       <h3 className="font-semibold text-foreground">{title}</h3>
       <p className="mt-2 text-sm text-muted-foreground">{when}</p>
       <p className="mt-1 text-sm text-muted-foreground">{where}</p>
-      <Button type="button" className="mt-5" size="sm">
-        RSVP
-      </Button>
+      {href ? (
+        <Button asChild className="mt-5" size="sm">
+          <Link href={href}>RSVP</Link>
+        </Button>
+      ) : null}
     </article>
   );
 }
@@ -134,6 +149,7 @@ type ClubCardProps = {
   category: string;
   status?: StatusKey;
   className?: string;
+  href?: string;
 };
 
 export function ClubCard({
@@ -143,6 +159,7 @@ export function ClubCard({
   category,
   status = "active",
   className,
+  href,
 }: ClubCardProps) {
   return (
     <article
@@ -167,9 +184,11 @@ export function ClubCard({
         <span aria-hidden>·</span>
         <span>{category}</span>
       </div>
-      <Button type="button" className="mt-5 w-full" variant="outline">
-        Open club
-      </Button>
+      {href ? (
+        <Button asChild className="mt-5 w-full" variant="outline">
+          <Link href={href}>Open club</Link>
+        </Button>
+      ) : null}
     </article>
   );
 }

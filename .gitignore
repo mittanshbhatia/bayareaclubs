@@ -5,10 +5,10 @@
 /.next
 /out
 
-# tests
-/coverage
+# Playwright
 /playwright-report
 /test-results
+/tests/visual-output
 
 # environment files (the template is committed)
 .env*

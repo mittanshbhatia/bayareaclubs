@@ -3,7 +3,7 @@ import { StatDelta, type StatDeltaTone } from "@/components/ds/stat-delta";
 
 type MetricCardProps = React.ComponentProps<"div"> & {
   label: string;
-  value: string;
+  value: React.ReactNode;
   hint?: string;
   delta?: { value: string; tone?: StatDeltaTone; label?: string };
 };

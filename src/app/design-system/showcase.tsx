@@ -386,18 +386,22 @@ export function DesignSystemShowcase() {
                   provider="STEM Library"
                   duration="4 weeks"
                   level="Beginner"
+                  href="/sign-up"
+                  actionLabel="Subscribe via account"
                 />
                 <EventCard
                   title="Maker Night"
                   when="Fri · 5:30 PM"
                   where="Room 214"
                   status="approved"
+                  href="/sign-in"
                 />
                 <ClubCard
                   name="Peninsula Robotics"
                   school="Mission High"
                   members={42}
                   category="STEM"
+                  href="/sign-in"
                 />
               </div>
             </ShowcaseBlock>
