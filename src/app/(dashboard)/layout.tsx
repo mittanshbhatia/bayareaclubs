@@ -3,6 +3,7 @@ import { ShieldCheck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { signOutAction } from "@/features/auth/actions";
+import { GlobalCommandPalette } from "@/features/command-palette/components/global-command-palette";
 import { NotificationBell } from "@/features/notifications/components/notification-bell";
 import { listMyNotifications } from "@/features/notifications/queries";
 import { requireActiveUser } from "@/lib/auth/authorization";
@@ -42,15 +43,16 @@ export default async function AppShellLayout({
     <div className="min-h-screen">
       <header className="border-b bg-surface">
         <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-4 px-5 sm:px-8">
-          <div className="flex items-center gap-4">
+          <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4">
             <Link
               href="/dashboard"
-              className="flex items-center gap-2 font-semibold"
+              className="flex shrink-0 items-center gap-2 font-semibold"
             >
               <ShieldCheck aria-hidden="true" className="size-5 text-primary" />
-              BayAreaClubs
+              <span className="hidden sm:inline">BayAreaClubs</span>
             </Link>
-            <nav className="hidden items-center gap-1 sm:flex">
+            <GlobalCommandPalette className="max-w-md flex-1" />
+            <nav className="hidden items-center gap-1 lg:flex">
               <Button asChild variant="ghost" size="sm">
                 <Link href="/start-a-club">Club ideas</Link>
               </Button>
@@ -64,7 +66,7 @@ export default async function AppShellLayout({
               ) : null}
             </nav>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             <NotificationBell
               key={`${inbox.unreadCount}-${inbox.notifications[0]?.id ?? "empty"}`}
               userId={user!.id}

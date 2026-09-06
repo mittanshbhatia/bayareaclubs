@@ -29,6 +29,11 @@ type SearchCommandProps = {
   className?: string;
 };
 
+/**
+ * Lightweight static search command for design-system demos.
+ * Production app search lives in `GlobalCommandPalette` and queries
+ * authorized results on the server via `search_command_palette`.
+ */
 export function SearchCommand({
   items,
   placeholder = "Search clubs, events, people…",

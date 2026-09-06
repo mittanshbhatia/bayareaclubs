@@ -5402,6 +5402,18 @@ export type Database = {
         Returns: number
       }
       mark_all_notifications_read: { Args: never; Returns: number }
+      search_command_palette: {
+        Args: { p_limit?: number; p_query?: string }
+        Returns: {
+          description: string
+          href: string
+          icon: string
+          label: string
+          rank: number
+          result_group: string
+          result_id: string
+        }[]
+      }
       notification_category_for_type: {
         Args: { p_type: string }
         Returns: Database["public"]["Enums"]["in_app_notification_category"]
