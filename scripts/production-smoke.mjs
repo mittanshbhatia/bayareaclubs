@@ -200,12 +200,18 @@ if (!url || !secret) {
     dbError ? dbError.message : `profiles reachable (count=${count ?? "n/a"})`,
   );
 
-  const smokePath = `_smoke/${Date.now()}-probe.txt`;
-  const bytes = new TextEncoder().encode("bayareaclubs-smoke");
+  const smokePath = `_smoke/${Date.now()}-probe.png`;
+  // 1x1 PNG
+  const bytes = Uint8Array.from(
+    Buffer.from(
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
+      "base64",
+    ),
+  );
   const upload = await admin.storage
     .from("club-media")
     .upload(smokePath, bytes, {
-      contentType: "text/plain",
+      contentType: "image/png",
       upsert: true,
     });
   if (upload.error) {
