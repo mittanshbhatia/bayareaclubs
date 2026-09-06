@@ -13,7 +13,7 @@ test.describe("marketing homepage visuals", () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/");
     await expect(
-      page.getByRole("heading", { level: 1, name: /BayAreaClubs/i }),
+      page.getByRole("heading", { level: 1, name: /Start a club/i }),
     ).toBeVisible();
     await page.screenshot({
       path: path.join(outputDir, "homepage-desktop.png"),
@@ -25,7 +25,7 @@ test.describe("marketing homepage visuals", () => {
     await page.setViewportSize({ width: 768, height: 1024 });
     await page.goto("/");
     await expect(
-      page.getByRole("heading", { level: 1, name: /BayAreaClubs/i }),
+      page.getByRole("heading", { level: 1, name: /Start a club/i }),
     ).toBeVisible();
     await page.screenshot({
       path: path.join(outputDir, "homepage-tablet.png"),
@@ -36,7 +36,18 @@ test.describe("marketing homepage visuals", () => {
   test("mobile homepage", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
     await page.goto("/");
-    await expect(page.getByRole("link", { name: "Start a Club" }).first()).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Start a Club" }).first(),
+    ).toBeVisible();
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () =>
+            document.documentElement.scrollWidth <=
+            document.documentElement.clientWidth,
+        ),
+      )
+      .toBe(true);
     await page.screenshot({
       path: path.join(outputDir, "homepage-mobile.png"),
       fullPage: true,

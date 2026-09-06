@@ -1,41 +1,63 @@
 import Link from "next/link";
+import { Sparkles } from "lucide-react";
 
 import { PageContainer } from "@/components/ds/page-container";
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border bg-surface">
-      <PageContainer className="flex flex-col gap-6 py-10 sm:flex-row sm:items-center sm:justify-between">
+    <footer className="border-t border-white/10 bg-[#080b1a] text-white">
+      <PageContainer
+        size="xl"
+        className="grid gap-10 py-12 md:grid-cols-[1fr_auto] md:items-end"
+      >
         <div>
-          <p className="font-display text-base font-semibold text-foreground">
+          <Link
+            href="/"
+            className="font-display inline-flex items-center gap-2.5 text-lg font-semibold"
+          >
+            <span className="flex size-8 items-center justify-center rounded-lg bg-white/8">
+              <Sparkles
+                aria-hidden
+                className="size-4 text-[var(--home-cyan)]"
+              />
+            </span>
             BayAreaClubs
-          </p>
-          <p className="mt-1 max-w-md text-sm text-muted-foreground">
-            A secure platform for school and college clubs across the Bay Area.
-            Student and private club information stays non-public by default.
+          </Link>
+          <p className="mt-4 max-w-lg text-sm leading-6 text-white/42">
+            A connected platform for school and college clubs. Student and
+            private-club information stays non-public by default.
           </p>
         </div>
-        <nav aria-label="Footer" className="flex flex-wrap gap-4 text-sm">
-          <Link
-            href="/sign-up"
-            className="font-medium text-foreground underline-offset-4 hover:underline"
-          >
-            Start a Club
+        <nav
+          aria-label="Footer"
+          className="flex flex-wrap gap-x-6 gap-y-3 text-sm"
+        >
+          <a href="#discover" className="text-white/52 hover:text-white">
+            Discover
+          </a>
+          <a href="#trust" className="text-white/52 hover:text-white">
+            Safety
+          </a>
+          <Link href="/resources" className="text-white/52 hover:text-white">
+            Learn
           </Link>
-          <Link
-            href="/sign-in"
-            className="text-muted-foreground underline-offset-4 hover:underline"
-          >
-            Sign in
+          <Link href="/sign-in" className="text-white/52 hover:text-white">
+            Sign In
           </Link>
-          <Link
-            href="/resources"
-            className="text-muted-foreground underline-offset-4 hover:underline"
-          >
-            Resources
+          <Link href="/dashboard" className="text-white/52 hover:text-white">
+            Dashboard
           </Link>
         </nav>
       </PageContainer>
+      <div className="border-t border-white/8">
+        <PageContainer
+          size="xl"
+          className="flex flex-col gap-2 py-5 text-[0.68rem] text-white/30 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <p>© 2026 BayAreaClubs</p>
+          <p>Institutional and legal review remains required.</p>
+        </PageContainer>
+      </div>
     </footer>
   );
 }

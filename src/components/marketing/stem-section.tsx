@@ -1,78 +1,64 @@
 import Link from "next/link";
-import { BookOpen } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
-import { CourseCard, PageContainer, SectionHeader } from "@/components/ds";
-import { Reveal } from "@/components/marketing/reveal";
-import { Button } from "@/components/ui/button";
-import { listPublishedCourses } from "@/features/stem/queries";
+import { PageContainer } from "@/components/ds";
+import styles from "@/components/marketing/homepage.module.css";
 import {
-  COURSE_DIFFICULTY_LABELS,
-  formatEffortMinutes,
-} from "@/lib/validation/stem";
+  LearningPath,
+  type LearningModule,
+} from "@/components/marketing/learning-path";
+import { MotionReveal, SceneLabel } from "@/components/marketing/motion-scene";
+import { cn } from "@/lib/utils";
 
-export async function StemSection() {
-  const courses = await listPublishedCourses({});
-  const featured = courses.slice(0, 6);
+const demonstrationPath: LearningModule[] = [
+  { title: "Python Foundations", href: "/resources" },
+  { title: "Data & Models", href: "/resources" },
+  { title: "Machine Learning Basics", href: "/resources" },
+  { title: "Build a Club Project", href: "/resources" },
+  { title: "Present Your Work", href: "/resources" },
+];
 
+export function StemSection() {
   return (
     <section
-      id="stem"
-      className="scroll-mt-20 border-b border-border bg-surface-muted/35 py-16 sm:py-24"
+      id="learn"
+      className={cn(
+        styles.scene,
+        styles.warmScene,
+        "scroll-mt-20 py-24 sm:py-32 lg:py-40",
+      )}
     >
-      <PageContainer>
-        <Reveal>
-          <div className="mb-3 inline-flex items-center gap-2 text-accent">
-            <BookOpen aria-hidden className="size-4" />
-            <span className="text-xs font-semibold tracking-[0.14em] uppercase">
-              STEM resources
-            </span>
+      <PageContainer size="xl">
+        <MotionReveal>
+          <SceneLabel>05 · Learning</SceneLabel>
+          <div className="mt-5 grid gap-8 lg:grid-cols-[1fr_0.68fr] lg:items-end">
+            <h2 className={cn(styles.sectionDisplay, "text-balance")}>
+              Turn club meetings into learning.
+            </h2>
+            <div>
+              <p className="max-w-xl text-base leading-7 text-[var(--home-muted)] sm:text-lg">
+                Build a path from free published resources, connect it to club
+                goals, and let every member keep their own progress.
+              </p>
+              <Link
+                href="/resources"
+                className="group mt-5 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-[var(--home-indigo)]"
+              >
+                Browse all learning resources
+                <ArrowUpRight
+                  className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                  aria-hidden
+                />
+              </Link>
+            </div>
           </div>
-          <SectionHeader
-            title="Turn club meetings into learning."
-            description="Browse free STEM resources, add them to My Learning, and keep progress inside your dashboard—never hosting copyrighted third-party course files."
-            actions={
-              <Button asChild variant="outline">
-                <Link href="/resources">Explore Resources</Link>
-              </Button>
-            }
+        </MotionReveal>
+        <MotionReveal delay={0.1} className="mt-14">
+          <LearningPath
+            modules={demonstrationPath}
+            usingPublishedCourses={false}
           />
-        </Reveal>
-
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {featured.length > 0
-            ? featured.map((course, index) => (
-                <Reveal key={course.id} delay={index * 0.04}>
-                  <CourseCard
-                    title={course.title ?? "Course"}
-                    provider={`${course.provider_name ?? "Provider"} · Free`}
-                    duration={formatEffortMinutes(course.estimated_minutes)}
-                    level={
-                      course.difficulty
-                        ? COURSE_DIFFICULTY_LABELS[
-                            course.difficulty as keyof typeof COURSE_DIFFICULTY_LABELS
-                          ]
-                        : "Level varies"
-                    }
-                    className="h-full"
-                    href={`/resources/${course.slug}`}
-                    actionLabel="View resource"
-                  />
-                </Reveal>
-              ))
-            : [0, 1, 2].map((index) => (
-                <Reveal key={index} delay={index * 0.04}>
-                  <CourseCard
-                    title="Free STEM catalog"
-                    provider="BayAreaClubs"
-                    duration="Browse anytime"
-                    level="All levels"
-                    className="h-full"
-                    href="/resources"
-                    actionLabel="Open catalog"
-                  />
-                </Reveal>
-              ))}
-        </div>
+        </MotionReveal>
       </PageContainer>
     </section>
   );

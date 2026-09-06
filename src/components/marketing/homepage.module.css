@@ -1,0 +1,414 @@
+.home {
+  --home-midnight: #070916;
+  --home-navy: #0e1530;
+  --home-indigo: #665cff;
+  --home-indigo-strong: #4237b8;
+  --home-violet: #9b6cff;
+  --home-cyan: #56d9ff;
+  --home-coral: #ff876f;
+  --home-lime: #c7f36b;
+  --home-paper: #f7f7fb;
+  --home-ink: #101326;
+  --home-muted: #656b7d;
+  --home-line: rgb(128 139 180 / 24%);
+  background: var(--home-paper);
+  color: var(--home-ink);
+  overflow: clip;
+}
+
+.home :global(.text-white\/28),
+.home :global(.text-white\/30),
+.home :global(.text-white\/32),
+.home :global(.text-white\/36),
+.home :global(.text-white\/38),
+.home :global(.text-white\/40),
+.home :global(.text-white\/42),
+.home :global(.text-white\/44),
+.home :global(.text-white\/46),
+.home :global(.text-white\/48),
+.home :global(.text-white\/50),
+.home :global(.text-white\/52),
+.home :global(.text-white\/54),
+.home :global(.text-white\/56),
+.home :global(.text-white\/58),
+.home :global(.text-white\/60),
+.home :global(.text-white\/64),
+.home :global(.text-white\/66),
+.home :global(.text-white\/68),
+.home :global(.text-white\/72) {
+  color: rgb(255 255 255 / 78%);
+}
+
+.scene {
+  position: relative;
+  isolation: isolate;
+}
+
+.darkScene {
+  background:
+    radial-gradient(
+      circle at 18% 12%,
+      rgb(102 92 255 / 24%),
+      transparent 34rem
+    ),
+    radial-gradient(
+      circle at 84% 74%,
+      rgb(86 217 255 / 12%),
+      transparent 30rem
+    ),
+    var(--home-midnight);
+  color: #f7f7ff;
+}
+
+.blueScene {
+  background:
+    radial-gradient(
+      circle at 80% 20%,
+      rgb(86 217 255 / 26%),
+      transparent 32rem
+    ),
+    linear-gradient(145deg, #3731d9 0%, #665cff 46%, #4a30b8 100%);
+  color: white;
+}
+
+.paperScene {
+  background:
+    radial-gradient(
+      circle at 88% 8%,
+      rgb(155 108 255 / 11%),
+      transparent 30rem
+    ),
+    var(--home-paper);
+  color: var(--home-ink);
+}
+
+.warmScene {
+  background:
+    radial-gradient(
+      circle at 15% 30%,
+      rgb(255 135 111 / 12%),
+      transparent 28rem
+    ),
+    #fbf8f2;
+  color: var(--home-ink);
+}
+
+.hero {
+  min-height: 56rem;
+  background:
+    radial-gradient(
+      circle at 78% 18%,
+      rgb(102 92 255 / 32%),
+      transparent 29rem
+    ),
+    radial-gradient(
+      circle at 62% 80%,
+      rgb(86 217 255 / 12%),
+      transparent 32rem
+    ),
+    linear-gradient(145deg, #070916 0%, #0a1025 50%, #12183a 100%);
+  color: #f8f8ff;
+}
+
+.hero::before,
+.networkGrid::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background-image: radial-gradient(
+    rgb(172 184 255 / 22%) 0.7px,
+    transparent 0.7px
+  );
+  background-size: 22px 22px;
+  mask-image: linear-gradient(to bottom, black, transparent 82%);
+}
+
+.hero::after {
+  position: absolute;
+  inset: auto 0 0;
+  height: 14rem;
+  pointer-events: none;
+  content: "";
+  background: linear-gradient(to bottom, transparent, #f7f7fb);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.eyebrow::before {
+  width: 1.8rem;
+  height: 1px;
+  content: "";
+  background: currentColor;
+  opacity: 0.65;
+}
+
+.display {
+  max-width: 13ch;
+  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  font-size: clamp(3.65rem, 7.1vw, 7.4rem);
+  font-weight: 590;
+  line-height: 0.89;
+  letter-spacing: -0.065em;
+}
+
+.sectionDisplay {
+  max-width: 13ch;
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-size: clamp(2.8rem, 5.7vw, 5.8rem);
+  font-weight: 570;
+  line-height: 0.94;
+  letter-spacing: -0.057em;
+}
+
+.productSurface {
+  border: 1px solid rgb(177 188 255 / 18%);
+  background: rgb(12 17 39 / 88%);
+  box-shadow:
+    0 40px 100px rgb(0 0 0 / 42%),
+    inset 0 1px rgb(255 255 255 / 6%);
+  backdrop-filter: blur(18px);
+}
+
+.lightSurface {
+  border: 1px solid rgb(38 43 80 / 12%);
+  background: rgb(255 255 255 / 88%);
+  box-shadow:
+    0 30px 80px rgb(50 45 100 / 14%),
+    inset 0 1px white;
+  backdrop-filter: blur(14px);
+}
+
+.storyTrack {
+  position: relative;
+  min-height: 430vh;
+}
+
+.storySticky {
+  position: sticky;
+  top: 0;
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+}
+
+.storyRail {
+  position: absolute;
+  top: 3rem;
+  bottom: 3rem;
+  left: 1rem;
+  width: 1px;
+  background: rgb(102 92 255 / 20%);
+}
+
+.storyRailProgress {
+  width: 1px;
+  transform-origin: top;
+  background: linear-gradient(var(--home-indigo), var(--home-cyan));
+}
+
+.connector {
+  stroke: currentColor;
+  stroke-width: 1.5;
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
+.signal {
+  filter: drop-shadow(0 0 8px currentColor);
+}
+
+.ambientOrb {
+  position: absolute;
+  width: 20rem;
+  height: 20rem;
+  border-radius: 999px;
+  background: rgb(102 92 255 / 18%);
+  filter: blur(70px);
+  animation: drift 12s ease-in-out infinite alternate;
+}
+
+.commandShell {
+  overflow: hidden;
+  border: 1px solid rgb(177 188 255 / 16%);
+  border-radius: 1rem;
+  background: #0c1126;
+  box-shadow: 0 45px 120px rgb(0 0 0 / 45%);
+}
+
+.commandGrid {
+  background-image:
+    linear-gradient(rgb(128 139 180 / 8%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(128 139 180 / 8%) 1px, transparent 1px);
+  background-size: 38px 38px;
+}
+
+.discoveryUniverse {
+  position: relative;
+  min-height: 42rem;
+}
+
+.clubNode {
+  position: absolute;
+  width: min(18rem, 37%);
+  transform-origin: center;
+}
+
+.eventTrack {
+  position: relative;
+}
+
+.eventTrack::before {
+  position: absolute;
+  top: 1.45rem;
+  right: 4%;
+  left: 4%;
+  height: 1px;
+  content: "";
+  background: rgb(179 226 255 / 26%);
+}
+
+.qr {
+  background:
+    linear-gradient(
+      90deg,
+      currentColor 12%,
+      transparent 12% 24%,
+      currentColor 24% 38%,
+      transparent 38% 62%,
+      currentColor 62% 74%,
+      transparent 74%
+    ),
+    linear-gradient(
+      currentColor 14%,
+      transparent 14% 28%,
+      currentColor 28% 42%,
+      transparent 42% 56%,
+      currentColor 56% 72%,
+      transparent 72%
+    );
+  background-size: 1.1rem 1.1rem;
+}
+
+.learningLine {
+  background: linear-gradient(
+    to bottom,
+    var(--home-indigo),
+    var(--home-cyan),
+    var(--home-lime)
+  );
+}
+
+.insightBars {
+  background-image: linear-gradient(
+    to top,
+    rgb(102 92 255 / 7%) 1px,
+    transparent 1px
+  );
+  background-size: 100% 25%;
+}
+
+.networkGrid {
+  min-height: 48rem;
+  background:
+    radial-gradient(circle at center, rgb(102 92 255 / 18%), transparent 30rem),
+    #070916;
+}
+
+.trustBand {
+  background:
+    linear-gradient(90deg, rgb(102 92 255 / 8%) 1px, transparent 1px), #fbf8f2;
+  background-size: 18vw 100%;
+}
+
+.finalScene {
+  min-height: 44rem;
+  background:
+    radial-gradient(
+      circle at 50% 105%,
+      rgb(86 217 255 / 26%),
+      transparent 29rem
+    ),
+    radial-gradient(
+      circle at 15% 0%,
+      rgb(155 108 255 / 24%),
+      transparent 28rem
+    ),
+    #080b1a;
+  color: white;
+}
+
+@keyframes drift {
+  from {
+    transform: translate3d(-4%, -2%, 0) scale(0.92);
+  }
+  to {
+    transform: translate3d(5%, 4%, 0) scale(1.08);
+  }
+}
+
+@media (max-width: 1023px) {
+  .hero {
+    min-height: auto;
+  }
+
+  .storyTrack {
+    min-height: auto;
+  }
+
+  .storySticky {
+    position: relative;
+    min-height: auto;
+  }
+
+  .discoveryUniverse {
+    min-height: 34rem;
+  }
+}
+
+@media (max-width: 639px) {
+  .display {
+    font-size: clamp(3rem, 15vw, 4.6rem);
+    line-height: 0.91;
+  }
+
+  .sectionDisplay {
+    font-size: clamp(2.5rem, 12vw, 3.8rem);
+  }
+
+  .hero::after {
+    height: 8rem;
+  }
+
+  .clubNode {
+    position: relative;
+    inset: auto !important;
+    width: 100%;
+  }
+
+  .discoveryUniverse {
+    display: grid;
+    min-height: auto;
+    gap: 0.75rem;
+  }
+
+  .eventTrack::before {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambientOrb {
+    animation: none;
+  }
+}
