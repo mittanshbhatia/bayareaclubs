@@ -22,6 +22,28 @@ Supabase owns the OAuth exchange. Configure the Google provider with
 browser. Authorized application callbacks include production
 `/auth/callback` and the local development callbacks on ports 3000 and 3100.
 
+Google requires an account owner to create a **Web application** OAuth client in
+Google Auth Platform and add this exact authorized redirect URI:
+
+`https://kygrtkazmjjutswjbwag.supabase.co/auth/v1/callback`
+
+Google does not provide a public API for creating a standard Web client or
+changing its redirect URIs. Once the owner has put the client ID and secret in
+the gitignored `.env.local`, activate and verify the hosted provider without
+printing either value:
+
+```bash
+pnpm auth:google:status
+pnpm auth:google:configure
+```
+
+The configure command updates the hosted Supabase Auth provider and the local
+enable flag, then verifies that Supabase starts at `accounts.google.com` with the
+expected callback. To also set the production public flag, first authenticate
+and link the Vercel CLI, then run
+`pnpm auth:google:configure -- --vercel`. A production redeploy is required
+after changing a Vercel environment variable.
+
 ## Account activation
 
 The only age bands are `under_13`, `age_13_17`, and `adult`. Precise birth dates

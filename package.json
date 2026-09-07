@@ -29,6 +29,8 @@
     "db:push": "node scripts/supabase-with-env.mjs db push --linked --yes",
     "db:push:dry": "node scripts/supabase-with-env.mjs db push --linked --yes --dry-run",
     "db:link": "node scripts/supabase-with-env.mjs link --project-ref kygrtkazmjjutswjbwag --yes",
+    "auth:google:status": "node scripts/configure-google-oauth.mjs --status",
+    "auth:google:configure": "node scripts/configure-google-oauth.mjs",
     "smoke:prod": "node scripts/production-smoke.mjs"
   },
   "dependencies": {
