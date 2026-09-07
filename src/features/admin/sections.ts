@@ -46,6 +46,12 @@ export const ADMIN_SECTIONS = [
     roles: ["platform_admin"] as const,
   },
   {
+    key: "learn",
+    label: "Learning",
+    href: "/learn",
+    roles: ["platform_admin"] as const,
+  },
+  {
     key: "users",
     label: "Users & Roles",
     href: "/users",
@@ -67,6 +73,12 @@ export const ADMIN_SECTIONS = [
     key: "audit",
     label: "Audit Log",
     href: "/audit",
+    roles: ["platform_admin"] as const,
+  },
+  {
+    key: "dashboard-config",
+    label: "Dashboard Configuration",
+    href: "/dashboard-config",
     roles: ["platform_admin"] as const,
   },
   {

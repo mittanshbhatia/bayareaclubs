@@ -1,11 +1,18 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import {
+  ClubCommandExtras,
+  selectRecentJoins,
+} from "@/components/dashboard/club-command-extras";
 import { InsightCallout } from "@/components/ds/insight-callout";
 import { MetricCard } from "@/components/ds/metric-card";
 import { EmptyState } from "@/components/ds/states";
 import { StatusBadge, RoleBadge } from "@/components/ds/badges";
-import { resolveClubBySlugForOfficer } from "@/features/clubs/queries";
+import {
+  getClubCommandOverviewExtras,
+  resolveClubBySlugForOfficer,
+} from "@/features/clubs/queries";
 import { AuthorizationError } from "@/lib/auth/authorization";
 import { handleAuthorizationError } from "@/lib/auth/route-guard";
 
@@ -28,9 +35,22 @@ export default async function ClubOverviewPage({
   }
   if (!context) notFound();
 
-  const { club, officers, memberCount, nextEvent, recentActivities, charter, renewal, highlights, attendanceTrend, recommendedActions } =
-    context;
+  const {
+    club,
+    officers,
+    members,
+    memberCount,
+    nextEvent,
+    recentActivities,
+    charter,
+    renewal,
+    highlights,
+    attendanceTrend,
+    recommendedActions,
+  } = context;
 
+  const extras = await getClubCommandOverviewExtras(club.id);
+  const recentJoins = selectRecentJoins(members);
   const latestAttendance = attendanceTrend[0];
   const priorAttendance = attendanceTrend[1];
   const attendanceHint =
@@ -39,6 +59,7 @@ export default async function ClubOverviewPage({
       : latestAttendance
         ? `Latest session ${latestAttendance.present}/${latestAttendance.total || "—"} present`
         : "No attendance sessions yet";
+  const base = `/clubs/${club.slug}`;
 
   return (
     <div className="space-y-8">
@@ -102,10 +123,10 @@ export default async function ClubOverviewPage({
         <MetricCard label="Active members" value={memberCount} />
         <MetricCard
           label="Next event"
-          value={nextEvent ? nextEvent.title.slice(0, 18) : "—"}
+          value={nextEvent ? nextEvent.rsvpCount : "—"}
           hint={
             nextEvent
-              ? `${new Date(nextEvent.startsAt).toLocaleString()} · ${nextEvent.rsvpCount} going`
+              ? `${nextEvent.title} · ${new Date(nextEvent.startsAt).toLocaleString()}`
               : "No upcoming published event"
           }
         />
@@ -122,7 +143,7 @@ export default async function ClubOverviewPage({
       </section>
 
       <section>
-        <h3 className="mb-3 font-semibold">Recommended actions</h3>
+        <h3 className="mb-3 font-semibold">Action required</h3>
         {recommendedActions.length === 0 ? (
           <EmptyState
             title="You're caught up"
@@ -151,13 +172,52 @@ export default async function ClubOverviewPage({
         )}
       </section>
 
+      <ClubCommandExtras
+        clubSlug={club.slug}
+        nextEvent={nextEvent}
+        attendanceTrend={attendanceTrend}
+        recentJoins={recentJoins}
+        learningCollections={extras.learningCollections.map((collection) => ({
+          id: collection.id,
+          title: collection.title,
+          description: collection.description,
+          itemCount: collection.items.length,
+        }))}
+        recommendations={extras.recommendations.map((item) => ({
+          id: item.id,
+          note: item.note,
+          courseTitle: item.course?.title ?? "Recommended resource",
+          courseSlug: item.course?.slug ?? null,
+          discipline: item.course?.discipline ?? null,
+        }))}
+        campaigns={extras.campaigns.slice(0, 5).map((campaign) => ({
+          id: campaign.id,
+          name: campaign.name,
+          subject: campaign.subject,
+          status: campaign.status,
+          sentAt: campaign.sent_at,
+          scheduledFor: campaign.scheduled_for,
+        }))}
+        showOfficerTools
+      />
+
       <section className="grid gap-6 lg:grid-cols-2">
         <div>
-          <h3 className="mb-3 font-semibold">Recent activities</h3>
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <h3 className="font-semibold">Recent activities</h3>
+            <Link
+              href={`${base}/activities`}
+              className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+            >
+              Activities
+            </Link>
+          </div>
           {recentActivities.length === 0 ? (
             <EmptyState
               title="No activities logged"
               description="Activities feed highlights, newsletters, and renewal summaries."
+              actionLabel="Log an activity"
+              actionHref={`${base}/activities`}
             />
           ) : (
             <ul className="space-y-2">
@@ -176,11 +236,21 @@ export default async function ClubOverviewPage({
           )}
         </div>
         <div>
-          <h3 className="mb-3 font-semibold">Recent highlights</h3>
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <h3 className="font-semibold">Recent highlights</h3>
+            <Link
+              href={`${base}/highlights`}
+              className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+            >
+              Highlights
+            </Link>
+          </div>
           {highlights.length === 0 ? (
             <EmptyState
               title="No highlights yet"
               description="Publish highlights from activities when you have outcomes to share."
+              actionLabel="Open highlights"
+              actionHref={`${base}/highlights`}
             />
           ) : (
             <ul className="space-y-2">

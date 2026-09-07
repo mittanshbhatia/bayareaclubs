@@ -54,3 +54,26 @@ export const designSystemMeta = {
   version: "1.0.0",
   codename: "Peninsula",
 } as const;
+
+/** Learning surface tokens — CSS remains source of truth. Derived from Peninsula. */
+export const learningCssVars = {
+  "learning-background": "var(--learning-background)",
+  "learning-surface": "var(--learning-surface)",
+  "course-accent": "var(--course-accent)",
+  "progress-track": "var(--progress-track)",
+  "progress-fill": "var(--progress-fill)",
+  "course-border": "var(--course-border)",
+  "course-muted": "var(--course-muted)",
+  "course-success": "var(--course-success)",
+} as const;
+
+export const learningTokenNames = [
+  "learning-background",
+  "learning-surface",
+  "course-accent",
+  "progress-track",
+  "progress-fill",
+  "course-border",
+  "course-muted",
+  "course-success",
+] as const;

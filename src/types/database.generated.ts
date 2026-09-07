@@ -2438,6 +2438,338 @@ export type Database = {
           },
         ]
       }
+      dashboard_home_content: {
+        Row: {
+          body: string
+          club_id: string | null
+          context_type: Database["public"]["Enums"]["dashboard_context_type"]
+          created_at: string
+          created_by: string
+          display_order: number
+          id: string
+          module_type: Database["public"]["Enums"]["dashboard_home_module_type"]
+          payload: Json
+          published_at: string | null
+          school_id: string | null
+          status: Database["public"]["Enums"]["publication_status"]
+          title: string | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          body?: string
+          club_id?: string | null
+          context_type: Database["public"]["Enums"]["dashboard_context_type"]
+          created_at?: string
+          created_by: string
+          display_order?: number
+          id?: string
+          module_type: Database["public"]["Enums"]["dashboard_home_module_type"]
+          payload?: Json
+          published_at?: string | null
+          school_id?: string | null
+          status?: Database["public"]["Enums"]["publication_status"]
+          title?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          body?: string
+          club_id?: string | null
+          context_type?: Database["public"]["Enums"]["dashboard_context_type"]
+          created_at?: string
+          created_by?: string
+          display_order?: number
+          id?: string
+          module_type?: Database["public"]["Enums"]["dashboard_home_module_type"]
+          payload?: Json
+          published_at?: string | null
+          school_id?: string | null
+          status?: Database["public"]["Enums"]["publication_status"]
+          title?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dashboard_home_content_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dashboard_home_content_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dashboard_home_content_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dashboard_home_content_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dashboard_home_content_revisions: {
+        Row: {
+          action: string
+          actor_id: string | null
+          body: string | null
+          club_id: string | null
+          content_id: string | null
+          content_uuid: string
+          context_type: Database["public"]["Enums"]["dashboard_context_type"]
+          created_at: string
+          id: string
+          module_type: Database["public"]["Enums"]["dashboard_home_module_type"]
+          payload: Json
+          school_id: string | null
+          status: Database["public"]["Enums"]["publication_status"]
+          title: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          body?: string | null
+          club_id?: string | null
+          content_id?: string | null
+          content_uuid: string
+          context_type: Database["public"]["Enums"]["dashboard_context_type"]
+          created_at?: string
+          id?: string
+          module_type: Database["public"]["Enums"]["dashboard_home_module_type"]
+          payload?: Json
+          school_id?: string | null
+          status: Database["public"]["Enums"]["publication_status"]
+          title?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          body?: string | null
+          club_id?: string | null
+          content_id?: string | null
+          content_uuid?: string
+          context_type?: Database["public"]["Enums"]["dashboard_context_type"]
+          created_at?: string
+          id?: string
+          module_type?: Database["public"]["Enums"]["dashboard_home_module_type"]
+          payload?: Json
+          school_id?: string | null
+          status?: Database["public"]["Enums"]["publication_status"]
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dashboard_home_content_revisions_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dashboard_home_content_revisions_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "dashboard_home_content"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dashboard_module_configs: {
+        Row: {
+          club_id: string | null
+          created_at: string
+          display_order: number | null
+          enabled: boolean
+          id: string
+          module_id: string
+          school_id: string | null
+          scope_type: Database["public"]["Enums"]["dashboard_config_scope"]
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          club_id?: string | null
+          created_at?: string
+          display_order?: number | null
+          enabled?: boolean
+          id?: string
+          module_id: string
+          school_id?: string | null
+          scope_type: Database["public"]["Enums"]["dashboard_config_scope"]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          club_id?: string | null
+          created_at?: string
+          display_order?: number | null
+          enabled?: boolean
+          id?: string
+          module_id?: string
+          school_id?: string | null
+          scope_type?: Database["public"]["Enums"]["dashboard_config_scope"]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dashboard_module_configs_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dashboard_module_configs_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "dashboard_modules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dashboard_module_configs_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dashboard_module_configs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dashboard_modules: {
+        Row: {
+          context_types: Database["public"]["Enums"]["dashboard_context_type"][]
+          created_at: string
+          default_enabled: boolean
+          description: string
+          display_order: number
+          feature_flag: string | null
+          icon: string
+          id: string
+          label: string
+          mandatory: boolean
+          mobile_visibility: Database["public"]["Enums"]["dashboard_mobile_visibility"]
+          required_permissions: string[]
+          route: string
+          section: string
+          slug: string
+          status: Database["public"]["Enums"]["dashboard_module_status"]
+          updated_at: string
+        }
+        Insert: {
+          context_types: Database["public"]["Enums"]["dashboard_context_type"][]
+          created_at?: string
+          default_enabled?: boolean
+          description: string
+          display_order: number
+          feature_flag?: string | null
+          icon: string
+          id: string
+          label: string
+          mandatory?: boolean
+          mobile_visibility?: Database["public"]["Enums"]["dashboard_mobile_visibility"]
+          required_permissions?: string[]
+          route: string
+          section: string
+          slug: string
+          status?: Database["public"]["Enums"]["dashboard_module_status"]
+          updated_at?: string
+        }
+        Update: {
+          context_types?: Database["public"]["Enums"]["dashboard_context_type"][]
+          created_at?: string
+          default_enabled?: boolean
+          description?: string
+          display_order?: number
+          feature_flag?: string | null
+          icon?: string
+          id?: string
+          label?: string
+          mandatory?: boolean
+          mobile_visibility?: Database["public"]["Enums"]["dashboard_mobile_visibility"]
+          required_permissions?: string[]
+          route?: string
+          section?: string
+          slug?: string
+          status?: Database["public"]["Enums"]["dashboard_module_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      dashboard_user_preferences: {
+        Row: {
+          created_at: string
+          hidden_module_ids: string[]
+          last_club_id: string | null
+          last_context_type: Database["public"]["Enums"]["dashboard_context_type"]
+          last_school_id: string | null
+          module_order: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          hidden_module_ids?: string[]
+          last_club_id?: string | null
+          last_context_type?: Database["public"]["Enums"]["dashboard_context_type"]
+          last_school_id?: string | null
+          module_order?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          hidden_module_ids?: string[]
+          last_club_id?: string | null
+          last_context_type?: Database["public"]["Enums"]["dashboard_context_type"]
+          last_school_id?: string | null
+          module_order?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dashboard_user_preferences_last_club_id_fkey"
+            columns: ["last_club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dashboard_user_preferences_last_school_id_fkey"
+            columns: ["last_school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dashboard_user_preferences_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       email_campaigns: {
         Row: {
           audience_filter: Json
@@ -4258,7 +4590,11 @@ export type Database = {
       }
       stem_courses: {
         Row: {
+          approved_at: string | null
+          approved_by: string | null
           archived_at: string | null
+          course_kind: string
+          course_namespace: string | null
           created_at: string
           created_by: string
           description: string
@@ -4266,6 +4602,8 @@ export type Database = {
           discipline: Database["public"]["Enums"]["stem_discipline"]
           estimated_minutes: number | null
           format: Database["public"]["Enums"]["course_format"]
+          framework_code: string | null
+          framework_year: number | null
           grade_bands: Database["public"]["Enums"]["age_band"][]
           id: string
           is_free: boolean
@@ -4276,6 +4614,7 @@ export type Database = {
           provider_name: string
           published_at: string | null
           slug: string
+          source_basis: string
           source_url: string
           status: Database["public"]["Enums"]["publication_status"]
           thumbnail_asset_id: string | null
@@ -4283,7 +4622,11 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
           archived_at?: string | null
+          course_kind?: string
+          course_namespace?: string | null
           created_at?: string
           created_by: string
           description: string
@@ -4291,6 +4634,8 @@ export type Database = {
           discipline: Database["public"]["Enums"]["stem_discipline"]
           estimated_minutes?: number | null
           format?: Database["public"]["Enums"]["course_format"]
+          framework_code?: string | null
+          framework_year?: number | null
           grade_bands: Database["public"]["Enums"]["age_band"][]
           id?: string
           is_free?: boolean
@@ -4301,6 +4646,7 @@ export type Database = {
           provider_name: string
           published_at?: string | null
           slug: string
+          source_basis?: string
           source_url: string
           status?: Database["public"]["Enums"]["publication_status"]
           thumbnail_asset_id?: string | null
@@ -4308,7 +4654,11 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          approved_at?: string | null
+          approved_by?: string | null
           archived_at?: string | null
+          course_kind?: string
+          course_namespace?: string | null
           created_at?: string
           created_by?: string
           description?: string
@@ -4316,6 +4666,8 @@ export type Database = {
           discipline?: Database["public"]["Enums"]["stem_discipline"]
           estimated_minutes?: number | null
           format?: Database["public"]["Enums"]["course_format"]
+          framework_code?: string | null
+          framework_year?: number | null
           grade_bands?: Database["public"]["Enums"]["age_band"][]
           id?: string
           is_free?: boolean
@@ -4326,6 +4678,7 @@ export type Database = {
           provider_name?: string
           published_at?: string | null
           slug?: string
+          source_basis?: string
           source_url?: string
           status?: Database["public"]["Enums"]["publication_status"]
           thumbnail_asset_id?: string | null
@@ -4333,6 +4686,20 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "stem_courses_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "stem_courses_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "stem_courses_created_by_fkey"
             columns: ["created_by"]
@@ -5323,6 +5690,10 @@ export type Database = {
         }
         Returns: string
       }
+      can_access_school_dashboard: {
+        Args: { target_school_id: string; user_id?: string }
+        Returns: boolean
+      }
       can_edit_idea: {
         Args: { target_idea_id: string; user_id?: string }
         Returns: boolean
@@ -5717,6 +6088,17 @@ export type Database = {
         | "reading"
         | "project"
         | "mixed"
+      dashboard_config_scope: "global" | "school" | "club" | "user"
+      dashboard_context_type: "personal" | "club" | "school" | "platform"
+      dashboard_home_module_type:
+        | "announcement"
+        | "featured_courses"
+        | "featured_resources"
+        | "featured_events"
+        | "deadline"
+        | "school_message"
+      dashboard_mobile_visibility: "always" | "overflow" | "hidden"
+      dashboard_module_status: "active" | "deprecated"
       email_audience_type:
         | "all_members"
         | "officers"
@@ -5869,6 +6251,7 @@ export type Database = {
         | "scheduled"
         | "published"
         | "archived"
+        | "approved"
       renewal_status:
         | "draft"
         | "submitted"
@@ -6103,6 +6486,18 @@ export const Constants = {
         "project",
         "mixed",
       ],
+      dashboard_config_scope: ["global", "school", "club", "user"],
+      dashboard_context_type: ["personal", "club", "school", "platform"],
+      dashboard_home_module_type: [
+        "announcement",
+        "featured_courses",
+        "featured_resources",
+        "featured_events",
+        "deadline",
+        "school_message",
+      ],
+      dashboard_mobile_visibility: ["always", "overflow", "hidden"],
+      dashboard_module_status: ["active", "deprecated"],
       email_audience_type: [
         "all_members",
         "officers",
@@ -6273,6 +6668,7 @@ export const Constants = {
         "scheduled",
         "published",
         "archived",
+        "approved",
       ],
       renewal_status: [
         "draft",

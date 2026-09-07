@@ -8,6 +8,10 @@ import {
   buildRecommendedActions,
   type RecommendedAction,
 } from "@/features/clubs/recommended-actions";
+import {
+  listClubLearningCollections,
+  listClubRecommendations,
+} from "@/features/stem/queries";
 
 export type ClubRow = Database["public"]["Tables"]["clubs"]["Row"] & {
   schools: { id: string; name: string; slug: string } | null;
@@ -408,4 +412,27 @@ export async function listClubInsights(clubId: string) {
     .limit(30);
   if (error) throw error;
   return data ?? [];
+}
+
+export type ClubCommandOverviewExtras = {
+  learningCollections: Awaited<ReturnType<typeof listClubLearningCollections>>;
+  recommendations: Awaited<ReturnType<typeof listClubRecommendations>>;
+  campaigns: Awaited<ReturnType<typeof listCommunications>>;
+};
+
+/** Officer/manager extras for the club command overview. Club-scoped only. */
+export async function getClubCommandOverviewExtras(
+  clubId: string,
+): Promise<ClubCommandOverviewExtras> {
+  await requireClubManager(clubId);
+  const [learningCollections, recommendations, campaigns] = await Promise.all([
+    listClubLearningCollections(clubId),
+    listClubRecommendations(clubId),
+    listCommunications(clubId),
+  ]);
+  return {
+    learningCollections,
+    recommendations,
+    campaigns,
+  };
 }

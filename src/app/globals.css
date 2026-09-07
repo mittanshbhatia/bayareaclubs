@@ -128,6 +128,16 @@
   --container-lg: 64rem;
   --container-xl: 80rem;
   --container-page: 72rem;
+
+  /* Learning (derived from Peninsula primary / accent / success) */
+  --learning-background: color-mix(in srgb, var(--primary-muted) 35%, var(--background));
+  --learning-surface: var(--surface);
+  --course-accent: var(--accent);
+  --progress-track: var(--primary-muted);
+  --progress-fill: var(--primary);
+  --course-border: var(--border);
+  --course-muted: var(--muted-foreground);
+  --course-success: var(--success);
 }
 
 .dark {
@@ -185,6 +195,15 @@
   --destructive: var(--danger);
   --destructive-foreground: var(--danger-foreground);
   --input: var(--border);
+
+  --learning-background: color-mix(in srgb, var(--primary-muted) 55%, var(--background));
+  --learning-surface: var(--surface);
+  --course-accent: var(--accent);
+  --progress-track: var(--primary-muted);
+  --progress-fill: var(--primary);
+  --course-border: var(--border);
+  --course-muted: var(--muted-foreground);
+  --course-success: var(--success);
 }
 
 @theme inline {
@@ -282,6 +301,15 @@
   --container-lg: 64rem;
   --container-xl: 80rem;
   --container-page: 72rem;
+
+  --color-learning-background: var(--learning-background);
+  --color-learning-surface: var(--learning-surface);
+  --color-course-accent: var(--course-accent);
+  --color-progress-track: var(--progress-track);
+  --color-progress-fill: var(--progress-fill);
+  --color-course-border: var(--course-border);
+  --color-course-muted: var(--course-muted);
+  --color-course-success: var(--course-success);
 }
 
 * {

@@ -5,6 +5,7 @@ import {
   chartSeriesKeys,
   containerWidths,
   designSystemMeta,
+  learningTokenNames,
   motionDurations,
   zIndex,
 } from "@/lib/design-tokens";
@@ -24,5 +25,15 @@ describe("design-tokens", () => {
     expect(zIndex.modal).toBe(70);
     expect(chartSeriesKeys).toHaveLength(6);
     expect(chartCssVars["chart-1"]).toBe("var(--chart-1)");
+    expect(learningTokenNames).toEqual([
+      "learning-background",
+      "learning-surface",
+      "course-accent",
+      "progress-track",
+      "progress-fill",
+      "course-border",
+      "course-muted",
+      "course-success",
+    ]);
   });
 });

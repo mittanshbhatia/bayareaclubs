@@ -134,6 +134,47 @@ export async function requireSchoolAccess(schoolId: string): Promise<User> {
   return user;
 }
 
+const SCHOOL_DASHBOARD_ROLES = [
+  "school_admin",
+  "school_advisor",
+  "staff",
+] as const;
+
+/** School command center: platform_admin or school_admin | school_advisor | staff. Students DENY. */
+export async function requireSchoolDashboardAccess(
+  schoolId: string,
+): Promise<User> {
+  const user = await requireActiveUser();
+  const supabase = await createClient();
+  const [{ data: platformRole }, { data: membership, error }] =
+    await Promise.all([
+      supabase
+        .from("platform_role_assignments")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("role", "platform_admin")
+        .is("revoked_at", null)
+        .maybeSingle(),
+      supabase
+        .from("user_school_memberships")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("school_id", schoolId)
+        .eq("status", "active")
+        .in("role", [...SCHOOL_DASHBOARD_ROLES])
+        .limit(1)
+        .maybeSingle(),
+    ]);
+
+  if (error || (!platformRole && !membership)) {
+    throw new AuthorizationError(
+      "FORBIDDEN",
+      "School dashboard access is required.",
+    );
+  }
+  return user;
+}
+
 async function requireClubRole(
   clubId: string,
   roles: readonly ClubRole[],
