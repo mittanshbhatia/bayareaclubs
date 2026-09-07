@@ -75,7 +75,7 @@ export const AP_COURSE_REGISTRY: readonly ApCourseRegistryEntry[] = [
     title: "AP Physics 2",
     description: "Fluids, thermodynamics, electricity and magnetism, optics.",
     frameworkCode: "PHYS2",
-    status: "planned",
+    status: "shipping",
     icon: "atom",
   },
   {

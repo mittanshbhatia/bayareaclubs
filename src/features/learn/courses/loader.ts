@@ -8,6 +8,7 @@ import { loadApCsaCourse } from "@/features/learn/courses/ap-csa/manifest";
 import { loadApCspCourse } from "@/features/learn/courses/ap-csp/manifest";
 import { loadApEnvsciCourse } from "@/features/learn/courses/ap-envsci/manifest";
 import { loadApPhysics1Course } from "@/features/learn/courses/ap-physics-1/manifest";
+import { loadApPhysics2Course } from "@/features/learn/courses/ap-physics-2/manifest";
 import { loadApPrecalcCourse } from "@/features/learn/courses/ap-precalc/manifest";
 import { loadApPsychCourse } from "@/features/learn/courses/ap-psych/manifest";
 import { loadApStatsCourse } from "@/features/learn/courses/ap-stats/manifest";
@@ -58,6 +59,7 @@ const SHIPPING_LOADERS: Array<[string, CourseLoader]> = [
   ["ap-csp", loadApCspCourse],
   ["ap-envsci", loadApEnvsciCourse],
   ["ap-physics-1", loadApPhysics1Course],
+  ["ap-physics-2", loadApPhysics2Course],
   ["ap-precalc", loadApPrecalcCourse],
   ["ap-psych", loadApPsychCourse],
   ["ap-stats", loadApStatsCourse],

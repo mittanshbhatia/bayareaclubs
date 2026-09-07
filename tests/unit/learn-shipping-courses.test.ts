@@ -12,6 +12,7 @@ const OFFICIAL_UNITS: Record<string, number> = {
   "ap-stats": 9,
   "ap-precalc": 4,
   "ap-physics-1": 8,
+  "ap-physics-2": 7,
   "ap-chem": 9,
   "ap-bio": 8,
   "ap-envsci": 9,

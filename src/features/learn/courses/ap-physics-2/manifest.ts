@@ -254,11 +254,17 @@ export function toCourseManifest(
 }
 
 export async function loadApPhysics2Course(): Promise<CourseContentBundle> {
+  const [{ lessons }, { questions }, { tools }] = await Promise.all([
+    import("@/features/learn/courses/ap-physics-2/content"),
+    import("@/features/learn/courses/ap-physics-2/questions"),
+    import("@/features/learn/courses/ap-physics-2/tools"),
+  ]);
+
   return {
     manifest: toCourseManifest(),
-    lessons: [],
-    questions: [],
-    tools: [],
+    lessons,
+    questions,
+    tools,
   };
 }
 
