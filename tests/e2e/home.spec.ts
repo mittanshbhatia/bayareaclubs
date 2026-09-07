@@ -52,6 +52,22 @@ test("presents the connected club lifecycle with working public actions", async 
     "href",
     "/sign-in",
   );
+  for (const school of [
+    "Bellarmine College Preparatory",
+    "BASIS Independent Silicon Valley",
+    "The Harker School",
+    "Homestead High School",
+    "Cupertino High School",
+  ]) {
+    await expect(
+      page.getByRole("link", {
+        name: `Visit ${school} official website`,
+      }),
+    ).toBeAttached();
+  }
+  await expect(
+    page.getByRole("heading", { name: "Participating schools" }),
+  ).toHaveCount(0);
 });
 
 test("keeps the idea-to-club story in the natural page scroll", async ({

@@ -5,7 +5,8 @@
 Supabase PostgreSQL is the source of truth for BayAreaClubs. The schema is
 multi-school, multi-club, migration-driven, and protected by database row-level
 security. PostgreSQL stores media metadata only; binaries remain in private
-Supabase Storage buckets.
+Supabase Storage buckets, except explicitly authorized public institutional
+branding used on public marketing surfaces.
 
 The initial domain is defined by:
 
@@ -25,6 +26,9 @@ The initial domain is defined by:
   and under-13 signup checks.
 - `20260905240000_enforce_profile_privacy.sql`: removes direct peer access to
   full profiles and exposes a privacy-filtered club member directory.
+- `20260907000500_homepage_school_participants.sql`: stores verified homepage
+  participation records, official-logo attribution, authorization timestamps,
+  ordering, and the constrained public school-branding bucket.
 
 ## Identity and assignments
 
@@ -80,12 +84,16 @@ officer and membership snapshots for historical review.
 ## Media and consent
 
 `media_assets` records owner, bucket, object path, MIME type, size, visibility, and
-public approval. All buckets are private. Storage reads resolve through the media
-authorization function, and uploads must use an authenticated-user path prefix.
+public approval. User and club media buckets are private. Storage reads resolve
+through the media authorization function, and uploads must use an
+authenticated-user path prefix.
 
 Public media requires explicit approval. Consent-gated media additionally requires
 current granted consent and no denied, revoked, or expired consent. Consent can be
 recorded by an eligible subject, verified guardian, or authorized club manager.
+The separate `school-branding` bucket contains only authorized PNG/WebP
+institutional logos referenced by confirmed, published
+`homepage_school_participants` rows. It contains no student or club media.
 
 ## STEM learning
 

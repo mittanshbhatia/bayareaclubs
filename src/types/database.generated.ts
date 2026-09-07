@@ -7,6 +7,11 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.5"
+  }
   graphql_public: {
     Tables: {
       [_ in never]: never
@@ -3141,6 +3146,59 @@ export type Database = {
           },
         ]
       }
+      homepage_school_participants: {
+        Row: {
+          created_at: string
+          id: string
+          is_published: boolean
+          logo_alt: string
+          logo_bucket: string
+          logo_path: string
+          logo_source_url: string
+          logo_use_authorized_at: string
+          participation_confirmed_at: string
+          school_id: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          logo_alt: string
+          logo_bucket?: string
+          logo_path: string
+          logo_source_url: string
+          logo_use_authorized_at: string
+          participation_confirmed_at: string
+          school_id: string
+          sort_order: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          logo_alt?: string
+          logo_bucket?: string
+          logo_path?: string
+          logo_source_url?: string
+          logo_use_authorized_at?: string
+          participation_confirmed_at?: string
+          school_id?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "homepage_school_participants_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: true
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       media_assets: {
         Row: {
           approved_for_public_at: string | null
@@ -3851,6 +3909,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "notifications_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "published_clubs"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "notifications_school_id_fkey"
             columns: ["school_id"]
             isOneToOne: false
@@ -3866,41 +3931,6 @@ export type Database = {
           },
           {
             foreignKeyName: "notifications_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      user_notification_preferences: {
-        Row: {
-          category: Database["public"]["Enums"]["in_app_notification_category"]
-          created_at: string
-          id: string
-          in_app_enabled: boolean
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          category: Database["public"]["Enums"]["in_app_notification_category"]
-          created_at?: string
-          id?: string
-          in_app_enabled?: boolean
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          category?: Database["public"]["Enums"]["in_app_notification_category"]
-          created_at?: string
-          id?: string
-          in_app_enabled?: boolean
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_notification_preferences_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -4522,6 +4552,48 @@ export type Database = {
           {
             foreignKeyName: "user_guardian_relationships_verified_by_fkey"
             columns: ["verified_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_notification_preferences: {
+        Row: {
+          category: Database["public"]["Enums"]["in_app_notification_category"]
+          created_at: string
+          id: string
+          in_app_enabled: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["in_app_notification_category"]
+          created_at?: string
+          id?: string
+          in_app_enabled?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["in_app_notification_category"]
+          created_at?: string
+          id?: string
+          in_app_enabled?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_notification_preferences_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "club_member_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "user_notification_preferences_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -5241,6 +5313,13 @@ export type Database = {
         }
         Returns: string
       }
+      assign_platform_role: {
+        Args: {
+          target_role: Database["public"]["Enums"]["platform_role"]
+          target_user_id: string
+        }
+        Returns: string
+      }
       can_edit_idea: {
         Args: { target_idea_id: string; user_id?: string }
         Returns: boolean
@@ -5371,6 +5450,16 @@ export type Database = {
         Returns: string
       }
       count_active_platform_admins: { Args: never; Returns: number }
+      count_email_audience: {
+        Args: {
+          audience: Database["public"]["Enums"]["email_audience_type"]
+          category?: Database["public"]["Enums"]["email_preference_category"]
+          filter?: Json
+          target_club_id: string
+        }
+        Returns: number
+      }
+      count_event_going: { Args: { target_event_id: string }; Returns: number }
       emit_in_app_notification: {
         Args: {
           p_action_url?: string
@@ -5401,48 +5490,6 @@ export type Database = {
         }
         Returns: number
       }
-      mark_all_notifications_read: { Args: never; Returns: number }
-      search_command_palette: {
-        Args: { p_limit?: number; p_query?: string }
-        Returns: {
-          description: string
-          href: string
-          icon: string
-          label: string
-          rank: number
-          result_group: string
-          result_id: string
-        }[]
-      }
-      notification_category_for_type: {
-        Args: { p_type: string }
-        Returns: Database["public"]["Enums"]["in_app_notification_category"]
-      }
-      user_allows_in_app_notification: {
-        Args: { p_type: string; target_user_id: string }
-        Returns: boolean
-      }
-      assign_platform_role: {
-        Args: {
-          target_role: Database["public"]["Enums"]["platform_role"]
-          target_user_id: string
-        }
-        Returns: string
-      }
-      revoke_platform_role: {
-        Args: { target_assignment_id: string }
-        Returns: string
-      }
-      count_email_audience: {
-        Args: {
-          audience: Database["public"]["Enums"]["email_audience_type"]
-          category?: Database["public"]["Enums"]["email_preference_category"]
-          filter?: Json
-          target_club_id: string
-        }
-        Returns: number
-      }
-      count_event_going: { Args: { target_event_id: string }; Returns: number }
       enqueue_communication_job: {
         Args: {
           p_campaign_id?: string
@@ -5474,6 +5521,21 @@ export type Database = {
         }
         Returns: boolean
       }
+      internal_emit_in_app_notification: {
+        Args: {
+          p_action_url?: string
+          p_body: string
+          p_club_id?: string
+          p_entity_id?: string
+          p_entity_type?: string
+          p_payload?: Json
+          p_school_id?: string
+          p_title: string
+          p_type: string
+          p_user_id: string
+        }
+        Returns: string
+      }
       is_club_member: {
         Args: { target_club_id: string; user_id?: string }
         Returns: boolean
@@ -5499,6 +5561,12 @@ export type Database = {
           display_name: string
           user_id: string
         }[]
+      }
+      mark_all_notifications_read: { Args: never; Returns: number }
+      may_inspect_user: { Args: { target_user_id: string }; Returns: boolean }
+      notification_category_for_type: {
+        Args: { p_type: string }
+        Returns: Database["public"]["Enums"]["in_app_notification_category"]
       }
       officer_enqueue_campaign_send: {
         Args: { send_immediately?: boolean; target_campaign_id: string }
@@ -5547,6 +5615,22 @@ export type Database = {
         }[]
       }
       restrict_under_13_self_signup: { Args: { event: Json }; Returns: Json }
+      revoke_platform_role: {
+        Args: { target_assignment_id: string }
+        Returns: string
+      }
+      search_command_palette: {
+        Args: { p_limit?: number; p_query?: string }
+        Returns: {
+          description: string
+          href: string
+          icon: string
+          label: string
+          rank: number
+          result_group: string
+          result_id: string
+        }[]
+      }
       soft_delete_media_asset: {
         Args: { reason: string; target_asset_id: string }
         Returns: string
@@ -5560,20 +5644,17 @@ export type Database = {
       }
       user_allows_email_category: {
         Args: {
-          category: Database["public"]["Enums"]["email_preference_category"]
+          target_category: Database["public"]["Enums"]["email_preference_category"]
           target_user_id: string
         }
         Returns: boolean
       }
+      user_allows_in_app_notification: {
+        Args: { p_type: string; target_user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      in_app_notification_category:
-        | "club_ideas"
-        | "membership"
-        | "events"
-        | "governance"
-        | "communications"
-        | "resources"
       account_activation_method:
         | "self_service"
         | "guardian_authorized"
@@ -5724,6 +5805,13 @@ export type Database = {
         | "community_service"
         | "project"
         | "other"
+      in_app_notification_category:
+        | "club_ideas"
+        | "membership"
+        | "events"
+        | "governance"
+        | "communications"
+        | "resources"
       logistics_item_status:
         | "not_started"
         | "in_progress"
@@ -5830,12 +5918,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -5859,11 +5947,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -5884,11 +5972,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -5909,11 +5997,11 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -5926,11 +6014,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -6114,6 +6202,14 @@ export const Constants = {
         "project",
         "other",
       ],
+      in_app_notification_category: [
+        "club_ideas",
+        "membership",
+        "events",
+        "governance",
+        "communications",
+        "resources",
+      ],
       logistics_item_status: [
         "not_started",
         "in_progress",
@@ -6161,14 +6257,6 @@ export const Constants = {
         "course_recommendation",
         "cta",
         "divider",
-      ],
-      in_app_notification_category: [
-        "club_ideas",
-        "membership",
-        "events",
-        "governance",
-        "communications",
-        "resources",
       ],
       platform_role: ["platform_admin", "committee_reviewer"],
       profile_display_format: [
@@ -6226,4 +6314,3 @@ export const Constants = {
     },
   },
 } as const
-

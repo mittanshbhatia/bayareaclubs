@@ -6,9 +6,12 @@ import { HeroWorkflow } from "@/components/marketing/hero-workflow";
 import styles from "@/components/marketing/homepage.module.css";
 import { MotionReveal } from "@/components/marketing/motion-scene";
 import { Button } from "@/components/ui/button";
+import { listPublicSchoolParticipants } from "@/features/marketing/school-participants";
 import { cn } from "@/lib/utils";
 
-export function HeroSection() {
+export async function HeroSection() {
+  const schoolParticipants = await listPublicSchoolParticipants();
+
   return (
     <section className={cn(styles.scene, styles.hero)}>
       <div
@@ -19,9 +22,9 @@ export function HeroSection() {
         size="xl"
         className="relative z-10 pt-28 pb-24 sm:pt-32 sm:pb-28 lg:pt-36 lg:pb-32"
       >
-        <HeroWorkflow />
+        <HeroWorkflow schoolParticipants={schoolParticipants} />
 
-        <div className="mt-12 grid gap-7 border-t border-white/10 pt-10 lg:mt-16 lg:grid-cols-[1.18fr_0.82fr] lg:items-end lg:gap-14 lg:pt-12">
+        <div className="mt-2 grid gap-7 border-t border-white/10 pt-10 lg:mt-3 lg:grid-cols-[1.18fr_0.82fr] lg:items-end lg:gap-14 lg:pt-12">
           <MotionReveal delay={0.08} distance={16}>
             <p className={cn(styles.eyebrow, "text-[var(--home-cyan)]")}>
               The operating system for student communities

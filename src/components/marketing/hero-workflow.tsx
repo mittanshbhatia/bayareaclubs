@@ -19,6 +19,8 @@ import {
 import { useEffect, useRef, useState } from "react";
 
 import styles from "@/components/marketing/homepage.module.css";
+import { SchoolParticipantsMarquee } from "@/components/marketing/school-participants-marquee";
+import type { PublicSchoolParticipant } from "@/features/marketing/school-participants";
 import { cn } from "@/lib/utils";
 
 const stages = [
@@ -64,7 +66,11 @@ function wait(duration: number) {
   return new Promise((resolve) => window.setTimeout(resolve, duration));
 }
 
-export function HeroWorkflow() {
+export function HeroWorkflow({
+  schoolParticipants,
+}: {
+  schoolParticipants: PublicSchoolParticipant[];
+}) {
   const reduced = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { amount: 0.35 });
@@ -352,14 +358,21 @@ export function HeroWorkflow() {
         </AnimatePresence>
       </div>
 
-      <div className="mt-5 hidden items-center justify-end gap-2 lg:flex">
-        <CalendarCheck
-          className="size-3.5 text-[var(--home-indigo)]"
-          aria-hidden
-        />
-        <span className="font-mono text-[0.58rem] tracking-[0.12em] text-[#8290a8] uppercase">
-          Original BayAreaClubs product demonstration
-        </span>
+      <div className="mt-4">
+        <div className="hidden items-center justify-end gap-2 lg:flex">
+          <CalendarCheck
+            className="size-3.5 text-[var(--home-indigo)]"
+            aria-hidden
+          />
+          <span className="font-mono text-[0.58rem] tracking-[0.12em] text-[#8290a8] uppercase">
+            Original BayAreaClubs product demonstration
+          </span>
+        </div>
+        {schoolParticipants.length > 0 ? (
+          <div className="mt-2">
+            <SchoolParticipantsMarquee participants={schoolParticipants} />
+          </div>
+        ) : null}
       </div>
     </div>
   );

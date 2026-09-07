@@ -20,11 +20,15 @@ type Recipient = Database["public"]["Tables"]["email_recipients"]["Row"];
 type Job = Database["public"]["Tables"]["communication_jobs"]["Row"];
 
 function appUrl() {
-  return (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, "");
+  return (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(
+    /\/$/,
+    "",
+  );
 }
 
 function newsletterBlocksFromJson(content: Json | null) {
-  if (!content || typeof content !== "object" || Array.isArray(content)) return null;
+  if (!content || typeof content !== "object" || Array.isArray(content))
+    return null;
   const blocks = (content as { blocks?: unknown }).blocks;
   if (!Array.isArray(blocks)) return null;
   return blocks.map((block) => {
@@ -36,7 +40,9 @@ function newsletterBlocksFromJson(content: Json | null) {
     return {
       blockType: String(row.block_type ?? row.blockType ?? "text"),
       content:
-        row.content && typeof row.content === "object" && !Array.isArray(row.content)
+        row.content &&
+        typeof row.content === "object" &&
+        !Array.isArray(row.content)
           ? row.content
           : {},
     };
@@ -101,7 +107,11 @@ function preferenceCategoryForKind(
 async function loadClubName(clubId: string | null) {
   if (!clubId) return "BayAreaClubs";
   const admin = createAdminClient();
-  const { data } = await admin.from("clubs").select("name, slug").eq("id", clubId).maybeSingle();
+  const { data } = await admin
+    .from("clubs")
+    .select("name, slug")
+    .eq("id", clubId)
+    .maybeSingle();
   return data?.name ?? "BayAreaClubs";
 }
 
@@ -150,7 +160,7 @@ export async function prepareCampaignRecipients(campaignId: string) {
   for (const userId of userIds) {
     const { data: allowed } = await admin.rpc("user_allows_email_category", {
       target_user_id: userId,
-      category,
+      target_category: category,
     });
     if (!allowed) continue;
 
@@ -229,10 +239,7 @@ async function sendOneRecipient(campaign: Campaign, recipient: Recipient) {
   });
 
   if (result.error) {
-    const permanent = isPermanentEmailFailure(
-      undefined,
-      result.error.message,
-    );
+    const permanent = isPermanentEmailFailure(undefined, result.error.message);
     return { permanent, error: result.error.message };
   }
 
@@ -246,7 +253,8 @@ export async function sendCampaignBatch(campaignId: string, batchSize = 40) {
     .select("*")
     .eq("id", campaignId)
     .maybeSingle();
-  if (error || !campaign) throw new Error(error?.message ?? "Campaign missing.");
+  if (error || !campaign)
+    throw new Error(error?.message ?? "Campaign missing.");
 
   const { data: recipients, error: claimError } = await admin.rpc(
     "claim_pending_email_recipients",
@@ -279,7 +287,10 @@ export async function sendCampaignBatch(campaignId: string, batchSize = 40) {
         continue;
       }
 
-      if (outcome.permanent || recipient.attempt_count >= recipient.max_attempts) {
+      if (
+        outcome.permanent ||
+        recipient.attempt_count >= recipient.max_attempts
+      ) {
         await admin
           .from("email_recipients")
           .update({
@@ -297,7 +308,9 @@ export async function sendCampaignBatch(campaignId: string, batchSize = 40) {
           .update({
             status: "pending",
             last_error: outcome.error,
-            next_attempt_at: new Date(Date.now() + delaySeconds * 1000).toISOString(),
+            next_attempt_at: new Date(
+              Date.now() + delaySeconds * 1000,
+            ).toISOString(),
           })
           .eq("id", recipient.id);
         failed += 1;

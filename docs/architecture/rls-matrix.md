@@ -21,7 +21,10 @@ May read:
 - published public events, highlights, and newsletters;
 - sections of published public newsletters;
 - published free STEM courses, modules, and resources; and
-- media explicitly approved for public use when all required consent is current.
+- media explicitly approved for public use when all required consent is current;
+  and
+- confirmed, published school-participation records and their authorized
+  institutional logos.
 
 Cannot read profiles, memberships, attendance, ideas, review records, private
 media, email data, notifications, audits, or analytics. Public visitors cannot
@@ -111,6 +114,8 @@ authorized club or school managers.
 
 An active `platform_admin` assignment may administer platform data, role
 assignments, schools, learning content, analytics, and cross-tenant workflows.
+Only platform administrators may create, reorder, publish, update, or remove
+homepage school-participation records and school-branding objects.
 Audit history remains append-only even for application administrators; exceptional
 database maintenance must occur through controlled operational procedures.
 
