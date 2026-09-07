@@ -1,5 +1,5 @@
 /**
- * Original BayAreaClubs multiple-choice items for the AP CSP published skeleton.
+ * Original BayAreaClubs multiple-choice items for AP Computer Science Principles.
  * Written from scratch. Not derived from College Board, Unlimited Voices,
  * Stellar Learning, or any other question bank. source_basis: ORIGINAL.
  */
@@ -8,6 +8,7 @@ import {
   AP_CSP_NAMESPACE,
   AP_CSP_SOURCE_BASIS,
 } from "@/features/learn/courses/ap-csp/manifest";
+import type { ApCspLessonSlug } from "@/features/learn/courses/ap-csp/content";
 
 export type ApCspChoiceId = "a" | "b" | "c" | "d";
 
@@ -21,7 +22,7 @@ export type ApCspDifficulty = "easy" | "medium" | "hard";
 export type ApCspQuestion = {
   namespace: typeof AP_CSP_NAMESPACE;
   slug: string;
-  lessonSlug: "purpose-users-and-iteration" | "bits-patterns-and-meaning" | null;
+  lessonSlug: ApCspLessonSlug | null;
   questionType: "multiple_choice";
   prompt: string;
   choices: readonly [ApCspChoice, ApCspChoice, ApCspChoice, ApCspChoice];
@@ -312,6 +313,468 @@ export const questions: readonly ApCspQuestion[] = [
     explanation:
       "A much smaller image file that looks worse is a typical lossy trade-off: size drops because some detail is thrown away. Lossless methods keep the original data.",
     objectiveCodes: ["DAT-1.D"],
+    difficulty: "medium",
+    sourceBasis: AP_CSP_SOURCE_BASIS,
+    version: 1,
+  },
+  {
+    namespace: AP_CSP_NAMESPACE,
+    slug: "pair-roles-during-merge",
+    lessonSlug: "collaboration-and-shared-drafts",
+    questionType: "multiple_choice",
+    prompt:
+      "Two officers pair on a debate-timer screen. One types while the other checks each step against the written purpose. They swap roles after twenty minutes. What is the main benefit of this practice?",
+    choices: [
+      {
+        id: "a",
+        text: "It removes the need to test the program with any users.",
+      },
+      {
+        id: "b",
+        text: "A second person can catch mismatches with the purpose before the draft is merged.",
+      },
+      {
+        id: "c",
+        text: "Pairing guarantees that the program will never contain an error.",
+      },
+      {
+        id: "d",
+        text: "Only one person is allowed to read comments in a shared file.",
+      },
+    ],
+    answerId: "b",
+    explanation:
+      "Pair work puts a second set of eyes on the draft against the purpose. It does not replace user tests or make errors impossible, and comments stay shared.",
+    objectiveCodes: ["CRD-1.B"],
+    difficulty: "easy",
+    sourceBasis: AP_CSP_SOURCE_BASIS,
+    version: 1,
+  },
+  {
+    namespace: AP_CSP_NAMESPACE,
+    slug: "courtyard-sensor-bias",
+    lessonSlug: "datasets-bias-and-charts",
+    questionType: "multiple_choice",
+    prompt:
+      "A San Jose climate club records quad temperatures only on sunny club afternoons with a sensor taped to a black bench. Officers later claim the dataset shows typical school-year weather. What is the strongest objection?",
+    choices: [
+      {
+        id: "a",
+        text: "Bits cannot store numbers larger than ten.",
+      },
+      {
+        id: "b",
+        text: "The sample is systematically tilted: sunny days and a hot bench, not the full year.",
+      },
+      {
+        id: "c",
+        text: "Temperature must always be stored as text characters.",
+      },
+      {
+        id: "d",
+        text: "Charts are forbidden whenever a sensor is used.",
+      },
+    ],
+    answerId: "b",
+    explanation:
+      "Collection choices tilt the dataset. Skipping rain and placing the sensor on a hot bench means the numbers do not represent typical weather.",
+    objectiveCodes: ["DAT-2.D"],
+    difficulty: "medium",
+    sourceBasis: AP_CSP_SOURCE_BASIS,
+    version: 1,
+  },
+  {
+    namespace: AP_CSP_NAMESPACE,
+    slug: "expired-card-selection",
+    lessonSlug: "sequences-selection-and-loops",
+    questionType: "multiple_choice",
+    prompt:
+      "A club nametag program should print a tag only when the membership card is not expired. Which control structure makes that decision?",
+    choices: [
+      {
+        id: "a",
+        text: "Selection that chooses the print path or the renewal path.",
+      },
+      {
+        id: "b",
+        text: "A packet protocol that splits the nametag into hops.",
+      },
+      {
+        id: "c",
+        text: "Lossy compression of the member photo.",
+      },
+      {
+        id: "d",
+        text: "A list that stores every Wi-Fi password on campus.",
+      },
+    ],
+    answerId: "a",
+    explanation:
+      "Choosing between printing and asking for renewal is selection. Packets, compression, and password lists do not make that program decision.",
+    objectiveCodes: ["AAP-2.E"],
+    difficulty: "easy",
+    sourceBasis: AP_CSP_SOURCE_BASIS,
+    version: 1,
+  },
+  {
+    namespace: AP_CSP_NAMESPACE,
+    slug: "compound-boolean-tool-checkout",
+    lessonSlug: "sequences-selection-and-loops",
+    questionType: "multiple_choice",
+    prompt:
+      "Robotics checkout is allowed only when the member is on the roster and the iron is marked in. Maya is on the roster. The iron is marked out. What should the program do?",
+    choices: [
+      {
+        id: "a",
+        text: "Allow checkout because one of the two conditions is true.",
+      },
+      {
+        id: "b",
+        text: "Refuse checkout because both required conditions are not true.",
+      },
+      {
+        id: "c",
+        text: "Allow checkout because roster membership always overrides tool status.",
+      },
+      {
+        id: "d",
+        text: "Ignore both conditions and print a random member name.",
+      },
+    ],
+    answerId: "b",
+    explanation:
+      "An and combination requires both parts to be true. The iron is out, so checkout should be refused even though Maya is on the roster.",
+    objectiveCodes: ["AAP-2.E"],
+    difficulty: "medium",
+    sourceBasis: AP_CSP_SOURCE_BASIS,
+    version: 1,
+  },
+  {
+    namespace: AP_CSP_NAMESPACE,
+    slug: "procedure-parameter-stock",
+    lessonSlug: "lists-procedures-and-simulations",
+    questionType: "multiple_choice",
+    prompt:
+      "The snack stand needs to subtract different amounts for chips, water, and pretzels from one shared list. Why pass the item name and amount as parameters instead of writing three nearly identical procedures?",
+    choices: [
+      {
+        id: "a",
+        text: "Parameters let one procedure handle many calls without copying the same steps.",
+      },
+      {
+        id: "b",
+        text: "Parameters delete the list after every sale.",
+      },
+      {
+        id: "c",
+        text: "Languages forbid more than one procedure in a club program.",
+      },
+      {
+        id: "d",
+        text: "Parameters convert the snack list into a network packet.",
+      },
+    ],
+    answerId: "a",
+    explanation:
+      "Parameters are inputs for one call. The same stock procedure can subtract one water or three pretzels without three pasted copies.",
+    objectiveCodes: ["AAP-3.A", "AAP-3.C"],
+    difficulty: "medium",
+    sourceBasis: AP_CSP_SOURCE_BASIS,
+    version: 1,
+  },
+  {
+    namespace: AP_CSP_NAMESPACE,
+    slug: "dance-line-simulation-assumption",
+    lessonSlug: "lists-procedures-and-simulations",
+    questionType: "multiple_choice",
+    prompt:
+      "A dance committee simulates ticket lines by serving one person every thirty seconds and ignoring friends who cut ahead. The model says two cashiers are enough. Which statement is most accurate?",
+    choices: [
+      {
+        id: "a",
+        text: "The simulation proves the real dance will never have a wait.",
+      },
+      {
+        id: "b",
+        text: "The omitted cutting behavior is an assumption that could change the conclusion.",
+      },
+      {
+        id: "c",
+        text: "Simulations are not allowed to leave anything out.",
+      },
+      {
+        id: "d",
+        text: "Two cashiers are required by every programming language.",
+      },
+    ],
+    answerId: "b",
+    explanation:
+      "A model is only as useful as its assumptions. Ignoring line-cutting may make two cashiers look sufficient when the real night is slower.",
+    objectiveCodes: ["AAP-3.F"],
+    difficulty: "hard",
+    sourceBasis: AP_CSP_SOURCE_BASIS,
+    version: 1,
+  },
+  {
+    namespace: AP_CSP_NAMESPACE,
+    slug: "interview-split-into-packets",
+    lessonSlug: "packets-paths-and-redundancy",
+    questionType: "multiple_choice",
+    prompt:
+      "A journalism club uploads a long interview from the library. Why does the sending computer split the file into packets?",
+    choices: [
+      {
+        id: "a",
+        text: "So addressed pieces can travel separately and only missing pieces need to be resent.",
+      },
+      {
+        id: "b",
+        text: "So the interview is automatically converted into a locker combination.",
+      },
+      {
+        id: "c",
+        text: "So bits lose all meaning until a human retypes the file.",
+      },
+      {
+        id: "d",
+        text: "So the school can store the interview as a single unbreakable block only.",
+      },
+    ],
+    answerId: "a",
+    explanation:
+      "Packets are addressed pieces. They can take different routes, and a drop only requires resending the missing piece, not the whole interview.",
+    objectiveCodes: ["CSN-1.C"],
+    difficulty: "easy",
+    sourceBasis: AP_CSP_SOURCE_BASIS,
+    version: 1,
+  },
+  {
+    namespace: AP_CSP_NAMESPACE,
+    slug: "out-of-order-packets-livestream",
+    lessonSlug: "packets-paths-and-redundancy",
+    questionType: "multiple_choice",
+    prompt:
+      "Packets from a robotics livestream arrive at the scoreboard out of order. Why can the stream still make sense a moment later?",
+    choices: [
+      {
+        id: "a",
+        text: "Routers secretly rewrite the match score before forwarding.",
+      },
+      {
+        id: "b",
+        text: "Addressing and sequencing information lets the receiver reassemble or request missing pieces.",
+      },
+      {
+        id: "c",
+        text: "Livestreams never use packets, only paper printouts.",
+      },
+      {
+        id: "d",
+        text: "Out-of-order arrival means the file was never split.",
+      },
+    ],
+    answerId: "b",
+    explanation:
+      "Packets carry addressing and order clues. The receiver can reassemble or request what is missing, which is why a brief glitch can recover.",
+    objectiveCodes: ["CSN-1.C"],
+    difficulty: "medium",
+    sourceBasis: AP_CSP_SOURCE_BASIS,
+    version: 1,
+  },
+  {
+    namespace: AP_CSP_NAMESPACE,
+    slug: "bandwidth-vs-latency-upload",
+    lessonSlug: "protocols-bandwidth-and-open-internet",
+    questionType: "multiple_choice",
+    prompt:
+      "Officers can send a short RSVP form from a phone hotspot, but a raw concert video stalls. Which explanation is most accurate?",
+    choices: [
+      {
+        id: "a",
+        text: "Bandwidth is capacity over time; a small form fits a weak path that cannot carry huge media quickly.",
+      },
+      {
+        id: "b",
+        text: "Forms are not allowed to travel on the internet.",
+      },
+      {
+        id: "c",
+        text: "Video files do not contain bits, so they cannot be uploaded.",
+      },
+      {
+        id: "d",
+        text: "Latency is the only number that matters, and it is always zero on phones.",
+      },
+    ],
+    answerId: "a",
+    explanation:
+      "Bandwidth is how much can move per second. A tiny form needs little capacity; raw video needs much more. Latency is wait time, not the same idea.",
+    objectiveCodes: ["CSN-1.E"],
+    difficulty: "medium",
+    sourceBasis: AP_CSP_SOURCE_BASIS,
+    version: 1,
+  },
+  {
+    namespace: AP_CSP_NAMESPACE,
+    slug: "parallel-encode-shared-drive",
+    lessonSlug: "protocols-bandwidth-and-open-internet",
+    questionType: "multiple_choice",
+    prompt:
+      "Four lab computers each encode five interview clips, but all results must be saved through one shared drive that accepts a single file at a time. Why might wall-clock time barely improve?",
+    choices: [
+      {
+        id: "a",
+        text: "Parallel split work cannot help if the join step is a new bottleneck.",
+      },
+      {
+        id: "b",
+        text: "Computers are forbidden from working on more than one file in a semester.",
+      },
+      {
+        id: "c",
+        text: "Encoding always takes zero time once a protocol exists.",
+      },
+      {
+        id: "d",
+        text: "Shared drives automatically duplicate every clip onto a satellite.",
+      },
+    ],
+    answerId: "a",
+    explanation:
+      "Splitting encoding is parallel, but a one-at-a-time save step can erase the speedup. Students should estimate both the split and the join.",
+    objectiveCodes: ["CSN-2.B"],
+    difficulty: "hard",
+    sourceBasis: AP_CSP_SOURCE_BASIS,
+    version: 1,
+  },
+  {
+    namespace: AP_CSP_NAMESPACE,
+    slug: "carpool-exclusion-effect",
+    lessonSlug: "computing-innovations-and-effects",
+    questionType: "multiple_choice",
+    prompt:
+      "A robotics carpool matcher requires a smartphone and a shared home-area pin. Which harmful effect should the team weigh alongside faster pickups?",
+    choices: [
+      {
+        id: "a",
+        text: "Students without a phone or permission to share a home area can be left out.",
+      },
+      {
+        id: "b",
+        text: "Bits cannot represent street names.",
+      },
+      {
+        id: "c",
+        text: "Carpool apps are unable to use any protocol.",
+      },
+      {
+        id: "d",
+        text: "Faster pickups always cancel every privacy concern.",
+      },
+    ],
+    answerId: "a",
+    explanation:
+      "A helpful innovation can exclude people who cannot meet its device or data requirements. That harmful effect belongs in the design review.",
+    objectiveCodes: ["IOC-1.A", "IOC-1.B"],
+    difficulty: "medium",
+    sourceBasis: AP_CSP_SOURCE_BASIS,
+    version: 1,
+  },
+  {
+    namespace: AP_CSP_NAMESPACE,
+    slug: "recommended-clubs-training-bias",
+    lessonSlug: "computing-innovations-and-effects",
+    questionType: "multiple_choice",
+    prompt:
+      "A recommended-clubs model is trained only on last year's join lists, which were dominated by two large teams. New students keep seeing those same two teams. What is the best diagnosis?",
+    choices: [
+      {
+        id: "a",
+        text: "The model is biased toward patterns in the training data, so missing clubs stay missing.",
+      },
+      {
+        id: "b",
+        text: "Training data cannot influence later recommendations.",
+      },
+      {
+        id: "c",
+        text: "Every recommendation system must suggest exactly two teams.",
+      },
+      {
+        id: "d",
+        text: "Join lists are bits and therefore have no social effect.",
+      },
+    ],
+    answerId: "a",
+    explanation:
+      "A model repeats patterns in its training data. If small or new clubs were scarce last year, they stay invisible unless the team changes the data or the rule.",
+    objectiveCodes: ["IOC-1.F"],
+    difficulty: "hard",
+    sourceBasis: AP_CSP_SOURCE_BASIS,
+    version: 1,
+  },
+  {
+    namespace: AP_CSP_NAMESPACE,
+    slug: "pothole-map-representation",
+    lessonSlug: "crowdsourcing-legal-and-ethical-limits",
+    questionType: "multiple_choice",
+    prompt:
+      "A civic club builds a pothole map from phone reports. Almost every pin is from one neighborhood with many drivers. What should officers tell the city?",
+    choices: [
+      {
+        id: "a",
+        text: "The map proves every other neighborhood has zero potholes.",
+      },
+      {
+        id: "b",
+        text: "The map shows where reports came from, which may not match where all holes are.",
+      },
+      {
+        id: "c",
+        text: "Crowdsourcing always produces a complete census.",
+      },
+      {
+        id: "d",
+        text: "Phone reports cannot be stored as data.",
+      },
+    ],
+    answerId: "b",
+    explanation:
+      "Crowdsourcing scales, but it reflects who reports. A cluster of pins can mean more drivers, not a unique pothole crisis.",
+    objectiveCodes: ["IOC-1.D"],
+    difficulty: "easy",
+    sourceBasis: AP_CSP_SOURCE_BASIS,
+    version: 1,
+  },
+  {
+    namespace: AP_CSP_NAMESPACE,
+    slug: "yearbook-photo-not-free",
+    lessonSlug: "crowdsourcing-legal-and-ethical-limits",
+    questionType: "multiple_choice",
+    prompt:
+      "A meme generator pulls a yearbook photographer's image from a club chat and treats it as free raw material. Why is that a problem?",
+    choices: [
+      {
+        id: "a",
+        text: "Appearing in a chat does not grant a remix license or erase copyright.",
+      },
+      {
+        id: "b",
+        text: "Photographs cannot be represented with bits.",
+      },
+      {
+        id: "c",
+        text: "Club chats automatically place every file in the public domain.",
+      },
+      {
+        id: "d",
+        text: "Only printed posters can be copyrighted, never digital files.",
+      },
+    ],
+    answerId: "a",
+    explanation:
+      "Legal reuse depends on license and permission, not on how easy the file was to copy from a chat. Open licenses, if any, must be checked.",
+    objectiveCodes: ["IOC-1.E"],
     difficulty: "medium",
     sourceBasis: AP_CSP_SOURCE_BASIS,
     version: 1,

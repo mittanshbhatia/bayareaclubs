@@ -167,6 +167,8 @@ export const reviewTransitionSchema = z.object({
     .transform((value) => (value ? sanitizePlainText(value) : null)),
 });
 
+export const CATALOG_FAMILIES = ["all", "cs", "math", "science", "social"] as const;
+
 export const catalogPageSchema = z.object({
   page: z.coerce.number().int().min(1).max(500).default(1),
   pageSize: z.coerce
@@ -175,6 +177,7 @@ export const catalogPageSchema = z.object({
     .min(1)
     .max(48)
     .default(LEARNING_CATALOG_PAGE_SIZE),
+  family: z.enum(CATALOG_FAMILIES).default("all"),
 });
 
 export const similarityCheckSchema = z.object({

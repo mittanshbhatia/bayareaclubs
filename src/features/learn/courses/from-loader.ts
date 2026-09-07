@@ -6,9 +6,15 @@ import {
   loaderQuestionId,
   loaderUnitId,
 } from "@/features/learn/courses/ids";
-import { loadCourseNamespace } from "@/features/learn/courses/loader";
+import {
+  listRegisteredCourseNamespaces,
+  loadCourseNamespace,
+} from "@/features/learn/courses/loader";
 import { getRegistryEntry } from "@/features/learn/courses/registry";
-import type { CourseContentBundle } from "@/features/learn/courses/types";
+import type {
+  CourseContentBundle,
+  CourseTool,
+} from "@/features/learn/courses/types";
 import type {
   LearningCourse,
   LearningLesson,
@@ -22,6 +28,7 @@ export type LoaderHydratedCourse = {
   units: LearningModule[];
   lessons: LearningLesson[];
   questions: StudentQuestion[];
+  tools: CourseTool[];
   keyedQuestions: Array<{
     id: string;
     slug: string;
@@ -29,6 +36,26 @@ export type LoaderHydratedCourse = {
     answerId: string;
     explanation: string;
   }>;
+};
+
+const DISCIPLINE_BY_NAMESPACE: Record<
+  string,
+  LoaderHydratedCourse["course"]["discipline"]
+> = {
+  "ap-csp": "computer_science",
+  "ap-csa": "computer_science",
+  "ap-calc-ab": "mathematics",
+  "ap-calc-bc": "mathematics",
+  "ap-stats": "mathematics",
+  "ap-precalc": "mathematics",
+  "ap-physics-1": "physics",
+  "ap-physics-2": "physics",
+  "ap-physics-c-mech": "physics",
+  "ap-physics-c-em": "physics",
+  "ap-chem": "chemistry",
+  "ap-bio": "biology",
+  "ap-envsci": "earth_science",
+  "ap-psych": "other",
 };
 
 export async function hydrateShippingCourse(
@@ -59,7 +86,10 @@ function mapBundle(
     course_namespace: namespace,
     title: bundle.manifest.title,
     description: bundle.manifest.description,
-    discipline: "computer_science",
+    discipline:
+      bundle.manifest.discipline ??
+      DISCIPLINE_BY_NAMESPACE[namespace] ??
+      "other",
     grade_bands: ["age_13_17", "adult"],
     difficulty: "intermediate",
     format: "mixed",
@@ -150,7 +180,14 @@ function mapBundle(
     explanation: question.explanation,
   }));
 
-  return { course, units, lessons, questions, keyedQuestions };
+  return {
+    course,
+    units,
+    lessons,
+    questions,
+    tools: [...(bundle.tools ?? [])],
+    keyedQuestions,
+  };
 }
 
 export async function gradeLoaderAttempt(input: {
@@ -162,11 +199,13 @@ export async function gradeLoaderAttempt(input: {
   isCorrect: boolean;
   explanation: string | null;
 } | null> {
-  for (const namespace of ["ap-csp", "ap-csa"]) {
+  for (const namespace of listRegisteredCourseNamespaces()) {
     if (loaderCourseId(namespace) !== input.courseId) continue;
-    const hydrated = await hydrateShippingCourse(namespace);
-    if (!hydrated) return null;
-    const question = hydrated.keyedQuestions.find((row) => row.id === input.questionId);
+    const bundle = await loadCourseNamespace(namespace);
+    if (!bundle) return null;
+    const question = (bundle.questions ?? []).find((row) => {
+      return loaderQuestionId(namespace, row.slug) === input.questionId;
+    });
     if (!question) return null;
     return {
       namespace,

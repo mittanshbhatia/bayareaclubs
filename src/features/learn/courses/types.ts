@@ -1,11 +1,35 @@
 export type CourseLoaderStatus = "planned" | "shipping";
 
+export type CourseToolKind =
+  | "practice"
+  | "quiz"
+  | "review"
+  | "notes"
+  | "readiness";
+
+export type CourseTool = {
+  kind: CourseToolKind;
+  slug: string;
+  title: string;
+  description: string;
+  questionSlugs?: readonly string[];
+  lessonSlugs?: readonly string[];
+};
+
 export type CourseManifest = {
   namespace: string;
   title: string;
   description: string;
   frameworkCode?: string;
   frameworkYear?: number;
+  discipline?:
+    | "computer_science"
+    | "mathematics"
+    | "physics"
+    | "chemistry"
+    | "biology"
+    | "earth_science"
+    | "other";
   units: Array<{
     slug: string;
     title: string;
@@ -44,6 +68,7 @@ export type CourseContentBundle = {
   manifest: CourseManifest;
   lessons?: readonly LoaderLesson[];
   questions?: readonly LoaderQuestion[];
+  tools?: readonly CourseTool[];
 };
 
 export type CourseLoader = () => Promise<CourseContentBundle>;

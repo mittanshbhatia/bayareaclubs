@@ -16,4 +16,6 @@ export type {
   CourseLoader,
   CourseLoaderStatus,
   CourseManifest,
+  CourseTool,
+  CourseToolKind,
 } from "@/features/learn/courses/types";

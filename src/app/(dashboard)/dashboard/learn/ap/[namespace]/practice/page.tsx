@@ -2,29 +2,12 @@ import Link from "next/link";
 
 import { EmptyState } from "@/components/ds/states";
 import { Button } from "@/components/ui/button";
-import { AttemptForm } from "@/features/learn/components/attempt-form";
+import { QuestionSet } from "@/features/learn/components/question-set";
 import { getCourseByNamespace, listStudentQuestions } from "@/features/learn/queries";
 import { requireActiveUser } from "@/lib/auth/authorization";
 import { handleAuthorizationError } from "@/lib/auth/route-guard";
 
 export const dynamic = "force-dynamic";
-
-function asChoices(value: unknown): Array<{ id: string; text: string }> {
-  if (!Array.isArray(value)) return [];
-  return value.flatMap((item) => {
-    if (
-      item &&
-      typeof item === "object" &&
-      "id" in item &&
-      "text" in item &&
-      typeof item.id === "string" &&
-      typeof item.text === "string"
-    ) {
-      return [{ id: item.id, text: item.text }];
-    }
-    return [];
-  });
-}
 
 export default async function ApPracticePage({
   params,
@@ -77,26 +60,7 @@ export default async function ApPracticePage({
           description="Original questions appear here after they are approved and published."
         />
       ) : (
-        <ol className="space-y-5">
-          {questions.map((question, index) => (
-            <li
-              key={question.id}
-              className="rounded-lg border border-(--course-border) bg-learning-surface p-4"
-            >
-              <p className="text-sm font-medium">
-                {index + 1}. {question.prompt}
-              </p>
-              <div className="mt-3">
-                <AttemptForm
-                  courseId={courseId}
-                  questionId={question.id}
-                  questionType={question.question_type}
-                  choices={asChoices(question.choices)}
-                />
-              </div>
-            </li>
-          ))}
-        </ol>
+        <QuestionSet courseId={courseId} questions={questions} />
       )}
     </div>
   );

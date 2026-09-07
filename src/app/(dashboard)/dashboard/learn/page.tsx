@@ -4,6 +4,7 @@ import { BookOpen, GraduationCap } from "lucide-react";
 import { EmptyState } from "@/components/ds/states";
 import { Button } from "@/components/ui/button";
 import { ApCourseCard } from "@/features/learn/components/ap-course-card";
+import { CourseCardArt } from "@/features/learn/components/course-card-art";
 import { AP_COURSE_REGISTRY } from "@/features/learn/courses/registry";
 import { getMyLearnProgress, listPublishedApCatalog } from "@/features/learn/queries";
 import { requireActiveUser } from "@/lib/auth/authorization";
@@ -95,6 +96,8 @@ export default async function LearnHubPage() {
                 namespace={entry.namespace}
                 icon={entry.icon}
                 status="shipping"
+                href={`/dashboard/learn/ap/${entry.namespace}`}
+                illustration={<CourseCardArt namespace={entry.namespace} />}
               />
             ))}
           </div>
@@ -114,6 +117,7 @@ export default async function LearnHubPage() {
                   status="published"
                   minutes={course.estimated_minutes}
                   href={`/dashboard/learn/ap/${course.course_namespace}`}
+                  illustration={<CourseCardArt namespace={course.course_namespace} />}
                 />
               );
             })}

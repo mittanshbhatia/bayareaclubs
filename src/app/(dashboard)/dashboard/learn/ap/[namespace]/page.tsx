@@ -2,8 +2,11 @@ import Link from "next/link";
 
 import { EmptyState } from "@/components/ds/states";
 import { Button } from "@/components/ui/button";
+import { CourseCardArt } from "@/features/learn/components/course-card-art";
+import { CourseToolsCluster } from "@/features/learn/components/course-tools-cluster";
 import { getRegistryEntry } from "@/features/learn/courses/registry";
 import { getCourseByNamespace } from "@/features/learn/queries";
+import { listCourseTools } from "@/features/learn/tools";
 import { requireActiveUser } from "@/lib/auth/authorization";
 import { handleAuthorizationError } from "@/lib/auth/route-guard";
 
@@ -40,26 +43,24 @@ export default async function ApCoursePage({
     bundle.course?.description ??
     registry?.description ??
     "Course details will appear after publication.";
+  const tools = await listCourseTools(namespace);
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
+      <div className="overflow-hidden rounded-lg border border-(--course-border) bg-learning-surface">
+        <div className="relative w-full" style={{ aspectRatio: "16 / 10", maxHeight: 280 }}>
+          <CourseCardArt namespace={namespace} />
+        </div>
+        <div className="p-5">
           <p className="text-sm font-medium text-primary">{namespace}</p>
           <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight">
             {title}
           </h1>
           <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{description}</p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Button asChild variant="outline">
-            <Link href={`/dashboard/learn/ap/${namespace}/practice`}>Practice</Link>
-          </Button>
-          <Button asChild variant="outline">
-            <Link href={`/dashboard/learn/ap/${namespace}/tests`}>Tests</Link>
-          </Button>
-        </div>
       </div>
+
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_18rem]">
 
       {bundle.units.length === 0 ? (
         <EmptyState
@@ -107,6 +108,8 @@ export default async function ApCoursePage({
           })}
         </ol>
       )}
+        {bundle.course ? <CourseToolsCluster namespace={namespace} tools={tools} /> : null}
+      </div>
     </div>
   );
 }

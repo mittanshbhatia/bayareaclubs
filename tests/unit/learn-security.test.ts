@@ -132,8 +132,8 @@ describe("learning hostile authorization (all DENY)", () => {
         const source = readFileSync(file, "utf8");
         return (
           source.includes("answer_key") ||
-          source.includes("ap-csa/questions") ||
-          source.includes("ap-csp/questions")
+          source.includes("/questions") &&
+          source.includes("features/learn/courses/ap-")
         );
       });
       expect(offenders).toEqual([]);

@@ -10,9 +10,8 @@ export type ApCourseRegistryEntry = {
 };
 
 /**
- * P1 AP catalog. Only ap-csp and ap-csa are shipping skeletons.
- * Agents 10/11 own lesson/question content under courses/<namespace>/.
- * Do not mark planned courses published.
+ * Shipping namespaces have original loaders with official CED unit coverage.
+ * Planned titles were not completed by their course agents.
  */
 export const AP_COURSE_REGISTRY: readonly ApCourseRegistryEntry[] = [
   {
@@ -36,7 +35,7 @@ export const AP_COURSE_REGISTRY: readonly ApCourseRegistryEntry[] = [
     title: "AP Calculus AB",
     description: "Limits, derivatives, and integrals aligned to public CED objective codes.",
     frameworkCode: "CALC-AB",
-    status: "planned",
+    status: "shipping",
     icon: "calculator",
   },
   {
@@ -44,7 +43,7 @@ export const AP_COURSE_REGISTRY: readonly ApCourseRegistryEntry[] = [
     title: "AP Calculus BC",
     description: "Series, parametric motion, and advanced integration techniques.",
     frameworkCode: "CALC-BC",
-    status: "planned",
+    status: "shipping",
     icon: "sigma",
   },
   {
@@ -52,7 +51,7 @@ export const AP_COURSE_REGISTRY: readonly ApCourseRegistryEntry[] = [
     title: "AP Statistics",
     description: "Exploring data, sampling, probability, and inference.",
     frameworkCode: "STAT",
-    status: "planned",
+    status: "shipping",
     icon: "sigma",
   },
   {
@@ -60,7 +59,7 @@ export const AP_COURSE_REGISTRY: readonly ApCourseRegistryEntry[] = [
     title: "AP Precalculus",
     description: "Polynomial, exponential, trigonometric, and polar functions.",
     frameworkCode: "PRECALC",
-    status: "planned",
+    status: "shipping",
     icon: "calculator",
   },
   {
@@ -68,7 +67,7 @@ export const AP_COURSE_REGISTRY: readonly ApCourseRegistryEntry[] = [
     title: "AP Physics 1",
     description: "Algebra-based mechanics, waves, and introductory circuits.",
     frameworkCode: "PHYS1",
-    status: "planned",
+    status: "shipping",
     icon: "atom",
   },
   {
@@ -100,7 +99,7 @@ export const AP_COURSE_REGISTRY: readonly ApCourseRegistryEntry[] = [
     title: "AP Chemistry",
     description: "Atomic structure, bonding, thermodynamics, and equilibrium.",
     frameworkCode: "CHEM",
-    status: "planned",
+    status: "shipping",
     icon: "flask",
   },
   {
@@ -108,7 +107,7 @@ export const AP_COURSE_REGISTRY: readonly ApCourseRegistryEntry[] = [
     title: "AP Biology",
     description: "Evolution, energetics, information storage, and systems.",
     frameworkCode: "BIO",
-    status: "planned",
+    status: "shipping",
     icon: "leaf",
   },
   {
@@ -116,7 +115,7 @@ export const AP_COURSE_REGISTRY: readonly ApCourseRegistryEntry[] = [
     title: "AP Environmental Science",
     description: "Earth systems, resources, pollution, and global change.",
     frameworkCode: "ENVS",
-    status: "planned",
+    status: "shipping",
     icon: "leaf",
   },
   {
@@ -124,7 +123,7 @@ export const AP_COURSE_REGISTRY: readonly ApCourseRegistryEntry[] = [
     title: "AP Psychology",
     description: "Biological bases, cognition, development, and social psychology.",
     frameworkCode: "PSYCH",
-    status: "planned",
+    status: "shipping",
     icon: "brain",
   },
 ] as const;
@@ -143,4 +142,36 @@ export function listPlannedNamespaces() {
   return AP_COURSE_REGISTRY.filter((entry) => entry.status === "planned").map(
     (entry) => entry.namespace,
   );
+}
+
+export type CatalogFamily = "all" | "cs" | "math" | "science" | "social";
+
+const FAMILY_NAMESPACES: Record<Exclude<CatalogFamily, "all">, readonly string[]> = {
+  cs: ["ap-csp", "ap-csa"],
+  math: ["ap-calc-ab", "ap-calc-bc", "ap-stats", "ap-precalc"],
+  science: [
+    "ap-physics-1",
+    "ap-physics-2",
+    "ap-physics-c-mech",
+    "ap-physics-c-em",
+    "ap-chem",
+    "ap-bio",
+    "ap-envsci",
+  ],
+  social: ["ap-psych"],
+};
+
+export function catalogFamilyFor(namespace: string): Exclude<CatalogFamily, "all"> | null {
+  for (const [family, namespaces] of Object.entries(FAMILY_NAMESPACES)) {
+    if (namespaces.includes(namespace)) return family as Exclude<CatalogFamily, "all">;
+  }
+  return null;
+}
+
+export function filterRegistryByFamily(
+  entries: readonly ApCourseRegistryEntry[],
+  family: CatalogFamily,
+) {
+  if (family === "all") return [...entries];
+  return entries.filter((entry) => FAMILY_NAMESPACES[family].includes(entry.namespace));
 }
