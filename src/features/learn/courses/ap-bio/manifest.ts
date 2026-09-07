@@ -276,16 +276,17 @@ export function toCourseManifest(
 }
 
 export async function loadApBioCourse(): Promise<CourseContentBundle> {
-  const [{ lessons }, { questions }, { tools }] = await Promise.all([
+  const [{ lessons }, { questions }, { tools }, extra] = await Promise.all([
     import("@/features/learn/courses/ap-bio/content"),
     import("@/features/learn/courses/ap-bio/questions"),
     import("@/features/learn/courses/ap-bio/tools"),
+    import("@/features/learn/courses/ap-bio/questions-advanced"),
   ]);
 
   return {
     manifest: toCourseManifest(),
     lessons,
-    questions,
+    questions: [...questions, ...extra.questions],
     tools,
   };
 }

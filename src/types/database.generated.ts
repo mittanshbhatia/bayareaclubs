@@ -4606,6 +4606,7 @@ export type Database = {
           framework_year: number | null
           grade_bands: Database["public"]["Enums"]["age_band"][]
           id: string
+          is_featured: boolean
           is_free: boolean
           is_published: boolean
           last_verified_at: string | null
@@ -4638,6 +4639,7 @@ export type Database = {
           framework_year?: number | null
           grade_bands: Database["public"]["Enums"]["age_band"][]
           id?: string
+          is_featured?: boolean
           is_free?: boolean
           is_published?: boolean
           last_verified_at?: string | null
@@ -4670,6 +4672,7 @@ export type Database = {
           framework_year?: number | null
           grade_bands?: Database["public"]["Enums"]["age_band"][]
           id?: string
+          is_featured?: boolean
           is_free?: boolean
           is_published?: boolean
           last_verified_at?: string | null

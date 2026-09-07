@@ -323,16 +323,17 @@ export function toCourseManifest(
 }
 
 export async function loadApCalcBcCourse(): Promise<CourseContentBundle> {
-  const [{ lessons }, { questions }, { tools }] = await Promise.all([
+  const [{ lessons }, { questions }, { tools }, extra] = await Promise.all([
     import("@/features/learn/courses/ap-calc-bc/content"),
     import("@/features/learn/courses/ap-calc-bc/questions"),
     import("@/features/learn/courses/ap-calc-bc/tools"),
+    import("@/features/learn/courses/ap-calc-bc/questions-advanced"),
   ]);
 
   return {
     manifest: toCourseManifest(),
     lessons,
-    questions,
+    questions: [...questions, ...extra.questions],
     tools,
   };
 }

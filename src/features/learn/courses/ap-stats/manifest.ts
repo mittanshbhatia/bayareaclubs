@@ -326,16 +326,17 @@ export function toCourseManifest(
 }
 
 export async function loadApStatsCourse(): Promise<CourseContentBundle> {
-  const [{ lessons }, { questions }, { tools }] = await Promise.all([
+  const [{ lessons }, { questions }, { tools }, extra] = await Promise.all([
     import("@/features/learn/courses/ap-stats/content"),
     import("@/features/learn/courses/ap-stats/questions"),
     import("@/features/learn/courses/ap-stats/tools"),
+    import("@/features/learn/courses/ap-stats/questions-advanced"),
   ]);
 
   return {
     manifest: toCourseManifest(),
     lessons,
-    questions,
+    questions: [...questions, ...extra.questions],
     tools,
   };
 }

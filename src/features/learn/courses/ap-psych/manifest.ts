@@ -206,16 +206,17 @@ export function toCourseManifest(
 }
 
 export async function loadApPsychCourse(): Promise<CourseContentBundle> {
-  const [{ lessons }, { questions }, { tools }] = await Promise.all([
+  const [{ lessons }, { questions }, { tools }, extra] = await Promise.all([
     import("@/features/learn/courses/ap-psych/content"),
     import("@/features/learn/courses/ap-psych/questions"),
     import("@/features/learn/courses/ap-psych/tools"),
+    import("@/features/learn/courses/ap-psych/questions-advanced"),
   ]);
 
   return {
     manifest: toCourseManifest(),
     lessons,
-    questions,
+    questions: [...questions, ...extra.questions],
     tools,
   };
 }

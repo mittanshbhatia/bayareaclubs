@@ -7,9 +7,11 @@ import { CatalogFamilyChips } from "@/features/learn/components/catalog-family-c
 import { CatalogPagination } from "@/features/learn/components/catalog-pagination";
 import { CourseCardArt } from "@/features/learn/components/course-card-art";
 import {
-  AP_COURSE_REGISTRY,
-  filterRegistryByFamily,
-} from "@/features/learn/courses/registry";
+  availableCatalogEntries,
+  featuredRegistryEntries,
+  plannedCatalogEntries,
+} from "@/features/learn/catalog-model";
+import { AP_COURSE_REGISTRY } from "@/features/learn/courses/registry";
 import { listPublishedApCatalog } from "@/features/learn/queries";
 import { requireActiveUser } from "@/lib/auth/authorization";
 import { handleAuthorizationError } from "@/lib/auth/route-guard";
@@ -34,19 +36,10 @@ export default async function ApCatalogPage({
     family: typeof params.family === "string" ? params.family : "all",
   });
   const catalog = await listPublishedApCatalog(paging.page, paging.pageSize);
-  const published = catalog.courses.filter((course) => {
-    if (paging.family === "all") return true;
-    return filterRegistryByFamily(AP_COURSE_REGISTRY, paging.family).some(
-      (entry) => entry.namespace === course.course_namespace,
-    );
-  });
-  const shipping = filterRegistryByFamily(
-    AP_COURSE_REGISTRY.filter((entry) => entry.status === "shipping"),
-    paging.family,
-  );
-  const planned = filterRegistryByFamily(
-    AP_COURSE_REGISTRY.filter((entry) => entry.status === "planned"),
-    paging.family,
+  const available = availableCatalogEntries(AP_COURSE_REGISTRY, paging.family);
+  const planned = plannedCatalogEntries(AP_COURSE_REGISTRY, paging.family);
+  const featured = featuredRegistryEntries().filter((entry) =>
+    available.some((row) => row.namespace === entry.namespace),
   );
 
   return (
@@ -69,9 +62,30 @@ export default async function ApCatalogPage({
 
       <CatalogFamilyChips family={paging.family} />
 
+      {featured.length > 0 ? (
+        <section className="space-y-4">
+          <h2 className="font-semibold">Featured</h2>
+          <div className={CATALOG_GRID_CLASS}>
+            {featured.map((entry) => (
+              <ApCourseCard
+                key={entry.namespace}
+                title={entry.title}
+                description={entry.description}
+                namespace={entry.namespace}
+                icon={entry.icon}
+                status="shipping"
+                href={`/dashboard/learn/ap/${entry.namespace}`}
+                illustration={<CourseCardArt namespace={entry.namespace} />}
+                actionLabel="Open course"
+              />
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       <section className="space-y-4">
-        <h2 className="font-semibold">Published</h2>
-        {published.length === 0 ? (
+        <h2 className="font-semibold">Courses</h2>
+        {available.length === 0 ? (
           <EmptyState
             title="No published AP courses in this path yet"
             description="Shipping originals appear here after approval. STEM resources stay available while this family is empty."
@@ -80,21 +94,20 @@ export default async function ApCatalogPage({
           />
         ) : (
           <div className={CATALOG_GRID_CLASS}>
-            {published.map((course) => {
-              const registry = AP_COURSE_REGISTRY.find(
-                (entry) => entry.namespace === course.course_namespace,
+            {available.map((entry) => {
+              const published = catalog.courses.find(
+                (course) => course.course_namespace === entry.namespace,
               );
               return (
                 <ApCourseCard
-                  key={course.id}
-                  title={course.title}
-                  description={course.description}
-                  namespace={course.course_namespace}
-                  icon={registry?.icon}
-                  status="published"
-                  minutes={course.estimated_minutes}
-                  href={`/dashboard/learn/ap/${course.course_namespace}`}
-                  illustration={<CourseCardArt namespace={course.course_namespace} />}
+                  key={entry.namespace}
+                  title={entry.title}
+                  namespace={entry.namespace}
+                  icon={entry.icon}
+                  status={published ? "published" : "shipping"}
+                  minutes={published?.estimated_minutes}
+                  href={`/dashboard/learn/ap/${entry.namespace}`}
+                  illustration={<CourseCardArt namespace={entry.namespace} />}
                 />
               );
             })}
@@ -107,26 +120,6 @@ export default async function ApCatalogPage({
           family={paging.family}
         />
       </section>
-
-      {shipping.length > 0 ? (
-        <section className="space-y-4">
-          <h2 className="font-semibold">Shipping originals</h2>
-          <div className={CATALOG_GRID_CLASS}>
-            {shipping.map((entry) => (
-              <ApCourseCard
-                key={entry.namespace}
-                title={entry.title}
-                description={entry.description}
-                namespace={entry.namespace}
-                icon={entry.icon}
-                status="shipping"
-                href={`/dashboard/learn/ap/${entry.namespace}`}
-                illustration={<CourseCardArt namespace={entry.namespace} />}
-              />
-            ))}
-          </div>
-        </section>
-      ) : null}
 
       <section className="space-y-4">
         <h2 className="font-semibold">Planned</h2>

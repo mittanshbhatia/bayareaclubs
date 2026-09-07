@@ -206,16 +206,17 @@ export function toCourseManifest(
 }
 
 export async function loadApCspCourse(): Promise<CourseContentBundle> {
-  const [{ lessons }, { questions }, { tools }] = await Promise.all([
+  const [{ lessons }, { questions }, { tools }, extra] = await Promise.all([
     import("@/features/learn/courses/ap-csp/content"),
     import("@/features/learn/courses/ap-csp/questions"),
     import("@/features/learn/courses/ap-csp/tools"),
+    import("@/features/learn/courses/ap-csp/questions-advanced"),
   ]);
 
   return {
     manifest: toCourseManifest(),
     lessons,
-    questions,
+    questions: [...questions, ...extra.questions],
     tools,
   };
 }

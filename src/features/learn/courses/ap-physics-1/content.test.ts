@@ -125,7 +125,7 @@ describe("ap-physics-1 original course", () => {
     expect(bundle.manifest.discipline).toBe("physics");
     expect(bundle.manifest.units.length).toBe(courseManifest.units.length);
     expect(bundle.lessons?.length).toBe(lessons.length);
-    expect(bundle.questions?.length).toBe(questions.length);
+    expect(bundle.questions?.length).toBeGreaterThanOrEqual(questions.length);
     expect(bundle.tools?.length).toBe(5);
     expect(HTML_TAG.test(overview.bodyPlain)).toBe(false);
   });

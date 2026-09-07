@@ -1,5 +1,12 @@
 import "server-only";
 
+import {
+  continueLesson,
+  courseProgress,
+  featuredRegistryEntries,
+  recentResults,
+  weakAreas,
+} from "@/features/learn/catalog-model";
 import { hydrateShippingCourse } from "@/features/learn/courses/from-loader";
 import { getRegistryEntry, listShippingNamespaces } from "@/features/learn/courses/registry";
 import {
@@ -285,4 +292,73 @@ export async function getMyLearnProgress() {
     });
     return acc;
   }, []);
+}
+
+export async function listLearnHub(family: "all" | "cs" | "math" | "science" | "social" = "all") {
+  const [catalog, progress] = await Promise.all([
+    listPublishedApCatalog(1, 48),
+    getMyLearnProgress(),
+  ]);
+  const featured = featuredRegistryEntries();
+  return { catalog, progress, featured, family };
+}
+
+export async function getCourseWorkspace(namespace: string) {
+  const bundle = await getCourseByNamespace(namespace);
+  const questions = bundle.course ? await listStudentQuestions(namespace) : [];
+  const attempts = bundle.course
+    ? await listMyAttempts(bundle.course.id, bundle.actorId).catch(() => [])
+    : [];
+
+  const workspaceAttempts = attempts.map((attempt) => ({
+    questionId: attempt.question_id,
+    isCorrect: attempt.is_correct,
+    createdAt: attempt.created_at,
+  }));
+  const workspaceLessons = bundle.lessons.map((lesson) => ({
+    id: lesson.id,
+    slug: lesson.slug,
+    title: lesson.title,
+    moduleId: lesson.module_id,
+  }));
+  const workspaceUnits = bundle.units.map((unit) => ({
+    id: unit.id,
+    slug: unit.slug,
+    title: unit.title,
+  }));
+  const workspaceQuestions = questions.map((question) => ({
+    id: question.id,
+    slug: question.slug,
+    lessonId: question.lesson_id,
+    prompt: question.prompt,
+  }));
+
+  return {
+    ...bundle,
+    questions,
+    attempts,
+    continueTarget: continueLesson({
+      namespace,
+      units: workspaceUnits,
+      lessons: workspaceLessons,
+      questions: workspaceQuestions,
+      attempts: workspaceAttempts,
+    }),
+    progress: courseProgress({
+      lessons: workspaceLessons,
+      questions: workspaceQuestions,
+      attempts: workspaceAttempts,
+    }),
+    weakAreas: weakAreas({
+      namespace,
+      units: workspaceUnits,
+      lessons: workspaceLessons,
+      questions: workspaceQuestions,
+      attempts: workspaceAttempts,
+    }),
+    recentResults: recentResults({
+      questions: workspaceQuestions,
+      attempts: workspaceAttempts,
+    }),
+  };
 }

@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   COURSE_CARD_MEASURE,
   ORIGINAL_CARD_NAMESPACES,
+  courseCardSvgMarkup,
 } from "@/features/learn/components/course-card-art";
 import {
   AP_COURSE_REGISTRY,
@@ -46,6 +47,9 @@ describe("AP catalog families and original card art", () => {
     expect(COURSE_CARD_MEASURE.titlePx).toBe(16);
     expect(COURSE_CARD_MEASURE.bodyPx).toBe(12);
     expect(COURSE_CARD_MEASURE.chipHeightPx).toBe(40);
+    expect(courseCardSvgMarkup("ap-csa")).toContain("592");
+    expect(courseCardSvgMarkup("ap-csa")).toContain("#0f5c44");
+    expect(courseCardSvgMarkup("ap-csa")).not.toMatch(/stellar|unsplash/i);
   });
 
   it("maps the five BayAreaClubs tools to working routes", () => {

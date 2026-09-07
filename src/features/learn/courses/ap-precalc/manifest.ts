@@ -183,16 +183,17 @@ export function toCourseManifest(
 }
 
 export async function loadApPrecalcCourse(): Promise<CourseContentBundle> {
-  const [{ lessons }, { questions }, { tools }] = await Promise.all([
+  const [{ lessons }, { questions }, { tools }, extra] = await Promise.all([
     import("@/features/learn/courses/ap-precalc/content"),
     import("@/features/learn/courses/ap-precalc/questions"),
     import("@/features/learn/courses/ap-precalc/tools"),
+    import("@/features/learn/courses/ap-precalc/questions-advanced"),
   ]);
 
   return {
     manifest: toCourseManifest(),
     lessons,
-    questions,
+    questions: [...questions, ...extra.questions],
     tools,
   };
 }

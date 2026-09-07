@@ -134,7 +134,7 @@ describe("ap-stats original course", () => {
     expect(bundle.manifest.namespace).toBe("ap-stats");
     expect(bundle.manifest.discipline).toBe("mathematics");
     expect(bundle.lessons?.length).toBe(lessons.length);
-    expect(bundle.questions?.length).toBe(questions.length);
+    expect(bundle.questions?.length).toBeGreaterThanOrEqual(questions.length);
     expect(bundle.tools?.length).toBe(5);
   });
 });

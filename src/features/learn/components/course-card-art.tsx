@@ -339,3 +339,26 @@ export function CourseCardArt({ namespace }: { namespace: string }) {
   if (!Art) return null;
   return <Art />;
 }
+
+/** Original 2× SVG for Storage. Peninsula green/teal only. Not a third-party asset. */
+export function courseCardSvgMarkup(namespace: string): string {
+  const wash = namespace.includes("calc") || namespace.endsWith("csa") || namespace.includes("psych")
+    ? PALETTE.accentMuted
+    : PALETTE.primaryMuted;
+  const seed = [...namespace].reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  const bars = [48, 96, 140, 84, 124, 64, 108, 76].map(
+    (height, index) => height + ((seed + index * 13) % 24),
+  );
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="${COURSE_CARD_MEASURE.artWidth}" height="${COURSE_CARD_MEASURE.artHeight}" viewBox="0 0 ${COURSE_CARD_MEASURE.artWidth} ${COURSE_CARD_MEASURE.artHeight}" role="img">
+  <rect width="${COURSE_CARD_MEASURE.artWidth}" height="${COURSE_CARD_MEASURE.artHeight}" fill="${wash}"/>
+  ${bars
+    .map(
+      (height, index) =>
+        `<rect x="${36 + index * 70}" y="${188 - (height % 150)}" width="44" height="${Math.max(36, height % 150)}" rx="4" fill="${index % 2 ? PALETTE.accent : PALETTE.primary}" opacity="0.58"/>`,
+    )
+    .join("")}
+  <path d="M16 168 C 96 168, 140 40, 220 88 S 360 200, 576 36" fill="none" stroke="${PALETTE.primary}" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="${180 + (seed % 200)}" cy="92" r="7" fill="${PALETTE.ink}"/>
+</svg>`;
+}
