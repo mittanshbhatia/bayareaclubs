@@ -7,7 +7,7 @@ Catalog UI section types (original Peninsula layout, not a pixel clone): filters
 
 Tools on shipping courses: practice, quiz, review, notes, readiness.
 
-Card art is original 2× geometric SVG (592×224, Peninsula green/teal). Storage path pattern: `course-assets/learn/<namespace>/card-2x.svg` (private, signed). No Stellar screenshots, video, HTML, or lesson text are committed.
+Card art is original 2× geometric SVG (592×224, Peninsula green/teal), displayed at the owner-catalog media frame (254×80 inside 288×242 tiles). Storage path pattern: `course-assets/learn/<namespace>/card-2x.svg` (private, signed). No Stellar screenshots, video, HTML, or lesson text are committed.
 
 | Namespace | Title | Official CED units | Shipped units | Notes |
 | --- | --- | ---: | ---: | --- |

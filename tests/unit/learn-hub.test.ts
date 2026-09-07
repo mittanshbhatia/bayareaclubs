@@ -9,6 +9,7 @@ import {
   continueLesson,
   courseProgress,
   featuredRegistryEntries,
+  groupedAvailableCatalog,
   recentResults,
   weakAreas,
 } from "@/features/learn/catalog-model";
@@ -16,7 +17,7 @@ import { AP_COURSE_REGISTRY } from "@/features/learn/courses/registry";
 
 describe("learn hub and course workspace model", () => {
   it("keeps catalog section types and featured originals", () => {
-    expect(LEARN_HUB_SECTIONS).toEqual(["filters", "progress", "featured", "catalog"]);
+    expect(LEARN_HUB_SECTIONS).toEqual(["filters", "progress", "featured", "families"]);
     expect(COURSE_HOME_SECTIONS).toEqual([
       "header",
       "progress",
@@ -47,6 +48,17 @@ describe("learn hub and course workspace model", () => {
     expect(availableCatalogEntries(AP_COURSE_REGISTRY, "cs").map((row) => row.namespace)).toEqual(
       ["ap-csp", "ap-csa"],
     );
+    expect(groupedAvailableCatalog(AP_COURSE_REGISTRY, "all").map((row) => row.family)).toEqual([
+      "cs",
+      "math",
+      "science",
+      "social",
+    ]);
+    expect(
+      groupedAvailableCatalog(AP_COURSE_REGISTRY, "math").flatMap((group) =>
+        group.entries.map((entry) => entry.namespace),
+      ),
+    ).toEqual(["ap-calc-ab", "ap-calc-bc", "ap-stats", "ap-precalc"]);
   });
 
   it("continues into the first untouched lesson", () => {

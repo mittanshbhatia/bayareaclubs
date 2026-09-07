@@ -166,7 +166,7 @@ export const DASHBOARD_MODULE_REGISTRY: readonly DashboardModuleMirror[] = [
   module({
     id: "learning",
     label: "Learning",
-    description: "STEM and structured learning catalog.",
+    description: "AP catalog",
     icon: "GraduationCap",
     route: "/dashboard/learn",
     context_types: ["personal", "club"],

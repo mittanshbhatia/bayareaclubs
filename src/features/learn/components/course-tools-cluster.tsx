@@ -15,7 +15,7 @@ export function CourseToolsCluster({
     <aside className="rounded-md border border-(--course-border) bg-learning-surface p-5">
       <h2 className="font-semibold">Study tools</h2>
       <p className="mt-2 text-sm text-muted-foreground">
-        Original BayAreaClubs practice beside the course — not a third-party player.
+        Practice, quizzes, notes, and readiness stay beside the unit map.
       </p>
       <ul className="mt-4 space-y-2">
         {tools.map((tool) => (

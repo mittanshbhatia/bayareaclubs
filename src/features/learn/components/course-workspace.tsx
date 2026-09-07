@@ -30,7 +30,10 @@ export function CourseWorkspace({
   return (
     <div className="space-y-8" style={{ background: "var(--learning-background)" }}>
       <header className="overflow-hidden rounded-md border border-(--course-border) bg-learning-surface">
-        <div className="relative h-28 w-full overflow-hidden">
+        <div
+          className="relative w-full overflow-hidden rounded-t-lg"
+          style={{ height: "var(--course-media-height)" }}
+        >
           <CourseCardArt namespace={namespace} />
         </div>
         <div className="p-5">

@@ -228,7 +228,6 @@ describe("personal dashboard my day", () => {
 describe("personal dashboard learning links", () => {
   it("omits the AP catalog when that route does not exist", () => {
     expect(learningCatalogLinks({ apLearnRouteExists: false })).toEqual([
-      { href: "/dashboard/learning", label: "My STEM learning" },
       { href: "/resources", label: "STEM catalog" },
     ]);
   });
@@ -236,6 +235,6 @@ describe("personal dashboard learning links", () => {
   it("adds the AP catalog only when the route exists", () => {
     expect(
       learningCatalogLinks({ apLearnRouteExists: true }).map((link) => link.href),
-    ).toEqual(["/dashboard/learn", "/dashboard/learning", "/resources"]);
+    ).toEqual(["/dashboard/learn", "/resources"]);
   });
 });

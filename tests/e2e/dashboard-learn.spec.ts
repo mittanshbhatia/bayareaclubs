@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page, type Response } from "@playwright/test";
 
-const LEARN_ROUTES = ["/dashboard/learn", "/dashboard/learn/ap"] as const;
+const LEARN_ROUTES = ["/dashboard/learn", "/dashboard/learn/ap", "/dashboard/learning"] as const;
 
 function pathOf(page: Page) {
   return new URL(page.url()).pathname;

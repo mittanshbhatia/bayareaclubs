@@ -37,14 +37,14 @@ describe("AP catalog families and original card art", () => {
   });
 
   it("uses measured catalog card geometry at 2× art density", () => {
-    expect(COURSE_CARD_MEASURE.cssWidth).toBe(300);
-    expect(COURSE_CARD_MEASURE.cssHeight).toBe(336);
-    expect(COURSE_CARD_MEASURE.mediaCssWidth).toBe(296);
-    expect(COURSE_CARD_MEASURE.mediaCssHeight).toBe(112);
+    expect(COURSE_CARD_MEASURE.cssWidth).toBe(288);
+    expect(COURSE_CARD_MEASURE.cssHeight).toBe(242);
+    expect(COURSE_CARD_MEASURE.mediaCssWidth).toBe(254);
+    expect(COURSE_CARD_MEASURE.mediaCssHeight).toBe(80);
     expect(COURSE_CARD_MEASURE.artWidth).toBe(592);
     expect(COURSE_CARD_MEASURE.artHeight).toBe(224);
-    expect(COURSE_CARD_MEASURE.radiusPx).toBe(8);
-    expect(COURSE_CARD_MEASURE.titlePx).toBe(16);
+    expect(COURSE_CARD_MEASURE.radiusPx).toBe(12);
+    expect(COURSE_CARD_MEASURE.titlePx).toBe(12);
     expect(COURSE_CARD_MEASURE.bodyPx).toBe(12);
     expect(COURSE_CARD_MEASURE.chipHeightPx).toBe(40);
     expect(courseCardSvgMarkup("ap-csa")).toContain("592");

@@ -2,11 +2,11 @@
  * Original BayAreaClubs catalog illustrations.
  * Geometric SVG only. Not copied from Stellar or any third-party catalog.
  *
- * Measured from the public catalog at 1440×900 (input only, /tmp):
- * - Card CSS: 300 × 336 (aspect 0.893)
- * - Media CSS: 296 × 112 (aspect 2.643)
- * - 2× art: 592 × 224
- * - Radius 8px · title 16px/800 · body 12px/600 · chips 40px · grid gap 16px
+ * Measured from the owner catalog at 1440×900 (input only, /tmp):
+ * - Card CSS: 288 × 242 (aspect 1.189)
+ * - Media CSS: 254 × 80 (aspect 3.175)
+ * - 2× art: 592 × 224 (scales into the media frame)
+ * - Radius 12px · title 12px/600 · body 12px/600 · chips 40px · grid gap 16px
  * - Observed page/card: near-white. Accent family was blue/violet — mapped to
  *   Peninsula green/teal. No purple fonts or buttons. No proprietary fonts.
  */
@@ -14,14 +14,14 @@
 import type { JSX, ReactNode } from "react";
 
 export const COURSE_CARD_MEASURE = {
-  cssWidth: 300,
-  cssHeight: 336,
-  mediaCssWidth: 296,
-  mediaCssHeight: 112,
+  cssWidth: 288,
+  cssHeight: 242,
+  mediaCssWidth: 254,
+  mediaCssHeight: 80,
   artWidth: 592,
   artHeight: 224,
-  radiusPx: 8,
-  titlePx: 16,
+  radiusPx: 12,
+  titlePx: 12,
   bodyPx: 12,
   chipHeightPx: 40,
   gridGapPx: 16,

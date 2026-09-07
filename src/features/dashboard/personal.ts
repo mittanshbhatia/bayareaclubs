@@ -99,10 +99,7 @@ export function wouldPassSchoolDashboardAccess(input: {
 }
 
 export function learningCatalogLinks(input: { apLearnRouteExists: boolean }) {
-  const links = [
-    { href: "/dashboard/learning", label: "My STEM learning" },
-    { href: "/resources", label: "STEM catalog" },
-  ];
+  const links = [{ href: "/resources", label: "STEM catalog" }];
   if (input.apLearnRouteExists) {
     links.unshift({ href: "/dashboard/learn", label: "AP catalog" });
   }
@@ -185,7 +182,7 @@ export function selectNextLearning(
     title: chosen.course.title ?? "Course",
     href: chosen.course.slug
       ? `/resources/${chosen.course.slug}`
-      : "/dashboard/learning",
+      : "/resources",
     status: chosen.subscription.status,
     completedCount: chosen.completedCount,
     nextLessonTitle: chosen.nextResource?.title ?? null,
@@ -449,7 +446,7 @@ export async function loadPersonalHome(
         title: item.course.title ?? "Course",
         href: item.course.slug
           ? `/resources/${item.course.slug}`
-          : "/dashboard/learning",
+          : "/resources",
         status: item.subscription.status,
         completedCount: item.completedCount,
         nextLessonTitle: item.nextResource?.title ?? null,

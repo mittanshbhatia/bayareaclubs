@@ -1,17 +1,16 @@
 import Link from "next/link";
 
-import { EmptyState } from "@/components/ds/states";
 import { Button } from "@/components/ui/button";
 import { ApCourseCard, CATALOG_GRID_CLASS } from "@/features/learn/components/ap-course-card";
 import { CatalogFamilyChips } from "@/features/learn/components/catalog-family-chips";
+import { CatalogFamilySections } from "@/features/learn/components/catalog-family-sections";
 import { CatalogPagination } from "@/features/learn/components/catalog-pagination";
 import { CourseCardArt } from "@/features/learn/components/course-card-art";
 import {
-  availableCatalogEntries,
   featuredRegistryEntries,
   plannedCatalogEntries,
 } from "@/features/learn/catalog-model";
-import { AP_COURSE_REGISTRY } from "@/features/learn/courses/registry";
+import { AP_COURSE_REGISTRY, filterRegistryByFamily } from "@/features/learn/courses/registry";
 import { listPublishedApCatalog } from "@/features/learn/queries";
 import { requireActiveUser } from "@/lib/auth/authorization";
 import { handleAuthorizationError } from "@/lib/auth/route-guard";
@@ -36,10 +35,11 @@ export default async function ApCatalogPage({
     family: typeof params.family === "string" ? params.family : "all",
   });
   const catalog = await listPublishedApCatalog(paging.page, paging.pageSize);
-  const available = availableCatalogEntries(AP_COURSE_REGISTRY, paging.family);
   const planned = plannedCatalogEntries(AP_COURSE_REGISTRY, paging.family);
   const featured = featuredRegistryEntries().filter((entry) =>
-    available.some((row) => row.namespace === entry.namespace),
+    paging.family === "all"
+      ? true
+      : filterRegistryByFamily([entry], paging.family).length > 0,
   );
 
   return (
@@ -83,43 +83,18 @@ export default async function ApCatalogPage({
         </section>
       ) : null}
 
-      <section className="space-y-4">
-        <h2 className="font-semibold">Courses</h2>
-        {available.length === 0 ? (
-          <EmptyState
-            title="No published AP courses in this path yet"
-            description="Shipping originals appear here after approval. STEM resources stay available while this family is empty."
-            actionLabel="Open STEM resources"
-            actionHref="/resources"
-          />
-        ) : (
-          <div className={CATALOG_GRID_CLASS}>
-            {available.map((entry) => {
-              const published = catalog.courses.find(
-                (course) => course.course_namespace === entry.namespace,
-              );
-              return (
-                <ApCourseCard
-                  key={entry.namespace}
-                  title={entry.title}
-                  namespace={entry.namespace}
-                  icon={entry.icon}
-                  status={published ? "published" : "shipping"}
-                  minutes={published?.estimated_minutes}
-                  href={`/dashboard/learn/ap/${entry.namespace}`}
-                  illustration={<CourseCardArt namespace={entry.namespace} />}
-                />
-              );
-            })}
-          </div>
-        )}
-        <CatalogPagination
-          page={catalog.page}
-          pageCount={catalog.pageCount}
-          basePath="/dashboard/learn/ap"
-          family={paging.family}
-        />
-      </section>
+      <CatalogFamilySections
+        entries={AP_COURSE_REGISTRY}
+        family={paging.family}
+        published={catalog.courses}
+      />
+
+      <CatalogPagination
+        page={catalog.page}
+        pageCount={catalog.pageCount}
+        basePath="/dashboard/learn/ap"
+        family={paging.family}
+      />
 
       <section className="space-y-4">
         <h2 className="font-semibold">Planned</h2>

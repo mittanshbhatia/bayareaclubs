@@ -76,7 +76,7 @@ export const SHELL_MODULE_CATALOG: readonly ShellModuleCatalogItem[] = [
     id: "learning",
     slug: "learning",
     label: "Learning",
-    description: "STEM and AP courses",
+    description: "AP catalog",
     icon: "GraduationCap",
     route: "/dashboard/learn",
     contextTypes: ["personal", "club"],
@@ -660,20 +660,32 @@ export function resolveVisibleCatalogModules(input: {
     .sort((a, b) => a.displayOrder - b.displayOrder || a.label.localeCompare(b.label));
 }
 
+export function isUsableAppPath(href: string): boolean {
+  const [path] = href.split("#");
+  if (!path || !path.startsWith("/")) return false;
+  if (path.includes("{") || path.includes("}") || path.includes(":")) {
+    return false;
+  }
+  if (path === "/") return true;
+  return !path.split("/").some((segment, index) => index > 0 && segment === "");
+}
+
 export function resolveModuleHref(
   module: ResolvedDashboardModule,
   context: DashboardContextOption,
 ): string {
-  if (module.href) return module.href;
+  if (module.href && isUsableAppPath(module.href)) {
+    return module.href;
+  }
 
   const clubSlug = context.clubSlug ?? "";
   const schoolId = context.schoolId ?? context.schoolSlug ?? "";
 
-  if (module.id === "home") {
+  if (module.id === "home" || module.route === "{home}" || module.route === "/") {
     return hrefForContext(context);
   }
 
-  if (module.id === "insights") {
+  if (module.id === "insights" || module.route === "{insights}") {
     if (context.type === "club" && clubSlug) {
       return `/clubs/${clubSlug}/insights`;
     }
@@ -684,11 +696,15 @@ export function resolveModuleHref(
     return "/dashboard/insights";
   }
 
-  return module.route
+  const resolved = module.route
     .replaceAll(":slug", clubSlug)
     .replaceAll(":clubSlug", clubSlug)
     .replaceAll(":id", schoolId)
     .replaceAll(":schoolId", schoolId);
+  if (isUsableAppPath(resolved)) {
+    return resolved;
+  }
+  return hrefForContext(context);
 }
 
 export function isModuleActive(href: string, pathname: string): boolean {

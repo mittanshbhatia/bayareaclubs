@@ -221,10 +221,10 @@ export function PersonalHome({ model }: { model: PersonalHomeModel }) {
           <EmptyState
             className="mt-4"
             compact
-            title="No subscribed courses yet"
-            description="STEM subscriptions and published AP courses appear here. Open the AP catalog or STEM catalog to start."
-            actionLabel="Browse STEM catalog"
-            actionHref="/resources"
+            title="No AP or STEM courses yet"
+            description="STEM subscriptions and published AP courses appear here. Open the AP catalog to start, or browse STEM resources."
+            actionLabel="Browse AP catalog"
+            actionHref="/dashboard/learn"
           />
         )}
       </section>

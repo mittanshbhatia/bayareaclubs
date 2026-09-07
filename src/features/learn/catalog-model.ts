@@ -12,8 +12,15 @@ export const LEARN_HUB_SECTIONS = [
   "filters",
   "progress",
   "featured",
-  "catalog",
+  "families",
 ] as const;
+
+export const CATALOG_FAMILY_ORDER: Array<Exclude<CatalogFamily, "all">> = [
+  "cs",
+  "math",
+  "science",
+  "social",
+];
 
 export const COURSE_HOME_SECTIONS = [
   "header",
@@ -60,6 +67,21 @@ export function plannedCatalogEntries(
     entries.filter((entry) => entry.status === "planned"),
     family,
   );
+}
+
+export function groupedAvailableCatalog(
+  entries: readonly ApCourseRegistryEntry[],
+  family: CatalogFamily,
+) {
+  const available = availableCatalogEntries(entries, family);
+  const families = family === "all" ? CATALOG_FAMILY_ORDER : [family];
+  return families
+    .map((key) => ({
+      family: key,
+      label: familyLabel(key),
+      entries: available.filter((entry) => catalogFamilyFor(entry.namespace) === key),
+    }))
+    .filter((group) => group.entries.length > 0);
 }
 
 export type WorkspaceAttempt = {

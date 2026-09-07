@@ -4,12 +4,10 @@ import { EmptyState } from "@/components/ds/states";
 import { Button } from "@/components/ui/button";
 import { ApCourseCard, CATALOG_GRID_CLASS } from "@/features/learn/components/ap-course-card";
 import { CatalogFamilyChips } from "@/features/learn/components/catalog-family-chips";
+import { CatalogFamilySections } from "@/features/learn/components/catalog-family-sections";
 import { CourseCardArt } from "@/features/learn/components/course-card-art";
 import { LearnProgressBar } from "@/features/learn/components/learn-progress";
-import {
-  availableCatalogEntries,
-  featuredRegistryEntries,
-} from "@/features/learn/catalog-model";
+import { featuredRegistryEntries } from "@/features/learn/catalog-model";
 import {
   AP_COURSE_REGISTRY,
   filterRegistryByFamily,
@@ -44,12 +42,10 @@ export default async function LearnHubPage({
       ? true
       : filterRegistryByFamily([entry], paging.family).length > 0,
   );
-  const available = availableCatalogEntries(
-    AP_COURSE_REGISTRY.filter((entry) =>
+  const shipping = AP_COURSE_REGISTRY.filter(
+    (entry) =>
       catalog.courses.some((course) => course.course_namespace === entry.namespace) ||
       entry.status === "shipping",
-    ),
-    paging.family,
   );
 
   return (
@@ -59,17 +55,17 @@ export default async function LearnHubPage({
     >
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="text-sm font-medium text-primary">Learn</p>
+          <p className="text-sm font-medium text-primary">Browse</p>
           <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight">
             AP catalog
           </h1>
           <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-            Original BayAreaClubs courses. Student work stays private — there is no
-            public ranking.
+            Original BayAreaClubs courses grouped by subject. Student work stays
+            private — there is no public ranking.
           </p>
         </div>
         <Button asChild variant="outline">
-          <Link href="/dashboard/learning">STEM dashboard</Link>
+          <Link href="/resources">STEM resources</Link>
         </Button>
       </div>
 
@@ -82,10 +78,10 @@ export default async function LearnHubPage({
             title="No AP attempts yet"
             description="Open a featured course or pick a tile below. Checks stay on your account."
             actionLabel="Browse AP courses"
-            actionHref="/dashboard/learn/ap"
+            actionHref="/dashboard/learn#catalog-families"
           />
         ) : (
-          <ul className="grid gap-4 sm:grid-cols-2">
+          <ul className="grid gap-[var(--catalog-gap)] sm:grid-cols-2">
             {progress.map((item) => (
               <li
                 key={item.courseId}
@@ -130,42 +126,13 @@ export default async function LearnHubPage({
         </div>
       </section>
 
-      <section className="space-y-3">
-        <div className="flex flex-wrap items-end justify-between gap-2">
-          <h2 className="font-semibold">Courses</h2>
-          <Button asChild variant="outline" size="sm">
-            <Link href="/dashboard/learn/ap">Full catalog</Link>
-          </Button>
-        </div>
-        {available.length === 0 ? (
-          <EmptyState
-            title="No courses in this family yet"
-            description="Choose another family or open the full AP catalog."
-            actionLabel="All AP"
-            actionHref="/dashboard/learn"
-          />
-        ) : (
-          <div className={CATALOG_GRID_CLASS}>
-            {available.map((entry) => {
-              const published = catalog.courses.find(
-                (course) => course.course_namespace === entry.namespace,
-              );
-              return (
-                <ApCourseCard
-                  key={entry.namespace}
-                  title={entry.title}
-                  namespace={entry.namespace}
-                  icon={entry.icon}
-                  status={published ? "published" : "shipping"}
-                  minutes={published?.estimated_minutes}
-                  href={`/dashboard/learn/ap/${entry.namespace}`}
-                  illustration={<CourseCardArt namespace={entry.namespace} />}
-                />
-              );
-            })}
-          </div>
-        )}
-      </section>
+      <div id="catalog-families">
+        <CatalogFamilySections
+          entries={shipping}
+          family={paging.family}
+          published={catalog.courses}
+        />
+      </div>
     </div>
   );
 }

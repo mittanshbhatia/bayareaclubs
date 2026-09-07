@@ -114,13 +114,13 @@ export default async function MemberInsightsPage() {
         <div className="flex items-center justify-between gap-3">
           <h2 className="font-display text-xl font-semibold">Course progress</h2>
           <Button asChild size="sm" variant="outline">
-            <Link href="/dashboard/learning">My Learning</Link>
+            <Link href="/dashboard/learn">AP catalog</Link>
           </Button>
         </div>
         {data.courses.length === 0 ? (
           <EmptyState
-            title="No courses yet"
-            description="Add a free STEM resource to track lesson progress."
+            title="No AP progress yet"
+            description="Open the AP catalog to start original practice, or add a STEM resource from the public catalog."
           />
         ) : (
           <ul className="grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(18.75rem,1fr))]">

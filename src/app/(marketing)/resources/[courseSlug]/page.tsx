@@ -157,6 +157,7 @@ export default async function ResourceDetailPage({
               <SubscribeButton
                 courseId={course.id!}
                 subscribed={subscribed}
+                href={`/resources/${course.slug}`}
               />
             ) : (
               <Button asChild>
