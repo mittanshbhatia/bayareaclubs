@@ -3,8 +3,9 @@ import { BookOpen, GraduationCap } from "lucide-react";
 
 import { EmptyState } from "@/components/ds/states";
 import { Button } from "@/components/ui/button";
-import { ApCourseCard } from "@/features/learn/components/ap-course-card";
+import { ApCourseCard, CATALOG_GRID_CLASS } from "@/features/learn/components/ap-course-card";
 import { CourseCardArt } from "@/features/learn/components/course-card-art";
+import { LearnProgressBar } from "@/features/learn/components/learn-progress";
 import { AP_COURSE_REGISTRY } from "@/features/learn/courses/registry";
 import { getMyLearnProgress, listPublishedApCatalog } from "@/features/learn/queries";
 import { requireActiveUser } from "@/lib/auth/authorization";
@@ -60,16 +61,24 @@ export default async function LearnHubPage() {
             actionHref="/dashboard/learn/ap"
           />
         ) : (
-          <ul className="grid gap-3 sm:grid-cols-2">
+          <ul className="grid gap-4 sm:grid-cols-2">
             {progress.map((item) => (
               <li
                 key={item.courseId}
-                className="rounded-lg border border-(--course-border) bg-learning-surface p-4"
+                className="rounded-md border border-(--course-border) bg-learning-surface p-4"
               >
-                <h3 className="font-medium">{item.title}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">
+                <h3 className="font-display text-base font-extrabold tracking-tight">
+                  {item.title}
+                </h3>
+                <p className="mt-1 text-xs font-semibold text-muted-foreground">
                   {item.correctCount} of {item.attemptCount} recent checks correct
                 </p>
+                <LearnProgressBar
+                  className="mt-3"
+                  value={item.correctCount}
+                  max={item.attemptCount}
+                  label={`${item.correctCount}/${item.attemptCount} correct`}
+                />
                 {item.namespace ? (
                   <Button asChild size="sm" variant="outline" className="mt-3">
                     <Link href={`/dashboard/learn/ap/${item.namespace}`}>Continue</Link>
@@ -87,7 +96,7 @@ export default async function LearnHubPage() {
           <h2 className="font-semibold">Published AP courses</h2>
         </div>
         {catalog.courses.length === 0 ? (
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className={CATALOG_GRID_CLASS}>
             {shipping.map((entry) => (
               <ApCourseCard
                 key={entry.namespace}
@@ -102,7 +111,7 @@ export default async function LearnHubPage() {
             ))}
           </div>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className={CATALOG_GRID_CLASS}>
             {catalog.courses.map((course) => {
               const registry = AP_COURSE_REGISTRY.find(
                 (entry) => entry.namespace === course.course_namespace,

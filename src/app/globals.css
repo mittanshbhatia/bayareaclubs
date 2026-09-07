@@ -129,8 +129,10 @@
   --container-xl: 80rem;
   --container-page: 72rem;
 
-  /* Learning (derived from Peninsula primary / accent / success) */
-  --learning-background: color-mix(in srgb, var(--primary-muted) 35%, var(--background));
+  /* Learning (derived from Peninsula primary / accent / success).
+     Observed catalog: near-white page + white cards. Blue/violet accents
+     map to primary/accent — never purple fonts or buttons. */
+  --learning-background: color-mix(in srgb, var(--primary-muted) 18%, var(--background));
   --learning-surface: var(--surface);
   --course-accent: var(--accent);
   --progress-track: var(--primary-muted);
@@ -138,6 +140,11 @@
   --course-border: var(--border);
   --course-muted: var(--muted-foreground);
   --course-success: var(--success);
+  --course-card-width: 18.75rem;
+  --course-card-min-height: 21rem;
+  --course-media-height: 7rem;
+  --catalog-gap: 1rem;
+  --catalog-chip-height: 2.5rem;
 }
 
 .dark {
@@ -196,7 +203,7 @@
   --destructive-foreground: var(--danger-foreground);
   --input: var(--border);
 
-  --learning-background: color-mix(in srgb, var(--primary-muted) 55%, var(--background));
+  --learning-background: color-mix(in srgb, var(--primary-muted) 32%, var(--background));
   --learning-surface: var(--surface);
   --course-accent: var(--accent);
   --progress-track: var(--primary-muted);
@@ -204,6 +211,11 @@
   --course-border: var(--border);
   --course-muted: var(--muted-foreground);
   --course-success: var(--success);
+  --course-card-width: 18.75rem;
+  --course-card-min-height: 21rem;
+  --course-media-height: 7rem;
+  --catalog-gap: 1rem;
+  --catalog-chip-height: 2.5rem;
 }
 
 @theme inline {

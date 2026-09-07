@@ -3,6 +3,7 @@ import Link from "next/link";
 import { EmptyState } from "@/components/ds/states";
 import { StatusBadge } from "@/components/ds/badges";
 import { Button } from "@/components/ui/button";
+import { LearnProgressBar } from "@/features/learn/components/learn-progress";
 import { listMyLearning } from "@/features/stem/queries";
 import { requireActiveUser } from "@/lib/auth/authorization";
 import { handleAuthorizationError } from "@/lib/auth/route-guard";
@@ -22,7 +23,7 @@ export default async function MyLearningPage() {
   const learning = await listMyLearning(user.id);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8" style={{ background: "var(--learning-background)" }}>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="text-sm font-medium text-primary">My Learning</p>
@@ -50,18 +51,18 @@ export default async function MyLearningPage() {
           </Button>
         </div>
       ) : (
-        <ul className="space-y-4">
+        <ul className="grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(18.75rem,1fr))]">
           {learning.map((item) => (
             <li
               key={item.subscription.id}
-              className="rounded-lg border border-border bg-surface p-5 shadow-xs"
+              className="rounded-md border border-(--course-border) bg-learning-surface p-4 shadow-xs"
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <h2 className="font-semibold">
+                  <h2 className="font-display text-base font-extrabold tracking-tight">
                     {item.course?.title ?? "Course"}
                   </h2>
-                  <p className="mt-1 text-sm text-muted-foreground">
+                  <p className="mt-1 text-xs font-semibold text-muted-foreground">
                     {item.course?.provider_name}
                     {item.course?.discipline
                       ? ` · ${
@@ -85,16 +86,18 @@ export default async function MyLearningPage() {
                   }
                 />
               </div>
-              <p className="mt-3 text-sm">
-                Progress: {item.completedCount} lesson
-                {item.completedCount === 1 ? "" : "s"} marked complete
-              </p>
+              <LearnProgressBar
+                className="mt-3"
+                value={item.completedCount}
+                max={Math.max(item.progressCount, item.completedCount, 1)}
+                label={`${item.completedCount} lesson${item.completedCount === 1 ? "" : "s"} marked complete`}
+              />
               {item.nextResource ? (
-                <p className="mt-1 text-sm text-muted-foreground">
+                <p className="mt-1 text-xs font-semibold text-muted-foreground">
                   Next: {item.nextResource.moduleTitle} — {item.nextResource.title}
                 </p>
               ) : (
-                <p className="mt-1 text-sm text-muted-foreground">
+                <p className="mt-1 text-xs font-semibold text-muted-foreground">
                   No remaining lessons in the published outline.
                 </p>
               )}

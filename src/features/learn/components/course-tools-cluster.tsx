@@ -12,7 +12,7 @@ export function CourseToolsCluster({
   tools: readonly CourseTool[];
 }) {
   return (
-    <aside className="rounded-lg border border-(--course-border) bg-learning-surface p-5">
+    <aside className="rounded-md border border-(--course-border) bg-learning-surface p-5">
       <h2 className="font-semibold">Study tools</h2>
       <p className="mt-2 text-sm text-muted-foreground">
         Original BayAreaClubs practice beside the course — not a third-party player.

@@ -47,8 +47,8 @@ export default async function ApCoursePage({
 
   return (
     <div className="space-y-8">
-      <div className="overflow-hidden rounded-lg border border-(--course-border) bg-learning-surface">
-        <div className="relative w-full" style={{ aspectRatio: "16 / 10", maxHeight: 280 }}>
+      <div className="overflow-hidden rounded-md border border-(--course-border) bg-learning-surface">
+        <div className="relative h-28 w-full overflow-hidden">
           <CourseCardArt namespace={namespace} />
         </div>
         <div className="p-5">
@@ -85,7 +85,7 @@ export default async function ApCoursePage({
             return (
               <li
                 key={unit.id}
-                className="rounded-lg border border-(--course-border) bg-learning-surface p-4"
+                className="rounded-md border border-(--course-border) bg-learning-surface p-4"
               >
                 <h2 className="font-semibold">{unit.title}</h2>
                 {unit.description ? (

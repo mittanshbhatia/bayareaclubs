@@ -4,6 +4,7 @@ import { EmptyState } from "@/components/ds/states";
 import { MetricCard } from "@/components/ds/metric-card";
 import { Button } from "@/components/ui/button";
 import { getMemberInsights } from "@/features/insights/queries";
+import { LearnProgressBar } from "@/features/learn/components/learn-progress";
 import { requireActiveUser } from "@/lib/auth/authorization";
 import { handleAuthorizationError } from "@/lib/auth/route-guard";
 
@@ -122,19 +123,26 @@ export default async function MemberInsightsPage() {
             description="Add a free STEM resource to track lesson progress."
           />
         ) : (
-          <ul className="space-y-2">
+          <ul className="grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(18.75rem,1fr))]">
             {data.courses.map((course) => (
               <li
                 key={course.id}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border px-4 py-3"
+                className="flex flex-col justify-between gap-3 rounded-md border border-(--course-border) bg-learning-surface p-4"
               >
                 <div>
-                  <p className="font-medium">{course.title}</p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="font-display text-base font-extrabold tracking-tight">
+                    {course.title}
+                  </p>
+                  <p className="mt-1 text-xs font-semibold text-muted-foreground">
                     {course.completedLessons} lesson
                     {course.completedLessons === 1 ? "" : "s"} complete ·{" "}
                     {course.status}
                   </p>
+                  <LearnProgressBar
+                    className="mt-3"
+                    value={course.completedLessons}
+                    max={Math.max(course.completedLessons, 1)}
+                  />
                 </div>
                 {course.slug ? (
                   <Button asChild size="sm" variant="outline">

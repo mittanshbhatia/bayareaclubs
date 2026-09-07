@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { EmptyState } from "@/components/ds/states";
 import { Button } from "@/components/ui/button";
-import { ApCourseCard } from "@/features/learn/components/ap-course-card";
+import { ApCourseCard, CATALOG_GRID_CLASS } from "@/features/learn/components/ap-course-card";
 import { CatalogFamilyChips } from "@/features/learn/components/catalog-family-chips";
 import { CatalogPagination } from "@/features/learn/components/catalog-pagination";
 import { CourseCardArt } from "@/features/learn/components/course-card-art";
@@ -79,7 +79,7 @@ export default async function ApCatalogPage({
             actionHref="/resources"
           />
         ) : (
-          <div className="grid gap-5 md:grid-cols-2">
+          <div className={CATALOG_GRID_CLASS}>
             {published.map((course) => {
               const registry = AP_COURSE_REGISTRY.find(
                 (entry) => entry.namespace === course.course_namespace,
@@ -111,7 +111,7 @@ export default async function ApCatalogPage({
       {shipping.length > 0 ? (
         <section className="space-y-4">
           <h2 className="font-semibold">Shipping originals</h2>
-          <div className="grid gap-5 md:grid-cols-2">
+          <div className={CATALOG_GRID_CLASS}>
             {shipping.map((entry) => (
               <ApCourseCard
                 key={entry.namespace}
@@ -135,7 +135,7 @@ export default async function ApCatalogPage({
             No planned titles in this family.
           </p>
         ) : (
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          <div className={CATALOG_GRID_CLASS}>
             {planned.map((entry) => (
               <ApCourseCard
                 key={entry.namespace}

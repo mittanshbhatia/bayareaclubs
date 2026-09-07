@@ -9,6 +9,7 @@ import {
   isClubOfficerRole,
   type PersonalHomeModel,
 } from "@/features/dashboard/personal";
+import { LearnProgressBar } from "@/features/learn/components/learn-progress";
 import { NOTIFICATION_TYPE_LABELS } from "@/lib/validation/notifications";
 
 function formatRole(role: string) {
@@ -161,7 +162,8 @@ export function PersonalHome({ model }: { model: PersonalHomeModel }) {
       <section
         id="learning"
         aria-labelledby="learning-heading"
-        className="border-t pt-6"
+        className="-mx-2 rounded-md border-t px-2 pt-6"
+        style={{ background: "var(--learning-background)" }}
       >
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
@@ -179,21 +181,28 @@ export function PersonalHome({ model }: { model: PersonalHomeModel }) {
           </div>
         </div>
         {model.learning.length ? (
-          <ul className="mt-4 space-y-3">
+          <ul className="mt-4 grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(18.75rem,1fr))]">
             {model.learning.slice(0, 4).map((item) => (
               <li key={item.subscriptionId}>
                 <Link
                   href={item.href}
-                  className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border p-3 hover:bg-surface-muted"
+                  className="flex h-full flex-col justify-between gap-3 rounded-md border border-(--course-border) bg-learning-surface p-4 hover:bg-surface-muted"
                 >
                   <div>
-                    <p className="font-medium">{item.title}</p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="font-display text-base font-extrabold tracking-tight">
+                      {item.title}
+                    </p>
+                    <p className="mt-1 text-xs font-semibold text-muted-foreground">
                       {item.kind === "ap" ? "AP · " : "STEM · "}
                       {item.nextLessonTitle
                         ? `Next: ${item.nextLessonTitle}`
                         : `${item.completedCount} lessons complete`}
                     </p>
+                    <LearnProgressBar
+                      className="mt-3"
+                      value={item.completedCount}
+                      max={Math.max(item.completedCount, item.nextLessonTitle ? item.completedCount + 1 : item.completedCount || 1)}
+                    />
                   </div>
                   <StatusBadge
                     status={
