@@ -168,7 +168,7 @@ export const DASHBOARD_MODULE_REGISTRY: readonly DashboardModuleMirror[] = [
     label: "Courses",
     description: "AP catalog",
     icon: "GraduationCap",
-    route: "/dashboard/learn",
+    route: "/courses",
     context_types: ["personal", "club"],
     required_permissions: [],
     default_enabled: true,

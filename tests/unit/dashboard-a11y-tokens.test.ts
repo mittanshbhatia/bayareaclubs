@@ -10,6 +10,7 @@ const LEARNING_CSS_VARIABLES = [
   "--progress-track",
   "--progress-fill",
   "--course-border",
+  "--course-title",
   "--course-muted",
   "--course-success",
   "--course-units-bg",
@@ -55,8 +56,13 @@ describe("dashboard learning a11y tokens", () => {
 
   it("uses the owner catalog canvas and blue/violet inventory tokens", () => {
     expect(globalsCss).toMatch(/--learning-background:\s*#f8fafc/i);
-    expect(globalsCss).toMatch(/--course-units-bg:\s*var\(--info-muted\)/);
-    expect(globalsCss).toMatch(/--course-modules-fg:\s*var\(--chart-5\)/);
+    expect(globalsCss).toMatch(/--course-units-bg:\s*#e0f2fe/i);
+    expect(globalsCss).toMatch(/--course-units-fg:\s*#0284c7/i);
+    expect(globalsCss).toMatch(/--course-modules-bg:\s*#f3e8ff/i);
+    expect(globalsCss).toMatch(/--course-modules-fg:\s*#9333ea/i);
+    expect(globalsCss).toMatch(/--course-title:\s*#111827/i);
+    expect(globalsCss).toMatch(/--course-muted:\s*#4b5563/i);
+    expect(globalsCss).toMatch(/--course-media-aspect:\s*3\s*\/\s*1/);
     expect(globalsCss).toMatch(/--catalog-nav-selected-fg:\s*var\(--info\)/);
   });
 

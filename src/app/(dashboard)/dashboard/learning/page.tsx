@@ -10,8 +10,8 @@ export default async function MyLearningRedirectPage() {
   try {
     await requireActiveUser();
   } catch (error) {
-    handleAuthorizationError(error, "/dashboard/learn");
+    handleAuthorizationError(error, "/courses");
     return null;
   }
-  redirect("/dashboard/learn");
+  redirect("/courses");
 }

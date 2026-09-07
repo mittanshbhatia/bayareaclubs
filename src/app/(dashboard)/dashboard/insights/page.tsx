@@ -114,7 +114,7 @@ export default async function MemberInsightsPage() {
         <div className="flex items-center justify-between gap-3">
           <h2 className="font-display text-xl font-semibold">Course progress</h2>
           <Button asChild size="sm" variant="outline">
-            <Link href="/dashboard/learn">AP catalog</Link>
+            <Link href="/courses">AP catalog</Link>
           </Button>
         </div>
         {data.courses.length === 0 ? (

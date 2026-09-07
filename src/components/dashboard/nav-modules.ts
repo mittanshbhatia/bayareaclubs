@@ -5,6 +5,7 @@ import type {
   DashboardPermissions,
   ResolvedDashboardModule,
 } from "@/components/dashboard/types";
+import { isCoursesNavPath } from "@/features/learn/routes";
 
 export type { DashboardContextOption, ResolvedDashboardModule };
 
@@ -78,7 +79,7 @@ export const SHELL_MODULE_CATALOG: readonly ShellModuleCatalogItem[] = [
     label: "Courses",
     description: "AP catalog",
     icon: "GraduationCap",
-    route: "/dashboard/learn",
+    route: "/courses",
     contextTypes: ["personal", "club"],
     requiredPermissions: [],
     defaultEnabled: true,
@@ -724,6 +725,10 @@ export function isModuleActive(href: string, pathname: string): boolean {
     return pathname === normalizedPath || pathname === `${normalizedPath}/`;
   }
 
+  if (normalizedPath === "/courses" || normalizedPath === "/dashboard/learn") {
+    return isCoursesNavPath(pathname);
+  }
+
   return (
     pathname === normalizedPath || pathname.startsWith(`${normalizedPath}/`)
   );
@@ -828,7 +833,7 @@ export function presentDashboardNav(
 }
 
 export function dashboardChromeTitle(pathname: string): string {
-  if (pathname.startsWith("/dashboard/learn")) return "Courses";
+  if (isCoursesNavPath(pathname)) return "Courses";
   if (pathname.startsWith("/dashboard/notifications")) return "Notifications";
   if (pathname.startsWith("/dashboard/insights")) return "Insights";
   if (pathname.startsWith("/dashboard/profile")) return "Profile";
@@ -836,7 +841,6 @@ export function dashboardChromeTitle(pathname: string): string {
   if (pathname.startsWith("/dashboard/platform") || pathname.startsWith("/admin")) {
     return "Platform";
   }
-  if (pathname.startsWith("/dashboard/learning")) return "Courses";
   if (pathname.startsWith("/clubs/")) return "Club";
   if (pathname.startsWith("/resources")) return "STEM resources";
   return "Home";

@@ -4,21 +4,23 @@
  * Not copied from Stellar or any third-party catalog.
  *
  * Photo covers: 1280×720 (16:9), stored as learn/<namespace>/card-cover.jpg.
- * Card chrome: 288px tiles, 14px radius, full-bleed 160px media.
+ * Card chrome: 288×248 tiles, 14px radius, inset 3:1 media (248×83).
  */
 
 import type { JSX, ReactNode } from "react";
 
 export const COURSE_CARD_MEASURE = {
   cssWidth: 288,
-  cssHeight: 292,
-  mediaCssWidth: 288,
-  mediaCssHeight: 160,
+  cssHeight: 248,
+  mediaCssWidth: 248,
+  mediaCssHeight: 83,
   artWidth: 1152,
   artHeight: 640,
+  mediaAspectWidth: 3,
+  mediaAspectHeight: 1,
   radiusPx: 14,
-  titlePx: 14,
-  bodyPx: 13,
+  titlePx: 16,
+  bodyPx: 14,
   chipHeightPx: 40,
   gridGapPx: 16,
 } as const;
@@ -365,6 +367,76 @@ const ART: Record<string, () => JSX.Element> = {
 };
 
 export const ORIGINAL_CARD_NAMESPACES = Object.keys(ART);
+
+/** Original white line-art over Storage photos. Not a third-party bitmap. */
+export function CourseSubjectOverlay({ namespace }: { namespace: string }) {
+  const family = namespace.includes("calc") || namespace.includes("precalc") || namespace.includes("stats")
+    ? "math"
+    : namespace.includes("phys") || namespace.includes("chem")
+      ? "science"
+      : namespace.includes("bio") || namespace.includes("env")
+        ? "life"
+        : namespace.includes("csp") || namespace.includes("csa")
+          ? "cs"
+          : "general";
+
+  return (
+    <svg
+      viewBox="0 0 300 100"
+      className="size-full"
+      aria-hidden
+      preserveAspectRatio="xMinYMid meet"
+    >
+      <g fill="none" stroke="#f8fafc" strokeOpacity="0.88" strokeWidth="1.6">
+        {family === "math" ? (
+          <>
+            <circle cx="38" cy="50" r="18" />
+            <text
+              x="38"
+              y="55"
+              textAnchor="middle"
+              fill="#f8fafc"
+              fillOpacity="0.92"
+              stroke="none"
+              fontSize="12"
+              fontFamily="ui-sans-serif, system-ui, sans-serif"
+              fontWeight="700"
+            >
+              {namespace.includes("bc") ? "BC" : namespace.includes("pre") ? "PR" : namespace.includes("stat") ? "ST" : "AB"}
+            </text>
+            <path d="M68 72 C 74 28, 82 28, 86 72" />
+            <path d="M86 38 H 118" />
+            <path d="M96 32 C 108 28, 118 44, 132 40" />
+            <rect x="148" y="34" width="28" height="36" rx="3" />
+            <path d="M154 44 H 170 M154 52 H 170 M154 60 H 164" />
+          </>
+        ) : family === "cs" ? (
+          <>
+            <path d="M28 28 L 16 50 L 28 72" />
+            <path d="M52 28 L 64 50 L 52 72" />
+            <path d="M80 36 H 130 M80 50 H 118 M80 64 H 124" />
+          </>
+        ) : family === "science" ? (
+          <>
+            <path d="M36 24 V 40 L 20 72 H 52 L 36 40" />
+            <circle cx="36" cy="62" r="6" />
+            <path d="M70 70 C 90 20, 130 20, 150 70" />
+          </>
+        ) : family === "life" ? (
+          <>
+            <path d="M40 78 C 40 40, 18 36, 40 18 C 62 36, 40 40, 40 78 Z" />
+            <path d="M70 30 C 88 18, 110 28, 118 48 C 96 44, 82 56, 70 30 Z" />
+          </>
+        ) : (
+          <>
+            <circle cx="40" cy="50" r="16" />
+            <path d="M70 32 H 140 M70 50 H 124 M70 68 H 132" />
+          </>
+        )}
+      </g>
+    </svg>
+  );
+}
 
 export function CourseCardArt({ namespace }: { namespace: string }) {
   const Art = ART[namespace];

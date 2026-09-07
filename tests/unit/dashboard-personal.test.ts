@@ -235,6 +235,6 @@ describe("personal dashboard learning links", () => {
   it("adds the AP catalog only when the route exists", () => {
     expect(
       learningCatalogLinks({ apLearnRouteExists: true }).map((link) => link.href),
-    ).toEqual(["/dashboard/learn", "/resources"]);
+    ).toEqual(["/courses", "/resources"]);
   });
 });

@@ -102,7 +102,7 @@ export function wouldPassSchoolDashboardAccess(input: {
 export function learningCatalogLinks(input: { apLearnRouteExists: boolean }) {
   const links = [{ href: "/resources", label: "STEM catalog" }];
   if (input.apLearnRouteExists) {
-    links.unshift({ href: "/dashboard/learn", label: "AP catalog" });
+    links.unshift({ href: "/courses", label: "AP catalog" });
   }
   return links;
 }
@@ -360,7 +360,7 @@ export async function loadPersonalHome(
         total: 0,
         pageCount: 1,
         courses: [],
-        coverUrls: {},
+        coverUrls: {} as Record<string, string>,
       })),
       getMyLearnProgress().catch(() => []),
     ]);

@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page, type Response } from "@playwright/test";
 
-const LEARN_ROUTES = ["/dashboard/learn", "/dashboard/learn/ap", "/dashboard/learning"] as const;
+const LEARN_ROUTES = ["/courses", "/dashboard/learn", "/dashboard/learn/ap", "/dashboard/learning"] as const;
 
 function pathOf(page: Page) {
   return new URL(page.url()).pathname;
@@ -102,7 +102,7 @@ test("axe on reachable learn routes after the auth gate used in this repo", asyn
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  const response = await page.goto("/dashboard/learn");
+  const response = await page.goto("/courses");
 
   if (isHonestGate(page)) {
     const results = await new AxeBuilder({ page }).analyze();

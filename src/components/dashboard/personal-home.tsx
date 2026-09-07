@@ -247,7 +247,7 @@ export function PersonalHome({ model }: { model: PersonalHomeModel }) {
             title="No AP or STEM courses yet"
             description="STEM subscriptions and published AP courses appear here. Open the AP catalog to start, or browse STEM resources."
             actionLabel="Browse AP catalog"
-            actionHref="/dashboard/learn"
+            actionHref="/courses"
           />
         )}
       </section>

@@ -19,10 +19,13 @@ export function LearnProgressBar({
   const track = (
     <div
       className={cn(
-        "overflow-hidden rounded-full",
-        layout === "inline" ? "h-0.5 min-w-0 flex-1" : "h-1.5 w-full",
+        "overflow-hidden rounded-full border",
+        layout === "inline" ? "h-1.5 min-w-0 flex-1" : "h-1.5 w-full",
       )}
-      style={{ background: "var(--progress-track)" }}
+      style={{
+        background: pct > 0 ? "var(--progress-track)" : "var(--learning-surface)",
+        borderColor: "var(--progress-track-border)",
+      }}
       role="progressbar"
       aria-valuenow={pct}
       aria-valuemin={0}
@@ -31,7 +34,10 @@ export function LearnProgressBar({
     >
       <div
         className="h-full rounded-full"
-        style={{ width: `${pct}%`, background: "var(--progress-fill)" }}
+        style={{
+          width: `${pct}%`,
+          background: pct > 0 ? "var(--progress-fill)" : "transparent",
+        }}
       />
     </div>
   );
@@ -41,7 +47,7 @@ export function LearnProgressBar({
       <div className={cn("flex items-center gap-3", className)}>
         {label ? (
           <p
-            className="inline-flex shrink-0 items-center gap-1 text-xs font-medium"
+            className="inline-flex shrink-0 items-center gap-1 text-xs font-bold"
             style={{ color: "var(--course-muted)" }}
           >
             <Zap aria-hidden className="size-3" />

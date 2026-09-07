@@ -1,7 +1,8 @@
-import { BookOpen, GraduationCap, Pencil } from "lucide-react";
+import { BookOpen, FlaskConical, GraduationCap, Pencil } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { CourseSubjectOverlay } from "@/features/learn/components/course-card-art";
 import { LearnProgressBar } from "@/features/learn/components/learn-progress";
 import type { ApCourseRegistryEntry } from "@/features/learn/courses/registry";
 import { cn } from "@/lib/utils";
@@ -29,15 +30,21 @@ export const CATALOG_GRID_CLASS =
 
 function StatusChip({ chip }: { chip: "beta" | "preview" }) {
   return (
-    <span className="absolute top-2 right-2 inline-flex items-center gap-1.5 rounded-full bg-black/55 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-white uppercase">
-      <span
+    <span className="absolute top-2 right-2 inline-flex items-center gap-1 rounded-full bg-black/55 px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase">
+      <FlaskConical
         aria-hidden
-        className={cn(
-          "size-1.5 rounded-full",
-          chip === "beta" ? "bg-success" : "bg-warning",
-        )}
+        className="size-3"
+        style={{
+          color: chip === "beta" ? "var(--course-success)" : "var(--warning)",
+        }}
       />
-      {chip}
+      <span
+        style={{
+          color: chip === "beta" ? "var(--course-success)" : "var(--warning)",
+        }}
+      >
+        {chip}
+      </span>
     </span>
   );
 }
@@ -54,10 +61,11 @@ function InventoryPills({
     <div className="mt-2 flex flex-wrap gap-1.5">
       {unitCount > 0 ? (
         <span
-          className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase"
+          className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase"
           style={{
             background: "var(--course-units-bg)",
             color: "var(--course-units-fg)",
+            fontStretch: "condensed",
           }}
         >
           <BookOpen aria-hidden className="size-3" />
@@ -66,10 +74,11 @@ function InventoryPills({
       ) : null}
       {moduleCount > 0 ? (
         <span
-          className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase"
+          className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase"
           style={{
             background: "var(--course-modules-bg)",
             color: "var(--course-modules-fg)",
+            fontStretch: "condensed",
           }}
         >
           <Pencil aria-hidden className="size-3" />
@@ -98,50 +107,62 @@ export function ApCourseCard({
   const available = Boolean(href) && status !== "planned";
   const body = (
     <>
-      <div
-        className="relative w-full overflow-hidden"
-        style={{
-          height: "var(--course-media-height)",
-          background:
-            "color-mix(in srgb, var(--course-accent) 12%, var(--learning-surface))",
-        }}
-      >
-        {coverUrl ? (
-          // Signed private Storage URL; next/image is not used for expiring tokens.
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={coverUrl}
-            alt=""
-            className="size-full object-cover"
-          />
-        ) : (
-          (illustration ?? (
-            <div className="flex size-full items-center justify-center">
-              <GraduationCap
-                aria-hidden
-                className="size-8"
-                style={{ color: "var(--course-accent)" }}
-              />
-            </div>
-          ))
-        )}
-        {statusChip ? <StatusChip chip={statusChip} /> : null}
+      <div className="px-[var(--course-card-padding)] pt-[var(--course-card-padding)]">
+        <div
+          className="relative w-full overflow-hidden"
+          style={{
+            aspectRatio: "var(--course-media-aspect)",
+            borderRadius: "var(--course-media-radius)",
+            background:
+              "color-mix(in srgb, var(--course-accent) 12%, var(--learning-surface))",
+          }}
+        >
+          {coverUrl ? (
+            // Signed private Storage URL; next/image is not used for expiring tokens.
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={coverUrl}
+              alt=""
+              className="size-full object-cover"
+            />
+          ) : (
+            (illustration ?? (
+              <div className="flex size-full items-center justify-center">
+                <GraduationCap
+                  aria-hidden
+                  className="size-8"
+                  style={{ color: "var(--course-accent)" }}
+                />
+              </div>
+            ))
+          )}
+          <div className="pointer-events-none absolute inset-0">
+            <CourseSubjectOverlay namespace={namespace} />
+          </div>
+          {statusChip ? <StatusChip chip={statusChip} /> : null}
+        </div>
       </div>
-      <div className="flex flex-1 flex-col px-4 py-4">
-        <h3 className="flex items-start gap-2 text-sm font-bold leading-5 text-foreground">
+      <div
+        className="flex flex-1 flex-col"
+        style={{ padding: "1rem var(--course-card-padding) var(--course-card-padding)" }}
+      >
+        <h3
+          className="flex items-start gap-2 text-base font-bold leading-5"
+          style={{ color: "var(--course-title)" }}
+        >
           <GraduationCap aria-hidden className="mt-0.5 size-4 shrink-0" />
           <span className="line-clamp-1">{title}</span>
         </h3>
         {description ? (
           <p
-            className="mt-1.5 line-clamp-3 text-sm"
+            className="mt-1.5 line-clamp-2 text-[14px] leading-5"
             style={{ color: "var(--course-muted)" }}
           >
             {description}
           </p>
         ) : (
           <p
-            className="mt-1.5 line-clamp-3 text-sm"
+            className="mt-1.5 line-clamp-2 text-[14px] leading-5"
             style={{ color: "var(--course-muted)" }}
           >
             {minutes ? `${minutes} min · ${namespace}` : namespace}
@@ -161,7 +182,7 @@ export function ApCourseCard({
   );
 
   const cardClass = cn(
-    "flex h-full min-h-[var(--course-card-min-height)] w-full flex-col overflow-hidden bg-learning-surface",
+    "flex h-full min-h-[var(--course-card-min-height)] w-full flex-col bg-learning-surface",
     "rounded-[var(--course-card-radius)] border border-(--course-border)",
     "shadow-[var(--course-card-shadow)] motion-safe:transition-shadow motion-safe:duration-[var(--duration-fast)]",
     "hover:shadow-md motion-reduce:transition-none",

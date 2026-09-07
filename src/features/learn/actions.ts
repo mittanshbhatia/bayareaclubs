@@ -41,6 +41,7 @@ function failure(code: string, message: string): ActionResult<never> {
 }
 
 function revalidateLearn(namespace?: string | null) {
+  revalidatePath("/courses");
   revalidatePath("/dashboard/learn");
   revalidatePath("/dashboard/learn/ap");
   revalidatePath("/admin/learn");

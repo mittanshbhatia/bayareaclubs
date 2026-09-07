@@ -3,6 +3,7 @@ import { expect, test, type Page, type Response } from "@playwright/test";
 
 const PUBLIC_AFTER_GATE = [
   "/dashboard",
+  "/courses",
   "/dashboard/learn",
   "/dashboard/learn/ap",
   "/admin/dashboard-config",

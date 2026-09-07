@@ -29,7 +29,7 @@ export default async function ApCoursePage({
         title="Course not found"
         description="That AP namespace is not in the published catalog or the planned registry."
         actionLabel="Back to AP catalog"
-        actionHref="/dashboard/learn/ap"
+        actionHref="/courses"
       />
     );
   }

@@ -24,8 +24,8 @@ describe("AP course card anatomy", () => {
     expect(
       screen.getByText(/Limits, derivatives, and integrals/i),
     ).toBeInTheDocument();
-    expect(screen.getByText(/8 units/i)).toBeInTheDocument();
-    expect(screen.getByText(/16 modules/i)).toBeInTheDocument();
+    expect(screen.getByText(/8 UNITS/i)).toBeInTheDocument();
+    expect(screen.getByText(/16 MODULES/i)).toBeInTheDocument();
     expect(screen.getByText("0% Progress")).toBeInTheDocument();
     expect(card.className).toMatch(/course-card-radius/);
     expect(card.className).toMatch(/course-card-shadow/);
@@ -46,5 +46,20 @@ describe("AP course card anatomy", () => {
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
     expect(screen.getByText(/Planned — not published/)).toBeInTheDocument();
     expect(screen.queryByText(/BETA|PREVIEW/i)).not.toBeInTheDocument();
+  });
+
+  it("shows a beta chip only when the caller supplies real beta data", () => {
+    render(
+      <ApCourseCard
+        title="AP Calculus AB"
+        description="Limits and integrals."
+        namespace="ap-calc-ab"
+        status="shipping"
+        href="/dashboard/learn/ap/ap-calc-ab"
+        statusChip="beta"
+      />,
+    );
+
+    expect(screen.getByText(/beta/i)).toBeInTheDocument();
   });
 });

@@ -1,6 +1,10 @@
 import "server-only";
 
-import { DASHBOARD_MODULE_REGISTRY } from "@/features/dashboard-config/registry";
+import {
+  DASHBOARD_MODULE_BY_ID,
+  DASHBOARD_MODULE_REGISTRY,
+  type DashboardModuleId,
+} from "@/features/dashboard-config/registry";
 import {
   type DashboardActiveContext,
   type DashboardResolvedContext,
@@ -106,13 +110,14 @@ function serializePermissions(
 function serializeCatalogModule(
   module: CatalogResolvedModule,
 ): ResolvedDashboardModule {
+  const mirror = DASHBOARD_MODULE_BY_ID[module.id as DashboardModuleId];
   return {
     id: module.id,
     slug: module.slug,
     label: module.label,
     description: module.description,
     icon: module.icon,
-    route: module.route,
+    route: mirror?.route ?? module.route,
     contextTypes: module.context_types,
     requiredPermissions: module.required_permissions,
     defaultEnabled: module.default_enabled,

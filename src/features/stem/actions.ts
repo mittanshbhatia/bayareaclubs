@@ -90,6 +90,7 @@ export async function subscribeToCourse(
     if (error || !data) return failure("SUBSCRIBE_FAILED", error?.message ?? "Could not subscribe.");
 
     revalidateStem([
+      "/courses",
       "/dashboard/learn",
       "/dashboard",
       `/resources/${course.slug}`,
@@ -181,7 +182,7 @@ export async function markResourceProgress(
       }
     }
 
-    revalidateStem(["/dashboard/learn", "/dashboard"]);
+    revalidateStem(["/courses", "/dashboard/learn", "/dashboard"]);
     return { ok: true, data: { progressId: data.id } };
   } catch (error) {
     if (error instanceof AuthorizationError) return failure(error.code, error.message);

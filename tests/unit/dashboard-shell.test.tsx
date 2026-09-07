@@ -264,6 +264,7 @@ describe("dashboard shell breakpoints", () => {
 
 describe("dashboard catalog chrome", () => {
   it("titles the learn hub Courses and groups Home, Courses, and School", () => {
+    expect(dashboardChromeTitle("/courses")).toBe("Courses");
     expect(dashboardChromeTitle("/dashboard/learn")).toBe("Courses");
     expect(dashboardChromeTitle("/dashboard/learn/ap/ap-csa")).toBe("Courses");
     expect(dashboardChromeTitle("/dashboard")).toBe("Home");
@@ -291,9 +292,10 @@ describe("dashboard catalog chrome", () => {
   it("uses catalog blue selected nav on Courses", () => {
     const presented = presentDashboardNav(sampleModules());
     render(
-      <DashboardSidebar modules={presented} pathname="/dashboard/learn" />,
+      <DashboardSidebar modules={presented} pathname="/courses" />,
     );
     const courses = screen.getByRole("link", { name: "Courses" });
+    expect(courses).toHaveAttribute("href", "/courses");
     expect(courses).toHaveAttribute("aria-current", "page");
     expect(courses.className).toMatch(/catalog-nav-selected-bg/);
     expect(courses.className).toMatch(/catalog-nav-selected-fg/);

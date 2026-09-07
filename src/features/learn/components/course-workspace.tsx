@@ -83,7 +83,7 @@ export function CourseWorkspace({
                   : "Units appear here after a platform administrator publishes approved content."
               }
               actionLabel="Back to catalog"
-              actionHref="/dashboard/learn/ap"
+              actionHref="/courses"
             />
           ) : (
             <ol className="space-y-3">
