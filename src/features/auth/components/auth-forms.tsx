@@ -130,13 +130,13 @@ function OAuthChoice({ enabled }: { enabled: boolean }) {
   return (
     <>
       {enabled ? (
-        <Link
+        <a
           href="/auth/google"
           className="flex min-h-12 w-full items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:border-sky-400 hover:bg-sky-50 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-sky-600"
         >
           <GoogleMark />
           Continue with Google
-        </Link>
+        </a>
       ) : (
         <button
           type="button"

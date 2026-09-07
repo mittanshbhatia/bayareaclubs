@@ -4,6 +4,7 @@ import type { ResolvedDashboardModule } from "@/components/dashboard/types";
 import {
   groupModulesBySection,
   isModuleActive,
+  isUsableAppPath,
 } from "@/components/dashboard/nav-modules";
 import { DashboardModuleIcon } from "@/features/dashboard-config/icons";
 import { cn } from "@/lib/utils";
@@ -31,29 +32,43 @@ export function ModuleNavList({
           <ul className="mt-2 space-y-1">
             {group.modules.map((module) => {
               const href = module.href ?? module.route;
-              const active = isModuleActive(href, pathname);
+              const usable = isUsableAppPath(href);
+              const active = usable && isModuleActive(href, pathname);
               return (
                 <li key={module.id}>
-                  <Link
-                    href={href}
-                    aria-current={active ? "page" : undefined}
-                    onClick={onNavigate}
-                    className={cn(
-                      "flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium",
-                      "transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
-                      "motion-reduce:transition-none",
-                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-                      active
-                        ? "bg-primary-muted text-primary"
-                        : "text-foreground hover:bg-surface-muted",
-                    )}
-                  >
-                    <DashboardModuleIcon
-                      name={module.icon}
-                      className="size-4 shrink-0"
-                    />
-                    <span className="truncate">{module.label}</span>
-                  </Link>
+                  {usable ? (
+                    <Link
+                      href={href}
+                      aria-current={active ? "page" : undefined}
+                      onClick={onNavigate}
+                      className={cn(
+                        "flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium",
+                        "transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
+                        "motion-reduce:transition-none",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                        active
+                          ? "bg-primary-muted text-primary"
+                          : "text-foreground hover:bg-surface-muted",
+                      )}
+                    >
+                      <DashboardModuleIcon
+                        name={module.icon}
+                        className="size-4 shrink-0"
+                      />
+                      <span className="truncate">{module.label}</span>
+                    </Link>
+                  ) : (
+                    <span
+                      title="This module has no destination yet"
+                      className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground"
+                    >
+                      <DashboardModuleIcon
+                        name={module.icon}
+                        className="size-4 shrink-0"
+                      />
+                      <span className="truncate">{module.label}</span>
+                    </span>
+                  )}
                 </li>
               );
             })}

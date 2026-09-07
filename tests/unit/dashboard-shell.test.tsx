@@ -9,7 +9,9 @@ import {
   filterContextsByQuery,
   hintFromPathname,
   isModuleVisible,
+  isUsableAppPath,
   modulesForSurface,
+  resolveModuleHref,
   resolveVisibleCatalogModules,
   selectActiveContext,
   SHELL_MODULE_CATALOG,
@@ -133,6 +135,29 @@ describe("dashboard context authorization", () => {
     expect(schoolModules.some((module) => module.id === "platform-admin")).toBe(
       false,
     );
+  });
+});
+
+describe("dashboard module hrefs", () => {
+  it("never emits template tokens or unresolved placeholders", () => {
+    const home = SHELL_MODULE_CATALOG.find((module) => module.id === "home")!;
+    const insights = {
+      ...SHELL_MODULE_CATALOG.find((module) => module.id === "insights")!,
+      route: "{insights}",
+    };
+    const members = SHELL_MODULE_CATALOG.find(
+      (module) => module.id === "club-members",
+    )!;
+
+    expect(resolveModuleHref({ ...home, route: "{home}" }, personal)).toBe(
+      "/dashboard",
+    );
+    expect(resolveModuleHref(insights, personal)).toBe("/dashboard/insights");
+    expect(resolveModuleHref(members, robotics)).toBe("/clubs/robotics/members");
+    expect(resolveModuleHref(members, personal)).toBe("/dashboard");
+    expect(isUsableAppPath("{home}")).toBe(false);
+    expect(isUsableAppPath("/clubs/:slug")).toBe(false);
+    expect(isUsableAppPath("/clubs//members")).toBe(false);
   });
 });
 
