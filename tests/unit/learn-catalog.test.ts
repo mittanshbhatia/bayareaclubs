@@ -8,6 +8,7 @@ import { catalogCoverObjectPath } from "@/features/learn/catalog-covers";
 import {
   COURSE_CARD_MEASURE,
   ORIGINAL_CARD_NAMESPACES,
+  SUBJECT_OVERLAY_NAMESPACES,
   courseCardSvgMarkup,
 } from "@/features/learn/components/course-card-art";
 import {
@@ -37,8 +38,10 @@ describe("AP catalog families and original card art", () => {
   it("ships original card art for every registry namespace", () => {
     for (const entry of AP_COURSE_REGISTRY) {
       expect(ORIGINAL_CARD_NAMESPACES).toContain(entry.namespace);
+      expect(SUBJECT_OVERLAY_NAMESPACES).toContain(entry.namespace);
     }
     expect(ORIGINAL_CARD_NAMESPACES).toHaveLength(AP_COURSE_REGISTRY.length);
+    expect(SUBJECT_OVERLAY_NAMESPACES).toHaveLength(AP_COURSE_REGISTRY.length);
   });
 
   it("uses measured catalog card geometry for photo covers", () => {

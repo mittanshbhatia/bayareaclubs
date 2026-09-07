@@ -159,6 +159,9 @@
   --catalog-nav-selected-fg: var(--info);
   --catalog-gap: 1rem;
   --catalog-chip-height: 2.5rem;
+  /* Photo-overlay chip: amber on dark pill, same in both themes. */
+  --course-coming-soon: #f0b429;
+  --course-coming-soon-bg: rgb(15 23 42 / 58%);
 }
 
 .dark {
@@ -244,6 +247,8 @@
   --catalog-nav-selected-fg: var(--info);
   --catalog-gap: 1rem;
   --catalog-chip-height: 2.5rem;
+  --course-coming-soon: #f0b429;
+  --course-coming-soon-bg: rgb(15 23 42 / 58%);
 }
 
 @theme inline {
@@ -355,6 +360,7 @@
   --color-course-units-fg: var(--course-units-fg);
   --color-course-modules-bg: var(--course-modules-bg);
   --color-course-modules-fg: var(--course-modules-fg);
+  --color-course-coming-soon: var(--course-coming-soon);
   --color-catalog-nav-selected-bg: var(--catalog-nav-selected-bg);
   --color-catalog-nav-selected-fg: var(--catalog-nav-selected-fg);
 }

@@ -2,6 +2,11 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { ApCourseCard } from "@/features/learn/components/ap-course-card";
+import {
+  CourseSubjectOverlay,
+  SUBJECT_OVERLAY_NAMESPACES,
+} from "@/features/learn/components/course-card-art";
+import { AP_COURSE_REGISTRY } from "@/features/learn/courses/registry";
 
 describe("AP course card anatomy", () => {
   it("renders media, mortarboard title, description, inventory, and progress", () => {
@@ -29,26 +34,27 @@ describe("AP course card anatomy", () => {
     expect(screen.getByText("0% Progress")).toBeInTheDocument();
     expect(card.className).toMatch(/course-card-radius/);
     expect(card.className).toMatch(/course-card-shadow/);
-    expect(screen.queryByText(/BETA|PREVIEW/i)).not.toBeInTheDocument();
+    expect(screen.getByText("Coming soon")).toBeInTheDocument();
+    expect(screen.queryByText(/BETA|PREVIEW|STABLE/i)).not.toBeInTheDocument();
   });
 
-  it("does not invent a status chip or a click target for planned titles", () => {
+  it("labels planned titles coming soon without a click target", () => {
     render(
       <ApCourseCard
         title="AP Physics C: Mechanics"
         description="Calculus-based Newtonian mechanics."
         namespace="ap-physics-c-mech"
         status="planned"
-        statusChip={null}
       />,
     );
 
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
     expect(screen.getByText(/Planned — not published/)).toBeInTheDocument();
-    expect(screen.queryByText(/BETA|PREVIEW/i)).not.toBeInTheDocument();
+    expect(screen.getByText("Coming soon")).toBeInTheDocument();
+    expect(screen.queryByText(/BETA|PREVIEW|STABLE/i)).not.toBeInTheDocument();
   });
 
-  it("shows a beta chip only when the caller supplies real beta data", () => {
+  it("never shows beta, preview, or stable chips", () => {
     render(
       <ApCourseCard
         title="AP Calculus AB"
@@ -56,10 +62,29 @@ describe("AP course card anatomy", () => {
         namespace="ap-calc-ab"
         status="shipping"
         href="/dashboard/learn/ap/ap-calc-ab"
-        statusChip="beta"
       />,
     );
 
-    expect(screen.getByText(/beta/i)).toBeInTheDocument();
+    expect(screen.getByText("Coming soon")).toBeInTheDocument();
+    expect(screen.queryByText(/^beta$/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^preview$/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^stable$/i)).not.toBeInTheDocument();
+  });
+
+  it("draws a unique subject overlay for every registry namespace", () => {
+    const marks = new Set<string>();
+    for (const entry of AP_COURSE_REGISTRY) {
+      expect(SUBJECT_OVERLAY_NAMESPACES).toContain(entry.namespace);
+      const { container, unmount } = render(
+        <CourseSubjectOverlay namespace={entry.namespace} />,
+      );
+      const svg = container.querySelector("svg");
+      expect(svg).toHaveAttribute("data-course-overlay", entry.namespace);
+      const markup = svg?.innerHTML ?? "";
+      expect(markup.length).toBeGreaterThan(40);
+      expect(marks.has(markup)).toBe(false);
+      marks.add(markup);
+      unmount();
+    }
   });
 });

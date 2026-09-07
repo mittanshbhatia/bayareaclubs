@@ -368,71 +368,278 @@ const ART: Record<string, () => JSX.Element> = {
 
 export const ORIGINAL_CARD_NAMESPACES = Object.keys(ART);
 
+const OVERLAY_INK = "#f8fafc";
+const OVERLAY_FONT = "ui-sans-serif, system-ui, sans-serif";
+
+function OverlayGlyph({
+  x,
+  y,
+  size = 10,
+  children,
+}: {
+  x: number;
+  y: number;
+  size?: number;
+  children: string;
+}) {
+  return (
+    <text
+      x={x}
+      y={y}
+      fill={OVERLAY_INK}
+      fillOpacity="0.95"
+      stroke="none"
+      fontSize={size}
+      fontFamily={OVERLAY_FONT}
+      fontWeight="600"
+    >
+      {children}
+    </text>
+  );
+}
+
+function OverlayCsp() {
+  return (
+    <>
+      <rect x="10" y="16" width="42" height="28" rx="2.5" />
+      <path d="M8 46 H54 L58 54 H4 Z" />
+      <OverlayGlyph x={18} y={35} size={11}>
+        01
+      </OverlayGlyph>
+      <circle cx="70" cy="16" r="4" />
+      <circle cx="80" cy="38" r="4" />
+      <circle cx="68" cy="60" r="4" />
+      <path d="M52 24 L66 16 M52 36 L76 38 M48 46 L64 58" />
+    </>
+  );
+}
+
+function OverlayCsa() {
+  return (
+    <>
+      <rect x="12" y="10" width="60" height="42" rx="3" />
+      <path d="M32 24 L22 31 L32 38" />
+      <path d="M52 24 L62 31 L52 38" />
+      <path d="M42 52 V58" />
+      <path d="M28 62 H56" />
+    </>
+  );
+}
+
+function OverlayCalcAb() {
+  return (
+    <>
+      <path d="M28 8 C 14 14, 16 34, 28 40 C 40 46, 42 66, 24 74" />
+      <path d="M44 64 C 54 48, 62 20, 80 14" />
+      <path d="M48 64 V52" />
+      <OverlayGlyph x={46} y={76} size={9}>
+        dx
+      </OverlayGlyph>
+    </>
+  );
+}
+
+function OverlayCalcBc() {
+  return (
+    <>
+      <path d="M58 12 H20 L40 40 L20 68 H58" />
+      <path d="M28 76 C 28 70, 36 70, 40 76 C 44 82, 36 82, 28 76" />
+      <path d="M40 76 C 40 70, 48 70, 52 76 C 56 82, 48 82, 40 76" />
+      <path d="M64 22 C 58 28, 60 40, 70 46 C 80 52, 78 64, 68 70" />
+    </>
+  );
+}
+
+function OverlayStats() {
+  return (
+    <>
+      <path d="M8 62 H82" />
+      <rect x="10" y="44" width="8" height="18" />
+      <rect x="20" y="30" width="8" height="32" />
+      <rect x="30" y="38" width="8" height="24" />
+      <path d="M44 62 C 48 62, 52 16, 66 16 C 80 16, 82 62, 86 62" />
+      <path d="M66 14 V62" />
+    </>
+  );
+}
+
+function OverlayPrecalc() {
+  return (
+    <>
+      <circle cx="34" cy="40" r="24" />
+      <path d="M10 40 H58" />
+      <path d="M34 16 V64" />
+      <path d="M34 40 L52 26" />
+      <path d="M64 40 Q 70 24, 76 40 T 88 40" />
+    </>
+  );
+}
+
+function OverlayPhysics1() {
+  return (
+    <>
+      <path d="M6 28 C 16 12, 28 10, 38 22 C 52 6, 70 16, 60 36 C 54 48, 34 54, 24 40 C 18 28, 34 24, 44 32 C 56 42, 72 36, 84 26" />
+      <rect x="10" y="18" width="11" height="6" rx="1.2" transform="rotate(-22 15.5 21)" />
+      <rect x="58" y="52" width="22" height="20" rx="1.5" />
+      <path d="M62 64 L65 68 L71 56 H78" />
+      <OverlayGlyph x={71} y={66} size={9}>
+        h
+      </OverlayGlyph>
+    </>
+  );
+}
+
+function OverlayPhysics2() {
+  return (
+    <>
+      <path d="M44 10 L70 62 H18 Z" />
+      <path d="M4 34 L26 42" />
+      <path d="M54 30 L82 16" />
+      <path d="M56 40 L84 40" />
+      <path d="M54 50 L82 64" />
+    </>
+  );
+}
+
+function OverlayPhysicsCMech() {
+  return (
+    <>
+      <path d="M16 8 H72" />
+      <path d="M44 8 V48" />
+      <circle cx="44" cy="58" r="10" />
+      <path d="M20 50 Q 44 72, 68 50" />
+    </>
+  );
+}
+
+function OverlayPhysicsCEm() {
+  return (
+    <>
+      <rect x="16" y="30" width="52" height="20" rx="2" />
+      <path d="M42 30 V50" />
+      <OverlayGlyph x={22} y={44} size={10}>
+        N
+      </OverlayGlyph>
+      <OverlayGlyph x={52} y={44} size={10}>
+        S
+      </OverlayGlyph>
+      <path d="M20 30 C 20 10, 64 10, 64 30" />
+      <path d="M26 30 C 26 16, 58 16, 58 30" />
+      <path d="M20 50 C 20 70, 64 70, 64 50" />
+      <path d="M26 50 C 26 64, 58 64, 58 50" />
+    </>
+  );
+}
+
+function OverlayChem() {
+  return (
+    <>
+      <path d="M34 6 H50 M38 6 V20 H32 L18 62 Q 18 74, 42 74 Q 66 74, 66 62 L52 20 H46 V6" />
+      <path d="M24 54 Q 42 48, 60 54" />
+      <circle cx="36" cy="44" r="2.2" />
+      <circle cx="46" cy="38" r="1.7" />
+      <circle cx="40" cy="48" r="1.5" />
+    </>
+  );
+}
+
+function OverlayBio() {
+  return (
+    <>
+      <path d="M24 6 C 24 18, 60 18, 60 30 C 60 42, 24 42, 24 54 C 24 66, 60 66, 60 78" />
+      <path d="M60 6 C 60 18, 24 18, 24 30 C 24 42, 60 42, 60 54 C 60 66, 24 66, 24 78" />
+      <path d="M28 18 H56 M26 42 H58 M28 66 H56" />
+    </>
+  );
+}
+
+function OverlayEnvsci() {
+  return (
+    <>
+      <circle cx="34" cy="44" r="26" />
+      <ellipse cx="34" cy="44" rx="26" ry="9" />
+      <path d="M34 18 C 42 28, 42 60, 34 70" />
+      <path d="M20 32 C 28 26, 40 28, 44 36 C 36 40, 26 40, 20 32" />
+      <path d="M62 14 C 78 10, 84 26, 70 40 C 66 28, 62 22, 62 14 Z" />
+      <path d="M62 14 L54 26" />
+    </>
+  );
+}
+
+function OverlayPsych() {
+  return (
+    <>
+      <path d="M18 38 C 14 16, 34 8, 44 20 C 40 28, 30 36, 18 38" />
+      <path d="M44 20 C 52 6, 76 12, 72 34 C 70 44, 54 40, 44 28" />
+      <path d="M20 40 C 16 56, 28 68, 42 64 C 36 52, 26 46, 20 40" />
+      <path d="M46 40 C 56 44, 70 48, 68 34" />
+      <path d="M40 64 C 42 72, 40 76, 44 78" />
+      <path d="M26 24 C 32 28, 38 24, 42 20" />
+      <path d="M52 20 C 56 26, 62 28, 66 24" />
+    </>
+  );
+}
+
+function OverlayFallback() {
+  return (
+    <>
+      <path d="M18 28 L42 16 L66 28 V62 L42 72 L18 62 Z" />
+      <path d="M42 16 V72" />
+    </>
+  );
+}
+
+const SUBJECT_OVERLAYS: Record<string, () => JSX.Element> = {
+  "ap-csp": OverlayCsp,
+  "ap-csa": OverlayCsa,
+  "ap-calc-ab": OverlayCalcAb,
+  "ap-calc-bc": OverlayCalcBc,
+  "ap-stats": OverlayStats,
+  "ap-precalc": OverlayPrecalc,
+  "ap-physics-1": OverlayPhysics1,
+  "ap-physics-2": OverlayPhysics2,
+  "ap-physics-c-mech": OverlayPhysicsCMech,
+  "ap-physics-c-em": OverlayPhysicsCEm,
+  "ap-chem": OverlayChem,
+  "ap-bio": OverlayBio,
+  "ap-envsci": OverlayEnvsci,
+  "ap-psych": OverlayPsych,
+};
+
+export const SUBJECT_OVERLAY_NAMESPACES = Object.keys(SUBJECT_OVERLAYS);
+
 /** Original white line-art over Storage photos. Not a third-party bitmap. */
 export function CourseSubjectOverlay({ namespace }: { namespace: string }) {
-  const family = namespace.includes("calc") || namespace.includes("precalc") || namespace.includes("stats")
-    ? "math"
-    : namespace.includes("phys") || namespace.includes("chem")
-      ? "science"
-      : namespace.includes("bio") || namespace.includes("env")
-        ? "life"
-        : namespace.includes("csp") || namespace.includes("csa")
-          ? "cs"
-          : "general";
-
+  const Figure = SUBJECT_OVERLAYS[namespace] ?? OverlayFallback;
   return (
     <svg
-      viewBox="0 0 300 100"
+      viewBox="0 0 88 80"
       className="size-full"
       aria-hidden
+      data-course-overlay={namespace}
       preserveAspectRatio="xMinYMid meet"
     >
-      <g fill="none" stroke="#f8fafc" strokeOpacity="0.88" strokeWidth="1.6">
-        {family === "math" ? (
-          <>
-            <circle cx="38" cy="50" r="18" />
-            <text
-              x="38"
-              y="55"
-              textAnchor="middle"
-              fill="#f8fafc"
-              fillOpacity="0.92"
-              stroke="none"
-              fontSize="12"
-              fontFamily="ui-sans-serif, system-ui, sans-serif"
-              fontWeight="700"
-            >
-              {namespace.includes("bc") ? "BC" : namespace.includes("pre") ? "PR" : namespace.includes("stat") ? "ST" : "AB"}
-            </text>
-            <path d="M68 72 C 74 28, 82 28, 86 72" />
-            <path d="M86 38 H 118" />
-            <path d="M96 32 C 108 28, 118 44, 132 40" />
-            <rect x="148" y="34" width="28" height="36" rx="3" />
-            <path d="M154 44 H 170 M154 52 H 170 M154 60 H 164" />
-          </>
-        ) : family === "cs" ? (
-          <>
-            <path d="M28 28 L 16 50 L 28 72" />
-            <path d="M52 28 L 64 50 L 52 72" />
-            <path d="M80 36 H 130 M80 50 H 118 M80 64 H 124" />
-          </>
-        ) : family === "science" ? (
-          <>
-            <path d="M36 24 V 40 L 20 72 H 52 L 36 40" />
-            <circle cx="36" cy="62" r="6" />
-            <path d="M70 70 C 90 20, 130 20, 150 70" />
-          </>
-        ) : family === "life" ? (
-          <>
-            <path d="M40 78 C 40 40, 18 36, 40 18 C 62 36, 40 40, 40 78 Z" />
-            <path d="M70 30 C 88 18, 110 28, 118 48 C 96 44, 82 56, 70 30 Z" />
-          </>
-        ) : (
-          <>
-            <circle cx="40" cy="50" r="16" />
-            <path d="M70 32 H 140 M70 50 H 124 M70 68 H 132" />
-          </>
-        )}
+      <defs>
+        <filter id={`overlay-halo-${namespace}`} x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow
+            dx="0"
+            dy="0"
+            stdDeviation="0.55"
+            floodColor="#0f172a"
+            floodOpacity="0.45"
+          />
+        </filter>
+      </defs>
+      <g
+        fill="none"
+        stroke={OVERLAY_INK}
+        strokeOpacity="0.95"
+        strokeWidth="1.35"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        filter={`url(#overlay-halo-${namespace})`}
+      >
+        <Figure />
       </g>
     </svg>
   );

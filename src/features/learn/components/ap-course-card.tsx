@@ -1,4 +1,4 @@
-import { BookOpen, FlaskConical, GraduationCap, Pencil } from "lucide-react";
+import { BookOpen, Clock, GraduationCap, Pencil } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -22,29 +22,22 @@ type ApCourseCardProps = {
   unitCount?: number;
   moduleCount?: number;
   progressPercent?: number;
-  statusChip?: "beta" | "preview" | null;
 };
 
 export const CATALOG_GRID_CLASS =
   "grid grid-cols-1 gap-[var(--catalog-gap)] sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
 
-function StatusChip({ chip }: { chip: "beta" | "preview" }) {
+function ComingSoonBadge() {
   return (
-    <span className="absolute top-2 right-2 inline-flex items-center gap-1 rounded-full bg-black/55 px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase">
-      <FlaskConical
-        aria-hidden
-        className="size-3"
-        style={{
-          color: chip === "beta" ? "var(--course-success)" : "var(--warning)",
-        }}
-      />
-      <span
-        style={{
-          color: chip === "beta" ? "var(--course-success)" : "var(--warning)",
-        }}
-      >
-        {chip}
-      </span>
+    <span
+      className="absolute top-2 right-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase"
+      style={{
+        background: "var(--course-coming-soon-bg)",
+        color: "var(--course-coming-soon)",
+      }}
+    >
+      <Clock aria-hidden className="size-3" strokeWidth={2} />
+      Coming soon
     </span>
   );
 }
@@ -102,7 +95,6 @@ export function ApCourseCard({
   unitCount = 0,
   moduleCount = 0,
   progressPercent = 0,
-  statusChip = null,
 }: ApCourseCardProps) {
   const available = Boolean(href) && status !== "planned";
   const body = (
@@ -136,10 +128,10 @@ export function ApCourseCard({
               </div>
             ))
           )}
-          <div className="pointer-events-none absolute inset-0">
+          <div className="pointer-events-none absolute inset-y-1.5 left-1.5 w-[40%]">
             <CourseSubjectOverlay namespace={namespace} />
           </div>
-          {statusChip ? <StatusChip chip={statusChip} /> : null}
+          <ComingSoonBadge />
         </div>
       </div>
       <div
