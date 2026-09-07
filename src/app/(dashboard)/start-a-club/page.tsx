@@ -36,7 +36,7 @@ export default async function StartAClubIndexPage() {
   );
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-white">
+    <div className="min-h-[calc(100vh-4rem)]">
       <PageContainer className="py-10 sm:py-14">
         <div className="mx-auto max-w-5xl">
           <div className="max-w-3xl">

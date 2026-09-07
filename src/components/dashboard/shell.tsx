@@ -40,7 +40,7 @@ export function DashboardShell({
     : null;
 
   return (
-    <div className="flex min-h-dvh bg-learning-background">
+    <div data-dashboard-shell className="flex min-h-dvh bg-learning-background">
       <a
         href="#dashboard-main"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[80] focus:rounded-md focus:bg-surface focus:px-3 focus:py-2 focus:ring-2 focus:ring-focus"
@@ -104,7 +104,7 @@ export function DashboardShell({
             </div>
           </div>
         </header>
-        <main id="dashboard-main" className="min-w-0 flex-1">
+        <main id="dashboard-main" className="min-w-0 flex-1 bg-learning-background">
           {children}
         </main>
       </div>

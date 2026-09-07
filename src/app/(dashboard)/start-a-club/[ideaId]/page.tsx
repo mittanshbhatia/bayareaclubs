@@ -4,7 +4,7 @@ import { IdeaWizard } from "@/features/ideas/components/idea-wizard";
 import {
   getApplicantFeedback,
   getIdeaDetail,
-  listUserSchools,
+  listActiveSchools,
 } from "@/features/ideas/queries";
 import { ActivityTimeline } from "@/components/ds/activity-timeline";
 import { PageContainer } from "@/components/ds/page-container";
@@ -30,21 +30,15 @@ export default async function StartAClubIdeaPage({
     redirect("/start-a-club");
   }
 
-  const [idea, memberships, feedback] = await Promise.all([
+  const [idea, schools, feedback] = await Promise.all([
     getIdeaDetail(ideaId),
-    listUserSchools(user!.id),
+    listActiveSchools(),
     getApplicantFeedback(ideaId),
   ]);
 
   if (!idea || idea.submitter_id !== user!.id) {
     notFound();
   }
-
-  const schools = memberships
-    .map((m) => m.schools)
-    .filter((school): school is { id: string; name: string } =>
-      Boolean(school),
-    );
 
   const timeline = (idea.club_idea_status_history ?? [])
     .slice()

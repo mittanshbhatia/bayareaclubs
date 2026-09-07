@@ -396,6 +396,12 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* Dashboard shell canvas matches /courses (slate --learning-background). */
+[data-dashboard-shell] {
+  --background: var(--learning-background);
+  background: var(--learning-background);
+}
+
 :focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 3px;

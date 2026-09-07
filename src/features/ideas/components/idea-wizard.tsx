@@ -22,7 +22,7 @@ import {
 } from "@/lib/validation/ideas";
 import { cn } from "@/lib/utils";
 
-type SchoolOption = { id: string; name: string };
+type SchoolOption = { id: string; name: string; label?: string };
 
 type WizardProps = {
   initial: IdeaDraftInput;
@@ -80,10 +80,13 @@ export function IdeaWizard({
         const result = await saveIdeaDraftAction(form);
         if (result.ok) {
           setMessage("Draft saved");
+          setError(null);
           if (!form.ideaId) {
             setForm((prev) => ({ ...prev, ideaId: result.data.ideaId }));
             router.replace(`/start-a-club/${result.data.ideaId}`);
           }
+        } else {
+          setError(result.error.message);
         }
       });
     }, 900);
@@ -119,7 +122,7 @@ export function IdeaWizard({
   const step = form.draftStep;
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-white">
+    <div className="min-h-[calc(100vh-4rem)]">
       <PageContainer className="py-8 sm:py-12">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div>
@@ -273,19 +276,26 @@ export function IdeaWizard({
 
           {step === 2 ? (
             <Field label="School">
-              <select
-                className="border-border bg-surface min-h-11 w-full rounded-md border px-3"
-                value={form.schoolId ?? ""}
-                disabled={!editable}
-                onChange={(e) => update("schoolId", e.target.value)}
-              >
-                <option value="">Select your school</option>
-                {schools.map((school) => (
-                  <option key={school.id} value={school.id}>
-                    {school.name}
-                  </option>
-                ))}
-              </select>
+              {schools.length === 0 ? (
+                <p className="text-muted-foreground text-sm" role="status">
+                  No registered schools are available yet. The school directory
+                  must be persisted before you can apply.
+                </p>
+              ) : (
+                <select
+                  className="border-border bg-surface min-h-11 w-full rounded-md border px-3"
+                  value={form.schoolId ?? ""}
+                  disabled={!editable}
+                  onChange={(e) => update("schoolId", e.target.value)}
+                >
+                  <option value="">Select your school</option>
+                  {schools.map((school) => (
+                    <option key={school.id} value={school.id}>
+                      {school.label ?? school.name}
+                    </option>
+                  ))}
+                </select>
+              )}
             </Field>
           ) : null}
 

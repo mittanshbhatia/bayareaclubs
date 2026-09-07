@@ -96,6 +96,20 @@ export async function saveIdeaDraftAction(
       return failure("SCHOOL_REQUIRED", "Select a school before saving.");
     }
 
+    const { error: claimError } = await supabase.rpc(
+      "claim_student_school_membership",
+      { target_school_id: payload.schoolId },
+    );
+    if (claimError) {
+      logger.error("idea.draft.school_claim_failed", {
+        message: claimError.message,
+      });
+      return failure(
+        "SCHOOL_JOIN_FAILED",
+        "Could not attach your student membership at that school.",
+      );
+    }
+
     const values = {
       application_kind: payload.applicationKind,
       school_id: payload.schoolId,
@@ -139,23 +153,31 @@ export async function saveIdeaDraftAction(
         return failure("SAVE_FAILED", error.message);
       }
     } else {
-      const { data, error } = await supabase
-        .from("club_ideas")
-        .insert({
-          ...values,
-          submitter_id: user.id,
-          status: "draft",
-        })
-        .select("id")
-        .single();
-      if (error || !data) {
-        logger.error("idea.draft.create_failed", { message: error?.message });
+      const { data: createdId, error: createError } = await supabase.rpc(
+        "create_club_idea_draft",
+        {
+          target_school_id: payload.schoolId,
+          target_application_kind: payload.applicationKind,
+        },
+      );
+      if (createError || !createdId) {
+        logger.error("idea.draft.create_failed", {
+          message: createError?.message,
+        });
         return failure(
           "SAVE_FAILED",
-          error?.message ?? "Could not create draft.",
+          createError?.message ?? "Could not create draft.",
         );
       }
-      ideaId = data.id;
+      ideaId = createdId;
+      const { error } = await supabase
+        .from("club_ideas")
+        .update(values)
+        .eq("id", ideaId);
+      if (error) {
+        logger.error("idea.draft.update_failed", { message: error.message });
+        return failure("SAVE_FAILED", error.message);
+      }
     }
 
     await replaceOfficersAndLinks(ideaId, payload.officers, payload.links);

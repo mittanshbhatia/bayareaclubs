@@ -1,5 +1,5 @@
 import { IdeaWizard } from "@/features/ideas/components/idea-wizard";
-import { listUserSchools } from "@/features/ideas/queries";
+import { listActiveSchools } from "@/features/ideas/queries";
 import { requireActiveUser } from "@/lib/auth/authorization";
 import { handleAuthorizationError } from "@/lib/auth/route-guard";
 
@@ -10,19 +10,13 @@ export default async function NewClubIdeaPage({
 }: {
   searchParams: Promise<{ path?: string }>;
 }) {
-  let user;
   try {
-    user = await requireActiveUser();
+    await requireActiveUser();
   } catch (error) {
     handleAuthorizationError(error, "/start-a-club/new");
   }
 
-  const memberships = await listUserSchools(user!.id);
-  const schools = memberships
-    .map((m) => m.schools)
-    .filter((school): school is { id: string; name: string } =>
-      Boolean(school),
-    );
+  const schools = await listActiveSchools();
   const { path } = await searchParams;
   const applicationKind =
     path === "existing" ? ("existing_club" as const) : ("new_idea" as const);
@@ -45,7 +39,7 @@ export default async function NewClubIdeaPage({
         proposedAdvisorId: null,
         gradeMin: null,
         gradeMax: null,
-        schoolId: schools[0]?.id ?? null,
+        schoolId: null,
         officers: [],
         links: [],
       }}

@@ -6606,6 +6606,10 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      claim_student_school_membership: {
+        Args: { target_school_id: string }
+        Returns: string
+      }
       club_month_facts: {
         Args: { range_end: string; range_start: string; target_club_id: string }
         Returns: Json
@@ -6651,6 +6655,10 @@ export type Database = {
         Returns: number
       }
       count_event_going: { Args: { target_event_id: string }; Returns: number }
+      create_club_idea_draft: {
+        Args: { target_application_kind?: string; target_school_id: string }
+        Returns: string
+      }
       emit_in_app_notification: {
         Args: {
           p_action_url?: string

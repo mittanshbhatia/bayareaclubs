@@ -3,6 +3,13 @@ import "server-only";
 import { postgrestIlikeOr } from "@/lib/supabase/postgrest-filter";
 import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database.generated";
+import {
+  presentSchoolOptions,
+  type PersistedSchoolOption,
+} from "@/features/ideas/school-options";
+
+export type { PersistedSchoolOption };
+export { presentSchoolOptions };
 
 export type ClubIdeaStatus = Database["public"]["Enums"]["club_idea_status"];
 
@@ -132,17 +139,34 @@ export async function listUserSchools(userId: string) {
   return data ?? [];
 }
 
+/** Active schools persisted in the directory — never a client-side hardcoded list. */
+export async function listActiveSchools(): Promise<PersistedSchoolOption[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("schools")
+    .select("id, name, city")
+    .eq("is_active", true)
+    .order("name");
+  if (error) throw error;
+  return presentSchoolOptions(data ?? []);
+}
+
 export async function listCommitteeReviewers() {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("platform_role_assignments")
     .select(
-      "user_id, profiles!platform_role_assignments_user_id_fkey(id, display_name)",
+      "user_id, role, profiles!platform_role_assignments_user_id_fkey(id, display_name)",
     )
-    .eq("role", "committee_reviewer")
+    .in("role", ["committee_reviewer", "platform_admin"])
     .is("revoked_at", null);
   if (error) throw error;
-  return data ?? [];
+  const seen = new Set<string>();
+  return (data ?? []).filter((row) => {
+    if (seen.has(row.user_id)) return false;
+    seen.add(row.user_id);
+    return true;
+  });
 }
 
 export function ideaCompletionPercent(idea: {
