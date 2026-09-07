@@ -1,335 +1,367 @@
 /**
- * Original BayAreaClubs catalog illustrations.
- * Geometric SVG only. Not copied from Stellar or any third-party catalog.
+ * Original BayAreaClubs catalog art.
+ * Atmospheric SVG fallbacks when a signed cover is not available.
+ * Not copied from Stellar or any third-party catalog.
  *
- * Measured from the owner catalog at 1440×900 (input only, /tmp):
- * - Card CSS: 288 × 242 (aspect 1.189)
- * - Media CSS: 254 × 80 (aspect 3.175)
- * - 2× art: 592 × 224 (scales into the media frame)
- * - Radius 12px · title 12px/600 · body 12px/600 · chips 40px · grid gap 16px
- * - Observed page/card: near-white. Accent family was blue/violet — mapped to
- *   Peninsula green/teal. No purple fonts or buttons. No proprietary fonts.
+ * Photo covers: 1280×720 (16:9), stored as learn/<namespace>/card-cover.jpg.
+ * Card chrome: 288px tiles, 14px radius, full-bleed 160px media.
  */
 
 import type { JSX, ReactNode } from "react";
 
 export const COURSE_CARD_MEASURE = {
   cssWidth: 288,
-  cssHeight: 242,
-  mediaCssWidth: 254,
-  mediaCssHeight: 80,
-  artWidth: 592,
-  artHeight: 224,
-  radiusPx: 12,
-  titlePx: 12,
-  bodyPx: 12,
+  cssHeight: 292,
+  mediaCssWidth: 288,
+  mediaCssHeight: 160,
+  artWidth: 1152,
+  artHeight: 640,
+  radiusPx: 14,
+  titlePx: 14,
+  bodyPx: 13,
   chipHeightPx: 40,
   gridGapPx: 16,
 } as const;
 
-const PALETTE = {
-  primary: "#0f5c44",
-  accent: "#086874",
-  primaryMuted: "#d7ebe2",
-  accentMuted: "#d4f0f4",
-  ink: "#121a16",
-  surface: "#ffffff",
-} as const;
+const W = COURSE_CARD_MEASURE.artWidth;
+const H = COURSE_CARD_MEASURE.artHeight;
 
 function Frame({
   children,
-  wash,
+  defs,
 }: {
   children: ReactNode;
-  wash: string;
+  defs?: ReactNode;
 }) {
   return (
     <svg
-      viewBox={`0 0 ${COURSE_CARD_MEASURE.artWidth} ${COURSE_CARD_MEASURE.artHeight}`}
+      viewBox={`0 0 ${W} ${H}`}
       role="img"
       aria-hidden
       className="size-full"
       xmlns="http://www.w3.org/2000/svg"
+      preserveAspectRatio="xMidYMid slice"
     >
-      <rect width={COURSE_CARD_MEASURE.artWidth} height={COURSE_CARD_MEASURE.artHeight} fill={wash} />
+      <defs>{defs}</defs>
       {children}
     </svg>
   );
 }
 
-function CspArt() {
+function ForestChalk({ id }: { id: string }) {
   return (
-    <Frame wash={PALETTE.primaryMuted}>
-      {Array.from({ length: 3 }, (_, row) =>
-        Array.from({ length: 14 }, (_, col) => (
+    <Frame
+      defs={
+        <>
+          <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#8fb4c9" />
+            <stop offset="0.45" stopColor="#c5d6c4" />
+            <stop offset="1" stopColor="#2f4a38" />
+          </linearGradient>
+          <linearGradient id={`${id}-fog`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#f8fafc" stopOpacity="0" />
+            <stop offset="1" stopColor="#e2ebe6" stopOpacity="0.55" />
+          </linearGradient>
+        </>
+      }
+    >
+      <rect width={W} height={H} fill={`url(#${id}-sky)`} />
+      <ellipse cx="180" cy="520" rx="220" ry="180" fill="#1b3326" opacity="0.9" />
+      <ellipse cx="420" cy="540" rx="260" ry="200" fill="#234433" />
+      <ellipse cx="720" cy="500" rx="300" ry="220" fill="#1a3026" />
+      <ellipse cx="980" cy="560" rx="240" ry="190" fill="#2a4a38" />
+      <path d="M0 430 C 180 390, 320 470, 520 410 S 860 360, 1152 430 V 640 H 0 Z" fill="#163025" />
+      <rect width={W} height={H} fill={`url(#${id}-fog)`} />
+      <g fill="none" stroke="#f8fafc" strokeOpacity="0.42" strokeWidth="2.2">
+        <path d="M80 420 C 200 300, 320 500, 460 360" />
+        <path d="M520 200 H 620 M570 150 V 250" />
+        <path d="M780 280 C 860 220, 900 360, 980 300" />
+      </g>
+    </Frame>
+  );
+}
+
+function CampusTower({ id, dusk }: { id: string; dusk?: boolean }) {
+  const sky = dusk ? ["#1e2a4a", "#6b4a5a", "#c9895a"] : ["#7ea4c8", "#d7c4a4", "#e8d8bc"];
+  return (
+    <Frame
+      defs={
+        <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor={sky[0]} />
+          <stop offset="0.55" stopColor={sky[1]} />
+          <stop offset="1" stopColor={sky[2]} />
+        </linearGradient>
+      }
+    >
+      <rect width={W} height={H} fill={`url(#${id}-sky)`} />
+      <rect x="0" y="470" width={W} height="170" fill={dusk ? "#1a1820" : "#6b5a48"} />
+      <rect x="500" y="140" width="150" height="360" fill={dusk ? "#2a2433" : "#c4b49a"} />
+      <polygon points="500,140 650,140 575,70" fill={dusk ? "#3a3044" : "#d8c8ae"} />
+      <rect x="555" y="88" width="40" height="52" fill={dusk ? "#1a1820" : "#9a8a72"} />
+      <rect x="280" y="300" width="180" height="200" fill={dusk ? "#241e2c" : "#b7a58c"} />
+      <rect x="700" y="280" width="220" height="220" fill={dusk ? "#2c2434" : "#c9b89d"} />
+      {[0, 1, 2, 3].map((i) => (
+        <rect
+          key={i}
+          x={530 + (i % 2) * 44}
+          y={200 + Math.floor(i / 2) * 70}
+          width="28"
+          height="36"
+          fill={dusk ? "#e8b86d" : "#8aa8c4"}
+          opacity={dusk ? 0.85 : 0.55}
+        />
+      ))}
+    </Frame>
+  );
+}
+
+function BrickHall({ id }: { id: string }) {
+  return (
+    <Frame
+      defs={
+        <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#f2d3b0" />
+          <stop offset="1" stopColor="#8f4a3a" />
+        </linearGradient>
+      }
+    >
+      <rect width={W} height={H} fill={`url(#${id}-sky)`} />
+      <rect x="80" y="180" width="990" height="380" fill="#8b3f32" />
+      {Array.from({ length: 5 }, (_, col) =>
+        Array.from({ length: 3 }, (_, row) => (
           <rect
-            key={`${row}-${col}`}
-            x={16 + col * 41}
-            y={18 + row * 68}
-            width="28"
-            height="28"
-            rx="3"
-            fill={col % 3 === row % 2 ? PALETTE.primary : PALETTE.accent}
-            opacity={0.22 + ((row + col) % 4) * 0.14}
+            key={`${col}-${row}`}
+            x={140 + col * 180}
+            y={220 + row * 90}
+            width="70"
+            height="54"
+            fill="#f3d7a0"
+            opacity={0.55 + ((col + row) % 3) * 0.15}
           />
         )),
       )}
+      <rect x="0" y="540" width={W} height="100" fill="#4a2a22" opacity="0.55" />
     </Frame>
   );
 }
 
-function CsaArt() {
+function GlassLab({ id, cool }: { id: string; cool?: boolean }) {
   return (
-    <Frame wash={PALETTE.accentMuted}>
-      <rect x="28" y="28" width="168" height="72" rx="8" fill={PALETTE.primary} opacity="0.2" />
-      <rect x="212" y="28" width="168" height="72" rx="8" fill={PALETTE.accent} opacity="0.24" />
-      <rect x="396" y="28" width="168" height="72" rx="8" fill={PALETTE.primary} opacity="0.3" />
-      <rect x="120" y="124" width="168" height="72" rx="8" fill={PALETTE.accent} opacity="0.22" />
-      <rect x="304" y="124" width="168" height="72" rx="8" fill={PALETTE.primary} opacity="0.28" />
-      <path d="M112 108 H 480" fill="none" stroke={PALETTE.accent} strokeWidth="3" />
-    </Frame>
-  );
-}
-
-function CalcAbArt() {
-  return (
-    <Frame wash={PALETTE.primaryMuted}>
-      <path
-        d="M16 168 C 96 168, 140 40, 220 88 S 360 200, 576 36"
-        fill="none"
-        stroke={PALETTE.primary}
-        strokeWidth="6"
-        strokeLinecap="round"
-      />
-      <line x1="160" y1="140" x2="320" y2="52" stroke={PALETTE.accent} strokeWidth="4" />
-      <circle cx="236" cy="92" r="6" fill={PALETTE.ink} />
+    <Frame
+      defs={
+        <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor={cool ? "#0b1c33" : "#143044"} />
+          <stop offset="1" stopColor={cool ? "#2a6f9a" : "#1d4e5c"} />
+        </linearGradient>
+      }
+    >
+      <rect width={W} height={H} fill={`url(#${id}-sky)`} />
+      <polygon points="180,560 420,160 780,160 1020,560" fill="#9fd4e8" opacity="0.28" />
+      <path d="M420 160 L 780 160 L 780 560 L 420 560 Z" fill="#d7eef6" opacity="0.22" />
       {[0, 1, 2, 3, 4].map((i) => (
+        <line
+          key={i}
+          x1={420 + i * 90}
+          y1="160"
+          x2={420 + i * 90}
+          y2="560"
+          stroke="#e8f6fb"
+          strokeOpacity="0.35"
+        />
+      ))}
+      <rect x="0" y="560" width={W} height="80" fill="#071018" opacity="0.45" />
+    </Frame>
+  );
+}
+
+function Greenhouse({ id }: { id: string }) {
+  return (
+    <Frame
+      defs={
+        <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#dcecc4" />
+          <stop offset="1" stopColor="#2f5a38" />
+        </linearGradient>
+      }
+    >
+      <rect width={W} height={H} fill={`url(#${id}-sky)`} />
+      <path d="M160 560 L 576 80 L 992 560 Z" fill="#e7f4d8" opacity="0.35" />
+      <path d="M576 80 L 576 560" stroke="#f8fafc" strokeOpacity="0.45" />
+      <ellipse cx="360" cy="500" rx="140" ry="90" fill="#1f4a2c" />
+      <ellipse cx="760" cy="510" rx="180" ry="100" fill="#245832" />
+      <ellipse cx="560" cy="470" rx="90" ry="70" fill="#3a7a48" />
+    </Frame>
+  );
+}
+
+function Atrium({ id }: { id: string }) {
+  return (
+    <Frame
+      defs={
+        <radialGradient id={`${id}-glow`} cx="50%" cy="18%" r="70%">
+          <stop offset="0" stopColor="#fff7e6" />
+          <stop offset="0.45" stopColor="#d5c4b0" />
+          <stop offset="1" stopColor="#3d4454" />
+        </radialGradient>
+      }
+    >
+      <rect width={W} height={H} fill={`url(#${id}-glow)`} />
+      <ellipse cx="576" cy="120" rx="220" ry="70" fill="#fffaf0" opacity="0.7" />
+      <path d="M80 640 C 280 280, 872 280, 1072 640" fill="none" stroke="#f8fafc" strokeOpacity="0.35" strokeWidth="8" />
+    </Frame>
+  );
+}
+
+function Canopy({ id }: { id: string }) {
+  return (
+    <Frame
+      defs={
+        <linearGradient id={`${id}-sky`} x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0" stopColor="#14301c" />
+          <stop offset="1" stopColor="#7ea3c2" />
+        </linearGradient>
+      }
+    >
+      <rect width={W} height={H} fill={`url(#${id}-sky)`} />
+      <ellipse cx="200" cy="-20" rx="280" ry="220" fill="#1d3d24" />
+      <ellipse cx="620" cy="-40" rx="340" ry="260" fill="#24512e" />
+      <ellipse cx="1000" cy="0" rx="300" ry="240" fill="#183322" />
+      <path d="M400 0 C 430 220, 390 400, 420 640" stroke="#4a2a18" strokeWidth="18" fill="none" />
+    </Frame>
+  );
+}
+
+function BenchGlass({ id }: { id: string }) {
+  return (
+    <Frame
+      defs={
+        <radialGradient id={`${id}-glow`} cx="40%" cy="40%" r="70%">
+          <stop offset="0" stopColor="#7ed0d8" />
+          <stop offset="0.5" stopColor="#1b3a44" />
+          <stop offset="1" stopColor="#0b1418" />
+        </radialGradient>
+      }
+    >
+      <rect width={W} height={H} fill={`url(#${id}-glow)`} />
+      <ellipse cx="420" cy="300" rx="90" ry="140" fill="#d7f3f6" opacity="0.35" />
+      <ellipse cx="620" cy="280" rx="70" ry="160" fill="#f3d7a8" opacity="0.28" />
+      <rect x="0" y="480" width={W} height="160" fill="#10181c" />
+    </Frame>
+  );
+}
+
+function BinaryGlass({ id }: { id: string }) {
+  return (
+    <Frame
+      defs={
+        <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#102033" />
+          <stop offset="1" stopColor="#3d7ea6" />
+        </linearGradient>
+      }
+    >
+      <rect width={W} height={H} fill={`url(#${id}-sky)`} />
+      {Array.from({ length: 8 }, (_, i) => (
         <rect
           key={i}
-          x={80 + i * 72}
-          y={148 - i * 10}
-          width="48"
-          height={52 + i * 10}
-          fill={PALETTE.accent}
-          opacity={0.16 + i * 0.06}
+          x={80 + i * 130}
+          y={80 + (i % 3) * 40}
+          width="70"
+          height="420"
+          fill="#d7eef8"
+          opacity={0.08 + (i % 4) * 0.06}
         />
       ))}
+      <rect x="0" y="520" width={W} height="120" fill="#0b1520" opacity="0.55" />
     </Frame>
   );
 }
 
-function CalcBcArt() {
+function Waves({ id }: { id: string }) {
   return (
-    <Frame wash={PALETTE.accentMuted}>
-      {[28, 52, 76, 100].map((r, i) => (
-        <ellipse
-          key={r}
-          cx="296"
-          cy="112"
-          rx={r * 2.1}
-          ry={r}
-          fill="none"
-          stroke={i % 2 ? PALETTE.accent : PALETTE.primary}
-          strokeWidth="4"
-          opacity={0.32 + i * 0.12}
-        />
-      ))}
-      <path d="M296 112 L 470 56" stroke={PALETTE.ink} strokeWidth="3" />
-      <circle cx="470" cy="56" r="5" fill={PALETTE.primary} />
-    </Frame>
-  );
-}
-
-function StatsArt() {
-  const bars = [48, 96, 140, 84, 124, 64, 108, 76];
-  return (
-    <Frame wash={PALETTE.primaryMuted}>
-      {bars.map((h, i) => (
-        <rect
-          key={i}
-          x={36 + i * 70}
-          y={188 - h}
-          width="44"
-          height={h}
-          rx="4"
-          fill={i % 2 ? PALETTE.accent : PALETTE.primary}
-          opacity="0.58"
-        />
-      ))}
-      <line x1="24" y1="196" x2="568" y2="196" stroke={PALETTE.ink} strokeWidth="2.5" />
-    </Frame>
-  );
-}
-
-function PrecalcArt() {
-  return (
-    <Frame wash={PALETTE.accentMuted}>
-      <path
-        d="M8 112 C 80 16, 140 208, 220 112 S 360 16, 440 112 520 176, 584 72"
-        fill="none"
-        stroke={PALETTE.accent}
-        strokeWidth="5"
-      />
-      <path
-        d="M24 168 Q 140 24 260 132 T 560 56"
-        fill="none"
-        stroke={PALETTE.primary}
-        strokeWidth="4"
-        opacity="0.72"
-      />
-    </Frame>
-  );
-}
-
-function Physics1Art() {
-  return (
-    <Frame wash={PALETTE.primaryMuted}>
-      <circle cx="120" cy="120" r="28" fill={PALETTE.primary} opacity="0.75" />
-      <path d="M148 108 L 500 48" stroke={PALETTE.accent} strokeWidth="6" />
-      <path d="M478 34 L 516 44 L 490 70" fill={PALETTE.accent} />
-      <path
-        d="M120 120 A 210 90 0 0 1 500 48"
-        fill="none"
-        stroke={PALETTE.ink}
-        strokeWidth="2.5"
-        strokeDasharray="6 8"
-      />
-    </Frame>
-  );
-}
-
-function Physics2Art() {
-  return (
-    <Frame wash={PALETTE.accentMuted}>
-      {[-48, -24, 0, 24, 48].map((offset) => (
+    <Frame
+      defs={
+        <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#10243a" />
+          <stop offset="1" stopColor="#3c6d8c" />
+        </linearGradient>
+      }
+    >
+      <rect width={W} height={H} fill={`url(#${id}-sky)`} />
+      {[-40, 0, 40, 80].map((offset) => (
         <path
           key={offset}
-          d={`M32 ${112 + offset} C 180 ${64 + offset}, 400 ${160 + offset}, 560 ${112 + offset}`}
+          d={`M0 ${300 + offset} C 240 ${220 + offset}, 480 ${380 + offset}, 720 ${260 + offset} S 1152 ${320 + offset}, 1152 ${320 + offset}`}
           fill="none"
-          stroke={PALETTE.accent}
-          strokeWidth="4"
-          opacity="0.42"
+          stroke="#cfe8f4"
+          strokeOpacity="0.35"
+          strokeWidth="6"
         />
       ))}
-      <circle cx="140" cy="112" r="14" fill={PALETTE.primary} />
-      <circle cx="452" cy="112" r="14" fill={PALETTE.ink} opacity="0.7" />
     </Frame>
   );
 }
 
-function ChemArt() {
+function Arch({ id }: { id: string }) {
   return (
-    <Frame wash={PALETTE.primaryMuted}>
-      <polygon
-        points="296,16 420,64 420,160 296,208 172,160 172,64"
-        fill={PALETTE.accent}
-        opacity="0.2"
-        stroke={PALETTE.primary}
-        strokeWidth="5"
-      />
-      <circle cx="296" cy="112" r="22" fill={PALETTE.primary} />
-      <circle cx="172" cy="64" r="12" fill={PALETTE.accent} />
-      <circle cx="420" cy="160" r="12" fill={PALETTE.accent} />
-      <circle cx="80" cy="168" r="10" fill={PALETTE.primary} opacity="0.45" />
-      <circle cx="512" cy="48" r="10" fill={PALETTE.accent} opacity="0.5" />
+    <Frame
+      defs={
+        <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#9aa8b8" />
+          <stop offset="1" stopColor="#3a4450" />
+        </linearGradient>
+      }
+    >
+      <rect width={W} height={H} fill={`url(#${id}-sky)`} />
+      <path d="M180 640 V 280 A 396 280 0 0 1 972 280 V 640 Z" fill="#2c333c" />
+      <path d="M300 640 V 340 A 276 220 0 0 1 852 340 V 640 Z" fill="#c5ced6" opacity="0.35" />
     </Frame>
   );
 }
 
-function BioArt() {
+function NightGlass({ id }: { id: string }) {
   return (
-    <Frame wash={PALETTE.accentMuted}>
-      <path
-        d="M80 188 C 140 40, 220 40, 280 112 S 400 200, 512 56"
-        fill="none"
-        stroke={PALETTE.primary}
-        strokeWidth="7"
-        strokeLinecap="round"
-      />
-      <circle cx="168" cy="72" r="14" fill={PALETTE.accent} />
-      <circle cx="280" cy="112" r="10" fill={PALETTE.primary} />
-      <circle cx="400" cy="168" r="12" fill={PALETTE.accent} />
-      <circle cx="512" cy="56" r="8" fill={PALETTE.ink} />
-    </Frame>
-  );
-}
-
-function EnvsciArt() {
-  return (
-    <Frame wash={PALETTE.primaryMuted}>
-      <rect x="0" y="0" width="592" height="48" fill={PALETTE.accent} opacity="0.16" />
-      <rect x="0" y="48" width="592" height="52" fill={PALETTE.primary} opacity="0.14" />
-      <rect x="0" y="100" width="592" height="56" fill={PALETTE.accent} opacity="0.26" />
-      <rect x="0" y="156" width="592" height="68" fill={PALETTE.primary} opacity="0.38" />
-      <path d="M0 112 C 160 80, 320 150, 592 96" fill="none" stroke={PALETTE.ink} strokeWidth="3" />
-    </Frame>
-  );
-}
-
-function PsychArt() {
-  return (
-    <Frame wash={PALETTE.accentMuted}>
-      {[36, 64, 92].map((r, i) => (
-        <ellipse
-          key={r}
-          cx="296"
-          cy="112"
-          rx={r * 2.4}
-          ry={r}
-          fill="none"
-          stroke={i % 2 ? PALETTE.primary : PALETTE.accent}
-          strokeWidth="4"
-          opacity={0.34 + i * 0.12}
-        />
-      ))}
-      <circle cx="296" cy="112" r="16" fill={PALETTE.primary} />
-    </Frame>
-  );
-}
-
-function PhysicsCMechArt() {
-  return (
-    <Frame wash={PALETTE.primaryMuted}>
-      <path d="M32 176 H 560" stroke={PALETTE.ink} strokeWidth="3" />
-      <path d="M96 176 A 200 140 0 0 1 496 176" fill="none" stroke={PALETTE.primary} strokeWidth="6" />
-      <circle cx="496" cy="176" r="12" fill={PALETTE.accent} />
-      <circle cx="96" cy="176" r="8" fill={PALETTE.ink} />
-    </Frame>
-  );
-}
-
-function PhysicsCEmArt() {
-  return (
-    <Frame wash={PALETTE.accentMuted}>
-      <rect x="268" y="24" width="56" height="176" rx="6" fill={PALETTE.primary} opacity="0.22" />
-      {Array.from({ length: 5 }, (_, i) => (
-        <path
+    <Frame
+      defs={
+        <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#071018" />
+          <stop offset="1" stopColor="#1d4ed8" />
+        </linearGradient>
+      }
+    >
+      <rect width={W} height={H} fill={`url(#${id}-sky)`} />
+      <rect x="260" y="80" width="632" height="480" fill="#93c5fd" opacity="0.18" />
+      {Array.from({ length: 6 }, (_, i) => (
+        <rect
           key={i}
-          d={`M40 ${36 + i * 36} C 180 ${16 + i * 36}, 400 ${56 + i * 36}, 552 ${36 + i * 36}`}
-          fill="none"
-          stroke={PALETTE.accent}
-          strokeWidth="4"
+          x={300 + i * 96}
+          y="140"
+          width="48"
+          height="360"
+          fill="#bfdbfe"
+          opacity={0.12 + (i % 3) * 0.1}
         />
       ))}
+      <rect x="0" y="540" width={W} height="100" fill="#020617" />
     </Frame>
   );
 }
 
 const ART: Record<string, () => JSX.Element> = {
-  "ap-csp": CspArt,
-  "ap-csa": CsaArt,
-  "ap-calc-ab": CalcAbArt,
-  "ap-calc-bc": CalcBcArt,
-  "ap-stats": StatsArt,
-  "ap-precalc": PrecalcArt,
-  "ap-physics-1": Physics1Art,
-  "ap-physics-2": Physics2Art,
-  "ap-physics-c-mech": PhysicsCMechArt,
-  "ap-physics-c-em": PhysicsCEmArt,
-  "ap-chem": ChemArt,
-  "ap-bio": BioArt,
-  "ap-envsci": EnvsciArt,
-  "ap-psych": PsychArt,
+  "ap-csp": () => <BinaryGlass id="csp" />,
+  "ap-csa": () => <CampusTower id="csa" dusk />,
+  "ap-calc-ab": () => <ForestChalk id="cab" />,
+  "ap-calc-bc": () => <CampusTower id="cbc" />,
+  "ap-stats": () => <BrickHall id="sta" />,
+  "ap-precalc": () => <CampusTower id="pre" />,
+  "ap-physics-1": () => <Waves id="p1" />,
+  "ap-physics-2": () => <GlassLab id="p2" cool />,
+  "ap-physics-c-mech": () => <Arch id="pcm" />,
+  "ap-physics-c-em": () => <NightGlass id="pce" />,
+  "ap-chem": () => <BenchGlass id="chm" />,
+  "ap-bio": () => <Greenhouse id="bio" />,
+  "ap-envsci": () => <Canopy id="env" />,
+  "ap-psych": () => <Atrium id="psy" />,
 };
 
 export const ORIGINAL_CARD_NAMESPACES = Object.keys(ART);
@@ -340,25 +372,27 @@ export function CourseCardArt({ namespace }: { namespace: string }) {
   return <Art />;
 }
 
-/** Original 2× SVG for Storage. Peninsula green/teal only. Not a third-party asset. */
+/** Original atmospheric SVG for Storage fallback. Not a third-party asset. */
 export function courseCardSvgMarkup(namespace: string): string {
-  const wash = namespace.includes("calc") || namespace.endsWith("csa") || namespace.includes("psych")
-    ? PALETTE.accentMuted
-    : PALETTE.primaryMuted;
   const seed = [...namespace].reduce((sum, char) => sum + char.charCodeAt(0), 0);
-  const bars = [48, 96, 140, 84, 124, 64, 108, 76].map(
-    (height, index) => height + ((seed + index * 13) % 24),
-  );
+  const sky = namespace.includes("calc")
+    ? ["#8fb4c9", "#2f4a38"]
+    : namespace.includes("phys")
+      ? ["#10243a", "#3c6d8c"]
+      : namespace.includes("bio") || namespace.includes("env")
+        ? ["#dcecc4", "#2f5a38"]
+        : ["#7ea4c8", "#2a2433"];
   return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="${COURSE_CARD_MEASURE.artWidth}" height="${COURSE_CARD_MEASURE.artHeight}" viewBox="0 0 ${COURSE_CARD_MEASURE.artWidth} ${COURSE_CARD_MEASURE.artHeight}" role="img">
-  <rect width="${COURSE_CARD_MEASURE.artWidth}" height="${COURSE_CARD_MEASURE.artHeight}" fill="${wash}"/>
-  ${bars
-    .map(
-      (height, index) =>
-        `<rect x="${36 + index * 70}" y="${188 - (height % 150)}" width="44" height="${Math.max(36, height % 150)}" rx="4" fill="${index % 2 ? PALETTE.accent : PALETTE.primary}" opacity="0.58"/>`,
-    )
-    .join("")}
-  <path d="M16 168 C 96 168, 140 40, 220 88 S 360 200, 576 36" fill="none" stroke="${PALETTE.primary}" stroke-width="6" stroke-linecap="round"/>
-  <circle cx="${180 + (seed % 200)}" cy="92" r="7" fill="${PALETTE.ink}"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${sky[0]}"/>
+      <stop offset="1" stop-color="${sky[1]}"/>
+    </linearGradient>
+  </defs>
+  <rect width="${W}" height="${H}" fill="url(#sky)"/>
+  <ellipse cx="${220 + (seed % 400)}" cy="520" rx="280" ry="200" fill="#1a2430" opacity="0.55"/>
+  <path d="M0 430 C 180 390, 320 470, 520 410 S 860 360, 1152 430 V 640 H 0 Z" fill="#163025" opacity="0.72"/>
+  <path d="M80 420 C 200 300, 320 500, 460 360" fill="none" stroke="#f8fafc" stroke-opacity="0.35" stroke-width="3"/>
 </svg>`;
 }

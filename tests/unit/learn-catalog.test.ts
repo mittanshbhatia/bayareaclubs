@@ -4,6 +4,7 @@ import {
   catalogCardProgressPercent,
   catalogInventory,
 } from "@/features/learn/catalog-inventory";
+import { catalogCoverObjectPath } from "@/features/learn/catalog-covers";
 import {
   COURSE_CARD_MEASURE,
   ORIGINAL_CARD_NAMESPACES,
@@ -40,20 +41,23 @@ describe("AP catalog families and original card art", () => {
     expect(ORIGINAL_CARD_NAMESPACES).toHaveLength(AP_COURSE_REGISTRY.length);
   });
 
-  it("uses measured catalog card geometry at 2× art density", () => {
+  it("uses measured catalog card geometry for photo covers", () => {
     expect(COURSE_CARD_MEASURE.cssWidth).toBe(288);
-    expect(COURSE_CARD_MEASURE.cssHeight).toBe(242);
-    expect(COURSE_CARD_MEASURE.mediaCssWidth).toBe(254);
-    expect(COURSE_CARD_MEASURE.mediaCssHeight).toBe(80);
-    expect(COURSE_CARD_MEASURE.artWidth).toBe(592);
-    expect(COURSE_CARD_MEASURE.artHeight).toBe(224);
-    expect(COURSE_CARD_MEASURE.radiusPx).toBe(12);
-    expect(COURSE_CARD_MEASURE.titlePx).toBe(12);
-    expect(COURSE_CARD_MEASURE.bodyPx).toBe(12);
+    expect(COURSE_CARD_MEASURE.cssHeight).toBe(292);
+    expect(COURSE_CARD_MEASURE.mediaCssWidth).toBe(288);
+    expect(COURSE_CARD_MEASURE.mediaCssHeight).toBe(160);
+    expect(COURSE_CARD_MEASURE.artWidth).toBe(1152);
+    expect(COURSE_CARD_MEASURE.artHeight).toBe(640);
+    expect(COURSE_CARD_MEASURE.radiusPx).toBe(14);
+    expect(COURSE_CARD_MEASURE.titlePx).toBe(14);
+    expect(COURSE_CARD_MEASURE.bodyPx).toBe(13);
     expect(COURSE_CARD_MEASURE.chipHeightPx).toBe(40);
-    expect(courseCardSvgMarkup("ap-csa")).toContain("592");
-    expect(courseCardSvgMarkup("ap-csa")).toContain("#0f5c44");
+    expect(courseCardSvgMarkup("ap-csa")).toContain("1152");
+    expect(courseCardSvgMarkup("ap-csa")).toContain("#f8fafc");
     expect(courseCardSvgMarkup("ap-csa")).not.toMatch(/stellar|unsplash/i);
+    expect(catalogCoverObjectPath("ap-calc-ab")).toBe(
+      "learn/ap-calc-ab/card-cover.jpg",
+    );
   });
 
   it("counts units and lessons from original manifests only", () => {

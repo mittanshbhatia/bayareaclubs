@@ -27,6 +27,8 @@ describe("AP course card anatomy", () => {
     expect(screen.getByText(/8 units/i)).toBeInTheDocument();
     expect(screen.getByText(/16 modules/i)).toBeInTheDocument();
     expect(screen.getByText("0% Progress")).toBeInTheDocument();
+    expect(card.className).toMatch(/course-card-radius/);
+    expect(card.className).toMatch(/course-card-shadow/);
     expect(screen.queryByText(/BETA|PREVIEW/i)).not.toBeInTheDocument();
   });
 

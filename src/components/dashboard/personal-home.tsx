@@ -210,6 +210,7 @@ export function PersonalHome({ model }: { model: PersonalHomeModel }) {
                     status="shipping"
                     href={item.href}
                     illustration={<CourseCardArt namespace={namespace} />}
+                    coverUrl={item.coverUrl}
                     unitCount={inventory.unitCount}
                     moduleCount={inventory.moduleCount}
                     progressPercent={catalogCardProgressPercent({

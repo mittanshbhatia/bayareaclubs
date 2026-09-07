@@ -45,6 +45,7 @@ export type PersonalLearningItem = {
   completedCount: number;
   nextLessonTitle: string | null;
   kind: "stem" | "ap";
+  coverUrl?: string;
 };
 
 export type MyDayItem = {
@@ -359,6 +360,7 @@ export async function loadPersonalHome(
         total: 0,
         pageCount: 1,
         courses: [],
+        coverUrls: {},
       })),
       getMyLearnProgress().catch(() => []),
     ]);
@@ -465,6 +467,7 @@ export async function loadPersonalHome(
       ? `${course.framework_code} catalog`
       : "AP catalog",
     kind: "ap",
+    coverUrl: apCatalog.coverUrls[course.course_namespace],
   }));
 
   const nextLearning =

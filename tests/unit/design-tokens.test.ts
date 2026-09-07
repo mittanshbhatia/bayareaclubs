@@ -34,6 +34,12 @@ describe("design-tokens", () => {
       "course-border",
       "course-muted",
       "course-success",
+      "course-units-bg",
+      "course-units-fg",
+      "course-modules-bg",
+      "course-modules-fg",
+      "catalog-nav-selected-bg",
+      "catalog-nav-selected-fg",
     ]);
   });
 });

@@ -31,7 +31,7 @@ export function CatalogFamilyChips({
             className={cn(
               "inline-flex h-10 items-center rounded-md border px-3 text-xs font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               selected
-                ? "border-primary bg-primary text-primary-foreground"
+                ? "border-[var(--catalog-nav-selected-fg)] bg-[var(--catalog-nav-selected-fg)] text-white"
                 : "border-(--course-border) bg-learning-surface text-foreground",
             )}
           >

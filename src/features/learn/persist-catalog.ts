@@ -1,7 +1,15 @@
 import "server-only";
 
-import { courseCardSvgMarkup } from "@/features/learn/components/course-card-art";
+import { existsSync, readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
+import {
+  CATALOG_COVER_DIR,
+  CATALOG_COVER_PIXELS,
+  catalogCoverObjectPath,
+} from "@/features/learn/catalog-covers";
 import { FEATURED_NAMESPACES } from "@/features/learn/catalog-model";
+import { courseCardSvgMarkup } from "@/features/learn/components/course-card-art";
 import { hydrateShippingCourse } from "@/features/learn/courses/from-loader";
 import { listShippingNamespaces } from "@/features/learn/courses/registry";
 import { loaderCourseId } from "@/features/learn/courses/ids";
@@ -11,6 +19,43 @@ import type { Json } from "@/types/database.generated";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 const STORAGE_BUCKET = "course-assets";
+
+function catalogCoverBytes(namespace: string): {
+  bytes: Uint8Array;
+  mime: string;
+  storagePath: string;
+  width: number;
+  height: number;
+} {
+  const candidates = [
+    { ext: ".webp", mime: "image/webp" },
+    { ext: ".jpg", mime: "image/jpeg" },
+    { ext: ".jpeg", mime: "image/jpeg" },
+    { ext: ".png", mime: "image/png" },
+  ] as const;
+  for (const candidate of candidates) {
+    const filePath = resolve(CATALOG_COVER_DIR, `${namespace}${candidate.ext}`);
+    if (!existsSync(filePath)) continue;
+    return {
+      bytes: readFileSync(filePath),
+      mime: candidate.mime,
+      storagePath:
+        candidate.ext === ".jpg" || candidate.ext === ".jpeg"
+          ? catalogCoverObjectPath(namespace)
+          : `learn/${namespace}/card-cover${candidate.ext}`,
+      width: CATALOG_COVER_PIXELS.width,
+      height: CATALOG_COVER_PIXELS.height,
+    };
+  }
+  const svg = courseCardSvgMarkup(namespace);
+  return {
+    bytes: new TextEncoder().encode(svg),
+    mime: "image/svg+xml",
+    storagePath: `learn/${namespace}/card-cover.svg`,
+    width: 1152,
+    height: 640,
+  };
+}
 
 export async function persistShippingCatalog() {
   const admin = createAdminClient();
@@ -50,12 +95,11 @@ export async function persistShippingCatalog() {
     const hydrated = await hydrateShippingCourse(namespace);
     if (!hydrated) continue;
     const courseId = loaderCourseId(namespace);
-    const svg = courseCardSvgMarkup(namespace);
-    const storagePath = `learn/${namespace}/card-2x.svg`;
-    const bytes = new TextEncoder().encode(svg);
+    const cover = catalogCoverBytes(namespace);
+    const { bytes, mime, storagePath, width, height } = cover;
 
     const { error: uploadError } = await admin.storage.from(STORAGE_BUCKET).upload(storagePath, bytes, {
-      contentType: "image/svg+xml",
+      contentType: mime,
       upsert: true,
     });
     if (uploadError) throw new Error(`${namespace} art upload failed: ${uploadError.message}`);
@@ -65,14 +109,14 @@ export async function persistShippingCatalog() {
       id: thumbnailId,
       school_id: school.id,
       title: `${hydrated.course.title} card art`,
-      description: "Original BayAreaClubs catalog illustration.",
+      description: "Original BayAreaClubs catalog cover.",
       media_type: "image",
-      mime_type: "image/svg+xml",
+      mime_type: mime,
       storage_bucket: STORAGE_BUCKET,
       storage_path: storagePath,
       size_bytes: bytes.byteLength,
-      width: 592,
-      height: 224,
+      width,
+      height,
       visibility: "private",
       consent_required: false,
       uploader_id: uploaderId,

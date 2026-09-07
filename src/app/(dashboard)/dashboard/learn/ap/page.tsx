@@ -45,6 +45,7 @@ export default async function ApCatalogPage({
         entries={AP_COURSE_REGISTRY}
         family={paging.family}
         published={catalog.courses}
+        coverUrls={catalog.coverUrls}
         progress={progress
           .filter((item) => item.namespace)
           .map((item) => ({

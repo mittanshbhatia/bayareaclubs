@@ -55,7 +55,7 @@ export const designSystemMeta = {
   codename: "Peninsula",
 } as const;
 
-/** Learning surface tokens — CSS remains source of truth. Derived from Peninsula. */
+/** Learning surface tokens — CSS remains source of truth. Catalog chrome uses Peninsula info / chart-5. */
 export const learningCssVars = {
   "learning-background": "var(--learning-background)",
   "learning-surface": "var(--learning-surface)",
@@ -65,6 +65,12 @@ export const learningCssVars = {
   "course-border": "var(--course-border)",
   "course-muted": "var(--course-muted)",
   "course-success": "var(--course-success)",
+  "course-units-bg": "var(--course-units-bg)",
+  "course-units-fg": "var(--course-units-fg)",
+  "course-modules-bg": "var(--course-modules-bg)",
+  "course-modules-fg": "var(--course-modules-fg)",
+  "catalog-nav-selected-bg": "var(--catalog-nav-selected-bg)",
+  "catalog-nav-selected-fg": "var(--catalog-nav-selected-fg)",
 } as const;
 
 export const learningTokenNames = [
@@ -76,4 +82,10 @@ export const learningTokenNames = [
   "course-border",
   "course-muted",
   "course-success",
+  "course-units-bg",
+  "course-units-fg",
+  "course-modules-bg",
+  "course-modules-fg",
+  "catalog-nav-selected-bg",
+  "catalog-nav-selected-fg",
 ] as const;

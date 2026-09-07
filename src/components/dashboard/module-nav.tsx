@@ -43,7 +43,12 @@ export function ModuleNavList({
                       onClick={onNavigate}
                       style={
                         active
-                          ? { borderLeftColor: "var(--accent)" }
+                          ? {
+                              borderLeftColor:
+                                module.id === "learning"
+                                  ? "var(--catalog-nav-selected-fg)"
+                                  : "var(--accent)",
+                            }
                           : undefined
                       }
                       className={cn(
@@ -51,9 +56,11 @@ export function ModuleNavList({
                         "border-l-2 transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
                         "motion-reduce:transition-none",
                         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-                        active
-                          ? "border-l-accent bg-accent-muted text-accent"
-                          : "border-l-transparent text-foreground hover:bg-surface-muted",
+                        active && module.id === "learning"
+                          ? "border-l-[var(--catalog-nav-selected-fg)] bg-[var(--catalog-nav-selected-bg)] text-[var(--catalog-nav-selected-fg)]"
+                          : active
+                            ? "border-l-accent bg-accent-muted text-accent"
+                            : "border-l-transparent text-foreground hover:bg-surface-muted",
                       )}
                     >
                       <DashboardModuleIcon

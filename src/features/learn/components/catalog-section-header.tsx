@@ -34,16 +34,16 @@ export function CatalogSectionHeader({
 
   return (
     <div className="flex items-center gap-2 border-b border-(--course-border) pb-3">
-      <Icon aria-hidden className="size-5 shrink-0 text-accent" />
+      <Icon aria-hidden className="size-5 shrink-0 text-foreground" />
       <h2
         id={headingId}
-        className="font-display text-xl font-semibold tracking-tight"
+        className="font-display text-xl font-bold tracking-tight text-foreground"
       >
         {heading}
         {kicker ? (
           <>
-            <span className="mx-2 font-normal text-muted-foreground"> · </span>
-            <span className="text-base font-normal text-muted-foreground italic">
+            <span className="mx-2 font-normal text-(--course-muted)"> · </span>
+            <span className="text-base font-normal text-(--course-muted) italic">
               {kicker}
             </span>
           </>

@@ -19,11 +19,13 @@ export function CatalogFamilySections({
   family,
   published,
   progress = [],
+  coverUrls = {},
 }: {
   entries: readonly ApCourseRegistryEntry[];
   family: Parameters<typeof groupedAvailableCatalog>[1];
   published: readonly PublishedApCourse[];
   progress?: readonly CatalogProgressRow[];
+  coverUrls?: Readonly<Record<string, string>>;
 }) {
   const groups = groupedAvailableCatalog(entries, family);
   const progressByNamespace = new Map(
@@ -52,6 +54,7 @@ export function CatalogFamilySections({
                   minutes={row?.estimated_minutes}
                   href={`/dashboard/learn/ap/${entry.namespace}`}
                   illustration={<CourseCardArt namespace={entry.namespace} />}
+                  coverUrl={coverUrls[entry.namespace]}
                   unitCount={inventory.unitCount}
                   moduleCount={inventory.moduleCount}
                   progressPercent={catalogCardProgressPercent({

@@ -288,16 +288,15 @@ describe("dashboard catalog chrome", () => {
     expect(presented.some((module) => module.label === "School")).toBe(false);
   });
 
-  it("uses Peninsula selected nav on Courses", () => {
+  it("uses catalog blue selected nav on Courses", () => {
     const presented = presentDashboardNav(sampleModules());
     render(
       <DashboardSidebar modules={presented} pathname="/dashboard/learn" />,
     );
     const courses = screen.getByRole("link", { name: "Courses" });
     expect(courses).toHaveAttribute("aria-current", "page");
-    expect(courses.className).toMatch(/bg-accent-muted/);
-    expect(courses.className).toMatch(/text-accent/);
-    expect(courses.className).toMatch(/border-l-accent/);
-    expect(courses.className).not.toMatch(/purple|violet/);
+    expect(courses.className).toMatch(/catalog-nav-selected-bg/);
+    expect(courses.className).toMatch(/catalog-nav-selected-fg/);
+    expect(courses.className).not.toMatch(/btn-purple|button-purple/);
   });
 });

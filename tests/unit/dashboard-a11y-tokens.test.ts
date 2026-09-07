@@ -12,6 +12,12 @@ const LEARNING_CSS_VARIABLES = [
   "--course-border",
   "--course-muted",
   "--course-success",
+  "--course-units-bg",
+  "--course-units-fg",
+  "--course-modules-bg",
+  "--course-modules-fg",
+  "--catalog-nav-selected-bg",
+  "--catalog-nav-selected-fg",
 ] as const;
 
 const PURPLE_BUTTON_UTILITIES = [
@@ -46,6 +52,13 @@ describe("dashboard learning a11y tokens", () => {
   const globalsCss = readRepoFile("src/app/globals.css");
   const designTokens = readRepoFile("src/lib/design-tokens.ts");
   const tokenSources = `${globalsCss}\n${designTokens}`;
+
+  it("uses the owner catalog canvas and blue/violet inventory tokens", () => {
+    expect(globalsCss).toMatch(/--learning-background:\s*#f8fafc/i);
+    expect(globalsCss).toMatch(/--course-units-bg:\s*var\(--info-muted\)/);
+    expect(globalsCss).toMatch(/--course-modules-fg:\s*var\(--chart-5\)/);
+    expect(globalsCss).toMatch(/--catalog-nav-selected-fg:\s*var\(--info\)/);
+  });
 
   it("defines the contract learning CSS variables", () => {
     for (const token of LEARNING_CSS_VARIABLES) {

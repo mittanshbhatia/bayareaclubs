@@ -129,21 +129,29 @@
   --container-xl: 80rem;
   --container-page: 72rem;
 
-  /* Learning (derived from Peninsula primary / accent / success).
-     Observed catalog: near-white page + white cards. Blue/violet accents
-     map to primary/accent — never purple fonts or buttons. */
-  --learning-background: color-mix(in srgb, var(--primary-muted) 18%, var(--background));
+  /* Catalog canvas matches the owner Courses slide: off-white page, white
+     cards, blue selected nav, blue/violet inventory pills. Peninsula info
+     and chart-5 supply those hues — no purple fonts or purple buttons. */
+  --learning-background: #f8fafc;
   --learning-surface: var(--surface);
-  --course-accent: var(--accent);
-  --progress-track: var(--primary-muted);
-  --progress-fill: var(--primary);
-  --course-border: var(--border);
-  --course-muted: var(--muted-foreground);
+  --course-accent: var(--info);
+  --progress-track: color-mix(in srgb, var(--info) 12%, var(--surface));
+  --progress-fill: var(--info);
+  --course-border: #e8eef4;
+  --course-muted: #64748b;
   --course-success: var(--success);
   --course-card-width: 18rem;
   --course-card-min-width: 16rem;
-  --course-card-min-height: 15.125rem;
-  --course-media-height: 5rem;
+  --course-card-min-height: 18.25rem;
+  --course-media-height: 10rem;
+  --course-card-radius: 0.875rem;
+  --course-card-shadow: 0 1px 2px rgb(15 23 42 / 6%), 0 8px 20px rgb(15 23 42 / 5%);
+  --course-units-bg: var(--info-muted);
+  --course-units-fg: var(--info);
+  --course-modules-bg: color-mix(in srgb, var(--chart-5) 16%, var(--surface));
+  --course-modules-fg: var(--chart-5);
+  --catalog-nav-selected-bg: var(--info-muted);
+  --catalog-nav-selected-fg: var(--info);
   --catalog-gap: 1rem;
   --catalog-chip-height: 2.5rem;
 }
@@ -204,18 +212,26 @@
   --destructive-foreground: var(--danger-foreground);
   --input: var(--border);
 
-  --learning-background: color-mix(in srgb, var(--primary-muted) 32%, var(--background));
+  --learning-background: #0f172a;
   --learning-surface: var(--surface);
-  --course-accent: var(--accent);
-  --progress-track: var(--primary-muted);
-  --progress-fill: var(--primary);
-  --course-border: var(--border);
-  --course-muted: var(--muted-foreground);
+  --course-accent: var(--info);
+  --progress-track: color-mix(in srgb, var(--info) 28%, var(--surface));
+  --progress-fill: var(--info);
+  --course-border: #1e293b;
+  --course-muted: #94a3b8;
   --course-success: var(--success);
   --course-card-width: 18rem;
   --course-card-min-width: 16rem;
-  --course-card-min-height: 15.125rem;
-  --course-media-height: 5rem;
+  --course-card-min-height: 18.25rem;
+  --course-media-height: 10rem;
+  --course-card-radius: 0.875rem;
+  --course-card-shadow: 0 1px 2px rgb(0 0 0 / 35%), 0 8px 20px rgb(0 0 0 / 28%);
+  --course-units-bg: var(--info-muted);
+  --course-units-fg: var(--info);
+  --course-modules-bg: color-mix(in srgb, var(--chart-5) 28%, var(--surface));
+  --course-modules-fg: #c084e0;
+  --catalog-nav-selected-bg: var(--info-muted);
+  --catalog-nav-selected-fg: var(--info);
   --catalog-gap: 1rem;
   --catalog-chip-height: 2.5rem;
 }
@@ -324,6 +340,12 @@
   --color-course-border: var(--course-border);
   --color-course-muted: var(--course-muted);
   --color-course-success: var(--course-success);
+  --color-course-units-bg: var(--course-units-bg);
+  --color-course-units-fg: var(--course-units-fg);
+  --color-course-modules-bg: var(--course-modules-bg);
+  --color-course-modules-fg: var(--course-modules-fg);
+  --color-catalog-nav-selected-bg: var(--catalog-nav-selected-bg);
+  --color-catalog-nav-selected-fg: var(--catalog-nav-selected-fg);
 }
 
 * {

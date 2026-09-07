@@ -29,6 +29,7 @@ export type PublishedApCatalogPage = {
   total: number;
   pageCount: number;
   courses: PublishedApCourse[];
+  coverUrls: Readonly<Record<string, string>>;
 };
 
 export async function listPublishedApCatalog(
@@ -66,7 +67,48 @@ export async function listPublishedApCatalog(
     total,
     pageCount: Math.max(1, Math.ceil(total / pageSize)),
     courses: paged,
+    coverUrls: await signCatalogCoverUrls(paged),
   };
+}
+
+export async function signCatalogCoverUrls(
+  courses: readonly Pick<PublishedApCourse, "course_namespace" | "thumbnail_asset_id">[],
+): Promise<Readonly<Record<string, string>>> {
+  const ids = [
+    ...new Set(
+      courses
+        .map((course) => course.thumbnail_asset_id)
+        .filter((id): id is string => Boolean(id)),
+    ),
+  ];
+  if (ids.length === 0) return {};
+
+  const supabase = await createLearnClient();
+  const { data: assets } = await supabase
+    .from("media_assets")
+    .select("id, storage_bucket, storage_path")
+    .in("id", ids)
+    .is("deleted_at", null);
+  if (!assets?.length) return {};
+
+  const byId = new Map(assets.map((asset) => [asset.id, asset]));
+  const signed = await Promise.all(
+    courses.map(async (course) => {
+      const asset = course.thumbnail_asset_id
+        ? byId.get(course.thumbnail_asset_id)
+        : undefined;
+      if (!asset) return null;
+      const { data } = await supabase.storage
+        .from(asset.storage_bucket)
+        .createSignedUrl(asset.storage_path, 60 * 60);
+      return data?.signedUrl
+        ? ([course.course_namespace, data.signedUrl] as const)
+        : null;
+    }),
+  );
+  return Object.fromEntries(
+    signed.filter((row): row is readonly [string, string] => Boolean(row)),
+  );
 }
 
 export async function getCourseByNamespace(

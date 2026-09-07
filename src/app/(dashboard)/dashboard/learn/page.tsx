@@ -50,6 +50,7 @@ export default async function LearnHubPage({
             entries={shipping}
             family={paging.family}
             published={catalog.courses}
+            coverUrls={catalog.coverUrls}
             progress={progress
               .filter((item) => item.namespace)
               .map((item) => ({

@@ -1,3 +1,5 @@
+import { Zap } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 
 export function LearnProgressBar({
@@ -18,7 +20,7 @@ export function LearnProgressBar({
     <div
       className={cn(
         "overflow-hidden rounded-full",
-        layout === "inline" ? "h-1 min-w-0 flex-1" : "h-1.5 w-full",
+        layout === "inline" ? "h-0.5 min-w-0 flex-1" : "h-1.5 w-full",
       )}
       style={{ background: "var(--progress-track)" }}
       role="progressbar"
@@ -39,9 +41,10 @@ export function LearnProgressBar({
       <div className={cn("flex items-center gap-3", className)}>
         {label ? (
           <p
-            className="shrink-0 text-xs font-medium"
+            className="inline-flex shrink-0 items-center gap-1 text-xs font-medium"
             style={{ color: "var(--course-muted)" }}
           >
+            <Zap aria-hidden className="size-3" />
             {label}
           </p>
         ) : null}
