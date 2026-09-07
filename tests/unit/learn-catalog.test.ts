@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  catalogCardProgressPercent,
+  catalogInventory,
+} from "@/features/learn/catalog-inventory";
+import {
   COURSE_CARD_MEASURE,
   ORIGINAL_CARD_NAMESPACES,
   courseCardSvgMarkup,
@@ -50,6 +54,18 @@ describe("AP catalog families and original card art", () => {
     expect(courseCardSvgMarkup("ap-csa")).toContain("592");
     expect(courseCardSvgMarkup("ap-csa")).toContain("#0f5c44");
     expect(courseCardSvgMarkup("ap-csa")).not.toMatch(/stellar|unsplash/i);
+  });
+
+  it("counts units and lessons from original manifests only", () => {
+    expect(catalogInventory("ap-csp").unitCount).toBe(5);
+    expect(catalogInventory("ap-csp").moduleCount).toBeGreaterThanOrEqual(10);
+    expect(catalogInventory("ap-physics-c-mech")).toEqual({
+      unitCount: 0,
+      moduleCount: 0,
+    });
+    expect(catalogCardProgressPercent({ attemptCount: 0, moduleCount: 10 })).toBe(0);
+    expect(catalogCardProgressPercent({ attemptCount: 5, moduleCount: 10 })).toBe(50);
+    expect(catalogCardProgressPercent({ attemptCount: 40, moduleCount: 10 })).toBe(100);
   });
 
   it("maps the five BayAreaClubs tools to working routes", () => {

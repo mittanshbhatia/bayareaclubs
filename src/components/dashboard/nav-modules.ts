@@ -32,7 +32,7 @@ export const SHELL_MODULE_CATALOG: readonly ShellModuleCatalogItem[] = [
     requiredPermissions: [],
     defaultEnabled: true,
     displayOrder: 10,
-    section: "Overview",
+    section: "Learn",
     mobileVisibility: "always",
     featureFlag: null,
     status: "active",
@@ -75,7 +75,7 @@ export const SHELL_MODULE_CATALOG: readonly ShellModuleCatalogItem[] = [
   {
     id: "learning",
     slug: "learning",
-    label: "Learning",
+    label: "Courses",
     description: "AP catalog",
     icon: "GraduationCap",
     route: "/dashboard/learn",
@@ -83,7 +83,7 @@ export const SHELL_MODULE_CATALOG: readonly ShellModuleCatalogItem[] = [
     requiredPermissions: [],
     defaultEnabled: true,
     displayOrder: 40,
-    section: "Learning",
+    section: "Learn",
     mobileVisibility: "always",
     featureFlag: null,
     status: "active",
@@ -100,7 +100,7 @@ export const SHELL_MODULE_CATALOG: readonly ShellModuleCatalogItem[] = [
     requiredPermissions: [],
     defaultEnabled: true,
     displayOrder: 50,
-    section: "Learning",
+    section: "Learn",
     mobileVisibility: "overflow",
     featureFlag: null,
     status: "active",
@@ -729,10 +729,117 @@ export function isModuleActive(href: string, pathname: string): boolean {
   );
 }
 
+export const NAV_SECTION_ORDER = [
+  "Learn",
+  "Personal",
+  "Club",
+  "School",
+  "Account",
+  "Insights",
+  "Platform",
+  "Overview",
+] as const;
+
+const FAKE_LEARN_CHROME = new Set([
+  "shop",
+  "leaderboard",
+  "donate",
+  "nova",
+  "level",
+  "streak",
+  "currency",
+]);
+
 function sectionLabel(section: string): string {
-  if (section === "shared") return "Overview";
+  const key = section.trim().toLowerCase();
+  if (key === "learn" || key === "learning") return "Learn";
+  if (key === "shared" || key === "primary") return "Overview";
+  if (key === "analytics") return "Insights";
   if (!section) return "Overview";
   return section.charAt(0).toUpperCase() + section.slice(1);
+}
+
+export function presentModuleForNav(
+  module: ResolvedDashboardModule,
+): ResolvedDashboardModule {
+  if (module.id === "learning") {
+    return { ...module, label: "Courses", section: "Learn" };
+  }
+  if (module.id === "home" || module.id === "stem-resources") {
+    return { ...module, section: "Learn" };
+  }
+  return { ...module, section: sectionLabel(module.section) };
+}
+
+export function schoolLearnModule(
+  school: DashboardContextOption | undefined,
+): ResolvedDashboardModule | null {
+  if (!school || school.type !== "school" || !isUsableAppPath(school.href)) {
+    return null;
+  }
+  return {
+    id: "school-learn-entry",
+    slug: "school",
+    label: "School",
+    description: school.label,
+    icon: "Building2",
+    route: school.href,
+    href: school.href,
+    contextTypes: ["personal", "club"],
+    requiredPermissions: ["school.dashboard"],
+    defaultEnabled: true,
+    displayOrder: 45,
+    section: "Learn",
+    mobileVisibility: "always",
+    featureFlag: null,
+    status: "active",
+    mandatory: false,
+  };
+}
+
+export function presentDashboardNav(
+  modules: readonly ResolvedDashboardModule[],
+  school?: DashboardContextOption,
+): ResolvedDashboardModule[] {
+  const presented = modules
+    .map(presentModuleForNav)
+    .filter(
+      (module) =>
+        !FAKE_LEARN_CHROME.has(module.id.toLowerCase()) &&
+        !FAKE_LEARN_CHROME.has(module.slug.toLowerCase()),
+    );
+  const schoolModule = schoolLearnModule(school);
+  if (
+    !schoolModule ||
+    presented.some(
+      (module) =>
+        module.id === "school-learn-entry" || module.id === "school-clubs",
+    )
+  ) {
+    return presented;
+  }
+  const coursesIndex = presented.findIndex((module) => module.id === "learning");
+  if (coursesIndex >= 0) {
+    const next = [...presented];
+    next.splice(coursesIndex + 1, 0, schoolModule);
+    return next;
+  }
+  return [schoolModule, ...presented];
+}
+
+export function dashboardChromeTitle(pathname: string): string {
+  if (pathname.startsWith("/dashboard/learn")) return "Courses";
+  if (pathname.startsWith("/dashboard/notifications")) return "Notifications";
+  if (pathname.startsWith("/dashboard/insights")) return "Insights";
+  if (pathname.startsWith("/dashboard/profile")) return "Profile";
+  if (pathname.startsWith("/dashboard/schools")) return "School";
+  if (pathname.startsWith("/dashboard/platform") || pathname.startsWith("/admin")) {
+    return "Platform";
+  }
+  if (pathname.startsWith("/dashboard/learning")) return "Courses";
+  if (pathname.startsWith("/clubs/")) return "Club";
+  if (pathname.startsWith("/resources")) return "STEM resources";
+  return "Home";
 }
 
 export function groupModulesBySection(
@@ -740,14 +847,25 @@ export function groupModulesBySection(
 ): Array<{ section: string; modules: ResolvedDashboardModule[] }> {
   const groups = new Map<string, ResolvedDashboardModule[]>();
   for (const entry of modules) {
-    const list = groups.get(entry.section) ?? [];
+    const section = sectionLabel(entry.section);
+    const list = groups.get(section) ?? [];
     list.push(entry);
-    groups.set(entry.section, list);
+    groups.set(section, list);
   }
-  return [...groups.entries()].map(([section, items]) => ({
-    section: sectionLabel(section),
-    modules: items,
-  }));
+  return [...groups.entries()]
+    .sort((a, b) => {
+      const left = NAV_SECTION_ORDER.indexOf(
+        a[0] as (typeof NAV_SECTION_ORDER)[number],
+      );
+      const right = NAV_SECTION_ORDER.indexOf(
+        b[0] as (typeof NAV_SECTION_ORDER)[number],
+      );
+      return (left === -1 ? 99 : left) - (right === -1 ? 99 : right);
+    })
+    .map(([section, items]) => ({
+      section,
+      modules: items,
+    }));
 }
 
 export function groupContextsByType(

@@ -10,8 +10,6 @@ export const FEATURED_NAMESPACES = ["ap-csa", "ap-calc-bc", "ap-bio"] as const;
 
 export const LEARN_HUB_SECTIONS = [
   "filters",
-  "progress",
-  "featured",
   "families",
 ] as const;
 
@@ -238,6 +236,21 @@ export function familyLabel(family: CatalogFamily) {
       return "Social science";
     default:
       return "All AP";
+  }
+}
+
+export function familyCategory(family: CatalogFamily) {
+  switch (family) {
+    case "cs":
+      return "Formal science";
+    case "math":
+      return "Formal science";
+    case "science":
+      return "Natural science";
+    case "social":
+      return "Behavioral science";
+    default:
+      return "AP catalog";
   }
 }
 

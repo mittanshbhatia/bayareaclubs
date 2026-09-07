@@ -1,15 +1,22 @@
 import Link from "next/link";
-import { Bell, GraduationCap, UsersRound } from "lucide-react";
+import { Bell, UsersRound } from "lucide-react";
 
 import { PersonalMyDay } from "@/components/dashboard/personal-my-day";
-import { RoleBadge, StatusBadge, type RoleKey } from "@/components/ds/badges";
+import { RoleBadge, type RoleKey } from "@/components/ds/badges";
 import { EmptyState } from "@/components/ds/states";
 import { Button } from "@/components/ui/button";
 import {
   isClubOfficerRole,
   type PersonalHomeModel,
 } from "@/features/dashboard/personal";
-import { LearnProgressBar } from "@/features/learn/components/learn-progress";
+import { ApCourseCard, CATALOG_GRID_CLASS } from "@/features/learn/components/ap-course-card";
+import { CatalogSectionHeader } from "@/features/learn/components/catalog-section-header";
+import { CourseCardArt } from "@/features/learn/components/course-card-art";
+import {
+  catalogCardProgressPercent,
+  catalogInventory,
+} from "@/features/learn/catalog-inventory";
+import { getRegistryEntry } from "@/features/learn/courses/registry";
 import { NOTIFICATION_TYPE_LABELS } from "@/lib/validation/notifications";
 
 function formatRole(role: string) {
@@ -41,12 +48,16 @@ function formatWhen(value: string) {
   }).format(new Date(value));
 }
 
+function learnNamespaceFromHref(href: string) {
+  const match = href.match(/\/dashboard\/learn\/ap\/([^/?#]+)/);
+  return match?.[1] ?? null;
+}
+
 export function PersonalHome({ model }: { model: PersonalHomeModel }) {
   return (
     <div className="space-y-10">
       <header>
-        <p className="text-sm font-medium text-primary">Dashboard</p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight">
+        <h1 className="text-3xl font-semibold tracking-tight">
           Welcome, {model.displayName}
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
@@ -162,16 +173,14 @@ export function PersonalHome({ model }: { model: PersonalHomeModel }) {
       <section
         id="learning"
         aria-labelledby="learning-heading"
-        className="-mx-2 rounded-md border-t px-2 pt-6"
-        style={{ background: "var(--learning-background)" }}
+        className="border-t pt-6"
       >
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <GraduationCap aria-hidden className="size-4 text-primary" />
-            <h2 id="learning-heading" className="font-semibold">
-              Learning
-            </h2>
-          </div>
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <CatalogSectionHeader
+            headingId="learning-heading"
+            title="Courses"
+            category="Your catalog"
+          />
           <div className="flex flex-wrap gap-2">
             {model.learningLinks.map((link) => (
               <Button key={link.href} asChild size="sm" variant="outline">
@@ -181,42 +190,55 @@ export function PersonalHome({ model }: { model: PersonalHomeModel }) {
           </div>
         </div>
         {model.learning.length ? (
-          <ul className="mt-4 grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(18.75rem,1fr))]">
-            {model.learning.slice(0, 4).map((item) => (
-              <li key={item.subscriptionId}>
-                <Link
-                  href={item.href}
-                  className="flex h-full flex-col justify-between gap-3 rounded-md border border-(--course-border) bg-learning-surface p-4 hover:bg-surface-muted"
-                >
-                  <div>
-                    <p className="font-display text-base font-extrabold tracking-tight">
-                      {item.title}
-                    </p>
-                    <p className="mt-1 text-xs font-semibold text-muted-foreground">
-                      {item.kind === "ap" ? "AP · " : "STEM · "}
-                      {item.nextLessonTitle
-                        ? `Next: ${item.nextLessonTitle}`
-                        : `${item.completedCount} lessons complete`}
-                    </p>
-                    <LearnProgressBar
-                      className="mt-3"
-                      value={item.completedCount}
-                      max={Math.max(item.completedCount, item.nextLessonTitle ? item.completedCount + 1 : item.completedCount || 1)}
-                    />
-                  </div>
-                  <StatusBadge
-                    status={
-                      item.status === "completed"
-                        ? "approved"
-                        : item.status === "active"
-                          ? "active"
-                          : "pending"
+          <div className={`mt-4 ${CATALOG_GRID_CLASS}`}>
+            {model.learning.slice(0, 4).map((item) => {
+              const namespace = learnNamespaceFromHref(item.href);
+              const registry = namespace ? getRegistryEntry(namespace) : null;
+              const inventory = namespace
+                ? catalogInventory(namespace)
+                : { unitCount: 0, moduleCount: 0 };
+              if (item.kind === "ap" && namespace) {
+                return (
+                  <ApCourseCard
+                    key={item.subscriptionId}
+                    title={item.title}
+                    description={
+                      registry?.description ??
+                      (item.nextLessonTitle ?? "Original AP course")
                     }
+                    namespace={namespace}
+                    status="shipping"
+                    href={item.href}
+                    illustration={<CourseCardArt namespace={namespace} />}
+                    unitCount={inventory.unitCount}
+                    moduleCount={inventory.moduleCount}
+                    progressPercent={catalogCardProgressPercent({
+                      attemptCount: item.completedCount,
+                      moduleCount: inventory.moduleCount,
+                    })}
                   />
-                </Link>
-              </li>
-            ))}
-          </ul>
+                );
+              }
+              return (
+                <ApCourseCard
+                  key={item.subscriptionId}
+                  title={item.title}
+                  description={
+                    item.nextLessonTitle
+                      ? `Next: ${item.nextLessonTitle}`
+                      : `${item.completedCount} lessons complete`
+                  }
+                  namespace={item.subscriptionId}
+                  status="shipping"
+                  href={item.href}
+                  progressPercent={catalogCardProgressPercent({
+                    attemptCount: item.completedCount,
+                    moduleCount: Math.max(item.completedCount, 1),
+                  })}
+                />
+              );
+            })}
+          </div>
         ) : (
           <EmptyState
             className="mt-4"

@@ -1,17 +1,7 @@
-import Link from "next/link";
-
 import { EmptyState } from "@/components/ds/states";
-import { Button } from "@/components/ui/button";
-import { ApCourseCard, CATALOG_GRID_CLASS } from "@/features/learn/components/ap-course-card";
 import { CatalogFamilyChips } from "@/features/learn/components/catalog-family-chips";
 import { CatalogFamilySections } from "@/features/learn/components/catalog-family-sections";
-import { CourseCardArt } from "@/features/learn/components/course-card-art";
-import { LearnProgressBar } from "@/features/learn/components/learn-progress";
-import { featuredRegistryEntries } from "@/features/learn/catalog-model";
-import {
-  AP_COURSE_REGISTRY,
-  filterRegistryByFamily,
-} from "@/features/learn/courses/registry";
+import { AP_COURSE_REGISTRY } from "@/features/learn/courses/registry";
 import { getMyLearnProgress, listPublishedApCatalog } from "@/features/learn/queries";
 import { requireActiveUser } from "@/lib/auth/authorization";
 import { withAuthorization } from "@/lib/auth/route-guard";
@@ -37,11 +27,6 @@ export default async function LearnHubPage({
     getMyLearnProgress(),
   ]);
 
-  const featured = featuredRegistryEntries().filter((entry) =>
-    paging.family === "all"
-      ? true
-      : filterRegistryByFamily([entry], paging.family).length > 0,
-  );
   const shipping = AP_COURSE_REGISTRY.filter(
     (entry) =>
       catalog.courses.some((course) => course.course_namespace === entry.namespace) ||
@@ -49,90 +34,31 @@ export default async function LearnHubPage({
   );
 
   return (
-    <div
-      className="space-y-10 rounded-xl p-1"
-      style={{ background: "var(--learning-background)" }}
-    >
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <p className="text-sm font-medium text-primary">Browse</p>
-          <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight">
-            AP catalog
-          </h1>
-          <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-            Original BayAreaClubs courses grouped by subject. Student work stays
-            private — there is no public ranking.
-          </p>
-        </div>
-        <Button asChild variant="outline">
-          <Link href="/resources">STEM resources</Link>
-        </Button>
-      </div>
-
+    <div className="space-y-8">
+      <h1 className="sr-only">Courses</h1>
       <CatalogFamilyChips family={paging.family} basePath="/dashboard/learn" />
-
-      <section className="space-y-3">
-        <h2 className="font-semibold">Your progress</h2>
-        {progress.length === 0 ? (
-          <EmptyState
-            title="No AP attempts yet"
-            description="Open a featured course or pick a tile below. Checks stay on your account."
-            actionLabel="Browse AP courses"
-            actionHref="/dashboard/learn#catalog-families"
-          />
-        ) : (
-          <ul className="grid gap-[var(--catalog-gap)] sm:grid-cols-2">
-            {progress.map((item) => (
-              <li
-                key={item.courseId}
-                className="rounded-md border border-(--course-border) bg-learning-surface p-4"
-              >
-                <h3 className="font-display text-base font-extrabold tracking-tight">
-                  {item.title}
-                </h3>
-                <LearnProgressBar
-                  className="mt-3"
-                  value={item.correctCount}
-                  max={item.attemptCount}
-                  label={`${item.correctCount} of ${item.attemptCount} recent checks correct`}
-                />
-                {item.namespace ? (
-                  <Button asChild size="sm" className="mt-3">
-                    <Link href={`/dashboard/learn/ap/${item.namespace}`}>Continue</Link>
-                  </Button>
-                ) : null}
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      <section className="space-y-3">
-        <h2 className="font-semibold">Featured</h2>
-        <div className={CATALOG_GRID_CLASS}>
-          {featured.map((entry) => (
-            <ApCourseCard
-              key={entry.namespace}
-              title={entry.title}
-              description={entry.description}
-              namespace={entry.namespace}
-              icon={entry.icon}
-              status={entry.status === "shipping" ? "shipping" : "planned"}
-              href={`/dashboard/learn/ap/${entry.namespace}`}
-              illustration={<CourseCardArt namespace={entry.namespace} />}
-              actionLabel="Open course"
-            />
-          ))}
-        </div>
-      </section>
-
-      <div id="catalog-families">
-        <CatalogFamilySections
-          entries={shipping}
-          family={paging.family}
-          published={catalog.courses}
+      {shipping.length === 0 ? (
+        <EmptyState
+          title="No published courses yet"
+          description="Original AP titles appear here after they ship. STEM resources stay on their own catalog."
+          actionLabel="Browse STEM resources"
+          actionHref="/resources"
         />
-      </div>
+      ) : (
+        <div id="catalog-families">
+          <CatalogFamilySections
+            entries={shipping}
+            family={paging.family}
+            published={catalog.courses}
+            progress={progress
+              .filter((item) => item.namespace)
+              .map((item) => ({
+                namespace: item.namespace,
+                attemptCount: item.attemptCount,
+              }))}
+          />
+        </div>
+      )}
     </div>
   );
 }

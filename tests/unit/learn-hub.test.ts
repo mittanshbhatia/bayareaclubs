@@ -8,6 +8,7 @@ import {
   availableCatalogEntries,
   continueLesson,
   courseProgress,
+  familyCategory,
   featuredRegistryEntries,
   groupedAvailableCatalog,
   recentResults,
@@ -17,7 +18,7 @@ import { AP_COURSE_REGISTRY } from "@/features/learn/courses/registry";
 
 describe("learn hub and course workspace model", () => {
   it("keeps catalog section types and featured originals", () => {
-    expect(LEARN_HUB_SECTIONS).toEqual(["filters", "progress", "featured", "families"]);
+    expect(LEARN_HUB_SECTIONS).toEqual(["filters", "families"]);
     expect(COURSE_HOME_SECTIONS).toEqual([
       "header",
       "progress",
@@ -54,6 +55,10 @@ describe("learn hub and course workspace model", () => {
       "science",
       "social",
     ]);
+    expect(familyCategory("math")).toBe("Formal science");
+    expect(familyCategory("cs")).toBe("Formal science");
+    expect(familyCategory("science")).toBe("Natural science");
+    expect(familyCategory("social")).toBe("Behavioral science");
     expect(
       groupedAvailableCatalog(AP_COURSE_REGISTRY, "math").flatMap((group) =>
         group.entries.map((entry) => entry.namespace),

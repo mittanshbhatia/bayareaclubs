@@ -6,11 +6,13 @@ import { ContextSwitcher } from "@/components/dashboard/context-switcher";
 import { DashboardMobileNav } from "@/components/dashboard/mobile-nav";
 import { DashboardSidebar } from "@/components/dashboard/sidebar";
 import {
+  dashboardChromeTitle,
   filterContextsByQuery,
   hintFromPathname,
   isModuleVisible,
   isUsableAppPath,
   modulesForSurface,
+  presentDashboardNav,
   resolveModuleHref,
   resolveVisibleCatalogModules,
   selectActiveContext,
@@ -257,5 +259,45 @@ describe("dashboard shell breakpoints", () => {
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Home" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Profile" })).toBeInTheDocument();
+  });
+});
+
+describe("dashboard catalog chrome", () => {
+  it("titles the learn hub Courses and groups Home, Courses, and School", () => {
+    expect(dashboardChromeTitle("/dashboard/learn")).toBe("Courses");
+    expect(dashboardChromeTitle("/dashboard/learn/ap/ap-csa")).toBe("Courses");
+    expect(dashboardChromeTitle("/dashboard")).toBe("Home");
+
+    const presented = presentDashboardNav(sampleModules(), lincoln);
+    expect(presented.find((module) => module.id === "learning")?.label).toBe(
+      "Courses",
+    );
+    expect(presented.some((module) => module.label === "School")).toBe(true);
+    expect(presented.find((module) => module.label === "School")?.href).toBe(
+      "/dashboard/schools/school-1",
+    );
+    expect(
+      presented.some((module) =>
+        /shop|leaderboard|donate|nova|streak/i.test(module.label),
+      ),
+    ).toBe(false);
+  });
+
+  it("omits School when the actor has no school dashboard context", () => {
+    const presented = presentDashboardNav(sampleModules());
+    expect(presented.some((module) => module.label === "School")).toBe(false);
+  });
+
+  it("uses Peninsula selected nav on Courses", () => {
+    const presented = presentDashboardNav(sampleModules());
+    render(
+      <DashboardSidebar modules={presented} pathname="/dashboard/learn" />,
+    );
+    const courses = screen.getByRole("link", { name: "Courses" });
+    expect(courses).toHaveAttribute("aria-current", "page");
+    expect(courses.className).toMatch(/bg-accent-muted/);
+    expect(courses.className).toMatch(/text-accent/);
+    expect(courses.className).toMatch(/border-l-accent/);
+    expect(courses.className).not.toMatch(/purple|violet/);
   });
 });

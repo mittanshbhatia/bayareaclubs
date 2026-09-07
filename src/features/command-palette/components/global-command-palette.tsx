@@ -92,8 +92,10 @@ function useIsMobileSheet() {
 
 export function GlobalCommandPalette({
   className,
+  enableHotkey = true,
 }: {
   className?: string;
+  enableHotkey?: boolean;
 }) {
   const router = useRouter();
   const titleId = useId();
@@ -123,6 +125,7 @@ export function GlobalCommandPalette({
   }, []);
 
   useEffect(() => {
+    if (!enableHotkey) return;
     const onKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
@@ -131,7 +134,7 @@ export function GlobalCommandPalette({
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
+  }, [enableHotkey]);
 
   useEffect(() => {
     if (!open) return;

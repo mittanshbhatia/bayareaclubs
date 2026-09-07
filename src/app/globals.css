@@ -141,6 +141,7 @@
   --course-muted: var(--muted-foreground);
   --course-success: var(--success);
   --course-card-width: 18rem;
+  --course-card-min-width: 16rem;
   --course-card-min-height: 15.125rem;
   --course-media-height: 5rem;
   --catalog-gap: 1rem;
@@ -212,6 +213,7 @@
   --course-muted: var(--muted-foreground);
   --course-success: var(--success);
   --course-card-width: 18rem;
+  --course-card-min-width: 16rem;
   --course-card-min-height: 15.125rem;
   --course-media-height: 5rem;
   --catalog-gap: 1rem;

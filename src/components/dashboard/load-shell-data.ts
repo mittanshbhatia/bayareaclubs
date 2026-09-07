@@ -161,13 +161,14 @@ function modulesFromRegistry(
 function toShellData(
   resolved: DashboardResolvedContext,
   modules: ResolvedDashboardModule[],
+  displayName: string | null = null,
 ): DashboardShellData {
   const availableContexts = resolved.availableContexts.map(serializeContext);
   const activeContext = serializeContext(resolved.activeContext);
   return {
     actor: {
       id: resolved.actor.userId,
-      displayName: null,
+      displayName,
     },
     activeContext,
     availableContexts,
@@ -180,14 +181,30 @@ function toShellData(
   };
 }
 
+async function loadActorDisplayName(userId: string): Promise<string | null> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("profiles")
+    .select("display_name")
+    .eq("id", userId)
+    .maybeSingle();
+  return data?.display_name ?? null;
+}
+
 async function loadFromAgent02(pathname: string): Promise<DashboardShellData> {
   const hint = agentHintFromPathname(pathname);
   try {
     const listed = await listVisibleDashboardModules({ hint });
-    return toShellData(listed, listed.modules.map(serializeCatalogModule));
+    const displayName = await loadActorDisplayName(listed.actor.userId);
+    return toShellData(
+      listed,
+      listed.modules.map(serializeCatalogModule),
+      displayName,
+    );
   } catch {
     const resolved = await resolveDashboardContext({ hint });
-    return toShellData(resolved, modulesFromRegistry(resolved));
+    const displayName = await loadActorDisplayName(resolved.actor.userId);
+    return toShellData(resolved, modulesFromRegistry(resolved), displayName);
   }
 }
 
