@@ -93,9 +93,15 @@ function useIsMobileSheet() {
 export function GlobalCommandPalette({
   className,
   enableHotkey = true,
+  triggerLabel = "Search commands…",
+  showHotkey = true,
+  appearance = "default",
 }: {
   className?: string;
   enableHotkey?: boolean;
+  triggerLabel?: string;
+  showHotkey?: boolean;
+  appearance?: "default" | "sidebar";
 }) {
   const router = useRouter();
   const titleId = useId();
@@ -163,21 +169,32 @@ export function GlobalCommandPalette({
         type="button"
         variant="outline"
         size="sm"
+        data-slot="command-search-trigger"
         className={cn(
           "h-9 gap-2 border-border bg-surface text-muted-foreground shadow-xs",
           "w-9 justify-center px-0 sm:w-auto sm:min-w-[14rem] sm:justify-start sm:px-3",
+          appearance === "sidebar" &&
+            "w-full min-w-0 rounded-full border-[var(--sidebar-border)] bg-[var(--sidebar-search-bg)] px-3 shadow-none hover:bg-[var(--sidebar-search-bg)] group-data-[collapsed=true]/sidebar:w-9 group-data-[collapsed=true]/sidebar:justify-center group-data-[collapsed=true]/sidebar:px-0",
           className,
         )}
         onClick={() => setOpen(true)}
         aria-label="Open command search"
       >
         <Search aria-hidden className="size-4" />
-        <span className="hidden flex-1 text-left text-sm sm:inline">
-          Search commands…
+        <span
+          className={cn(
+            appearance === "sidebar"
+              ? "flex-1 text-left text-sm group-data-[collapsed=true]/sidebar:sr-only"
+              : "hidden flex-1 text-left text-sm sm:inline",
+          )}
+        >
+          {triggerLabel}
         </span>
-        <kbd className="pointer-events-none hidden items-center gap-0.5 rounded border border-border bg-surface-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground sm:inline-flex">
-          <span className="text-[11px]">⌘</span>K
-        </kbd>
+        {showHotkey ? (
+          <kbd className="pointer-events-none hidden items-center gap-0.5 rounded border border-border bg-surface-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground sm:inline-flex">
+            <span className="text-[11px]">⌘</span>K
+          </kbd>
+        ) : null}
       </Button>
 
       <Dialog

@@ -5,6 +5,7 @@ import { ContextSwitcher } from "@/components/dashboard/context-switcher";
 import { DashboardMobileNav } from "@/components/dashboard/mobile-nav";
 import {
   dashboardChromeTitle,
+  isUsableAppPath,
   presentDashboardNav,
 } from "@/components/dashboard/nav-modules";
 import { DashboardSidebar } from "@/components/dashboard/sidebar";
@@ -33,6 +34,10 @@ export function DashboardShell({
   const school = data.availableContexts.find((context) => context.type === "school");
   const navModules = presentDashboardNav(data.modules, school);
   const title = dashboardChromeTitle(pathname);
+  const createModule = navModules.find((module) => module.id === "ideas");
+  const createHref = createModule
+    ? (createModule.href ?? createModule.route)
+    : null;
 
   return (
     <div className="flex min-h-dvh bg-learning-background">
@@ -46,8 +51,15 @@ export function DashboardShell({
         modules={navModules}
         pathname={pathname}
         actorName={data.actor.displayName}
+        actorSubtext={data.activeContext.label}
+        createHref={createHref && isUsableAppPath(createHref) ? createHref : null}
         search={
-          <GlobalCommandPalette className="h-9 w-full min-w-0 justify-start sm:w-full sm:min-w-0" />
+          <GlobalCommandPalette
+            appearance="sidebar"
+            triggerLabel="Search"
+            showHotkey={false}
+            className="h-9 w-full min-w-0 justify-start sm:w-full sm:min-w-0"
+          />
         }
       />
       <div className="flex min-w-0 flex-1 flex-col">

@@ -17,6 +17,7 @@ import {
   resolveVisibleCatalogModules,
   selectActiveContext,
   SHELL_MODULE_CATALOG,
+  withResolvedHrefs,
 } from "@/components/dashboard/nav-modules";
 import type {
   DashboardContextOption,
@@ -234,6 +235,10 @@ describe("ContextSwitcher", () => {
 });
 
 describe("dashboard shell breakpoints", () => {
+  beforeEach(() => {
+    window.localStorage.removeItem("bayareaclubs.sidebar-collapsed");
+  });
+
   it("keeps the desktop sidebar out of the 375px column", () => {
     const { container } = render(
       <DashboardSidebar modules={sampleModules()} pathname="/dashboard" />,
@@ -243,6 +248,7 @@ describe("dashboard shell breakpoints", () => {
     expect(aside).toHaveClass("hidden");
     expect(aside).toHaveClass("md:flex");
     expect(aside).toHaveClass("w-64");
+    expect(aside).toHaveAttribute("data-collapsed", "false");
   });
 
   it("exposes mobile navigation only below md", async () => {
@@ -263,6 +269,10 @@ describe("dashboard shell breakpoints", () => {
 });
 
 describe("dashboard catalog chrome", () => {
+  beforeEach(() => {
+    window.localStorage.removeItem("bayareaclubs.sidebar-collapsed");
+  });
+
   it("titles the learn hub Courses and groups Home, Courses, and School", () => {
     expect(dashboardChromeTitle("/courses")).toBe("Courses");
     expect(dashboardChromeTitle("/dashboard/learn")).toBe("Courses");
@@ -299,6 +309,83 @@ describe("dashboard catalog chrome", () => {
     expect(courses).toHaveAttribute("aria-current", "page");
     expect(courses.className).toMatch(/catalog-nav-selected-bg/);
     expect(courses.className).toMatch(/catalog-nav-selected-fg/);
+    expect(courses.className).toMatch(/rounded-full/);
     expect(courses.className).not.toMatch(/btn-purple|button-purple/);
+    expect(screen.getByRole("link", { name: "Home" })).not.toHaveAttribute(
+      "aria-current",
+    );
+  });
+
+  it("keeps Home selected on the personal dashboard without fake chrome", () => {
+    const presented = withResolvedHrefs(
+      presentDashboardNav(sampleModules()),
+      personal,
+    );
+    render(
+      <DashboardSidebar
+        modules={presented}
+        pathname="/dashboard"
+        actorName="Mittansh Bhatia"
+        actorSubtext="Personal"
+        createHref="/start-a-club"
+        search={<button type="button">Search</button>}
+      />,
+    );
+
+    expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    expect(screen.getByRole("link", { name: "Courses" })).not.toHaveAttribute(
+      "aria-current",
+    );
+    expect(screen.getByText("Learn")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "BayAreaClubs" })).toBeInTheDocument();
+    const profile = screen.getByRole("link", { name: /Mittansh Bhatia/ });
+    expect(profile).toHaveAttribute("href", "/dashboard/profile");
+    expect(profile).toHaveTextContent("Personal");
+    expect(screen.getByRole("link", { name: "Start a club" })).toHaveAttribute(
+      "href",
+      "/start-a-club",
+    );
+    expect(screen.getByRole("button", { name: "Search" })).toBeInTheDocument();
+    expect(screen.queryByText(/shop|leaderboard|donate|nova|assistant/i)).toBeNull();
+  });
+
+  it("omits the create control unless a real start-a-club href is provided", () => {
+    render(
+      <DashboardSidebar
+        modules={presentDashboardNav(sampleModules())}
+        pathname="/dashboard"
+        createHref="/clubs/:slug"
+      />,
+    );
+    expect(screen.queryByRole("link", { name: "Start a club" })).not.toBeInTheDocument();
+  });
+
+  it("collapses and expands without dropping authorized destinations", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <DashboardSidebar
+        modules={presentDashboardNav(sampleModules())}
+        pathname="/courses"
+        actorName="Mittansh Bhatia"
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Collapse sidebar" }));
+    const aside = container.querySelector("[data-slot='dashboard-sidebar']");
+    expect(aside).toHaveAttribute("data-collapsed", "true");
+    expect(aside).not.toHaveClass("w-64");
+    expect(screen.getByRole("link", { name: "Courses" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    expect(screen.getByRole("button", { name: "Expand sidebar" })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Expand sidebar" }));
+    expect(aside).toHaveAttribute("data-collapsed", "false");
+    expect(aside).toHaveClass("w-64");
+    expect(screen.getByRole("link", { name: "Home" })).toBeInTheDocument();
   });
 });

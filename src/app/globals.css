@@ -157,6 +157,13 @@
   --course-modules-fg: #9333ea;
   --catalog-nav-selected-bg: var(--info-muted);
   --catalog-nav-selected-fg: var(--info);
+  /* Sidebar chrome only — do not reuse for page canvas or course cards. */
+  --sidebar-bg: var(--surface);
+  --sidebar-border: color-mix(in srgb, var(--border) 55%, var(--surface));
+  --sidebar-nav-fg: #334155;
+  --sidebar-search-bg: color-mix(in srgb, var(--border) 28%, var(--surface));
+  --sidebar-create-from: var(--info);
+  --sidebar-create-to: var(--chart-5);
   --catalog-gap: 1rem;
   --catalog-chip-height: 2.5rem;
   /* Photo-overlay chip: amber on dark pill, same in both themes. */
@@ -245,6 +252,12 @@
   --course-modules-fg: #c084e0;
   --catalog-nav-selected-bg: var(--info-muted);
   --catalog-nav-selected-fg: var(--info);
+  --sidebar-bg: var(--surface);
+  --sidebar-border: var(--border);
+  --sidebar-nav-fg: #cbd5e1;
+  --sidebar-search-bg: var(--surface-muted);
+  --sidebar-create-from: var(--info);
+  --sidebar-create-to: var(--chart-5);
   --catalog-gap: 1rem;
   --catalog-chip-height: 2.5rem;
   --course-coming-soon: #f0b429;

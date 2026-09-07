@@ -14,11 +14,13 @@ export function ModuleNavList({
   pathname,
   onNavigate,
   className,
+  collapsed = false,
 }: {
   modules: readonly ResolvedDashboardModule[];
   pathname: string;
   onNavigate?: () => void;
   className?: string;
+  collapsed?: boolean;
 }) {
   const groups = groupModulesBySection(modules);
 
@@ -26,10 +28,20 @@ export function ModuleNavList({
     <div className={cn("flex flex-col gap-6", className)}>
       {groups.map((group) => (
         <div key={group.section}>
-          <p className="px-3 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-            {group.section}
-          </p>
-          <ul className="mt-2 space-y-1">
+          {collapsed ? (
+            <p className="sr-only">{group.section}</p>
+          ) : (
+            <div className="flex items-center gap-2 px-3">
+              <p className="text-[11px] font-medium tracking-[0.14em] text-muted-foreground uppercase">
+                {group.section}
+              </p>
+              <span
+                aria-hidden
+                className="h-px min-w-0 flex-1 bg-[var(--sidebar-border)]"
+              />
+            </div>
+          )}
+          <ul className={cn("mt-2", collapsed ? "space-y-2" : "space-y-1.5")}>
             {group.modules.map((module) => {
               const href = module.href ?? module.route;
               const usable = isUsableAppPath(href);
@@ -40,45 +52,43 @@ export function ModuleNavList({
                     <Link
                       href={href}
                       aria-current={active ? "page" : undefined}
+                      title={collapsed ? module.label : undefined}
                       onClick={onNavigate}
-                      style={
-                        active
-                          ? {
-                              borderLeftColor:
-                                module.id === "learning"
-                                  ? "var(--catalog-nav-selected-fg)"
-                                  : "var(--accent)",
-                            }
-                          : undefined
-                      }
                       className={cn(
-                        "flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium",
-                        "border-l-2 transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
+                        "flex items-center gap-2.5 rounded-full px-3 py-2.5 text-sm font-medium",
+                        "text-[var(--sidebar-nav-fg)]",
+                        "transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
                         "motion-reduce:transition-none",
                         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-                        active && module.id === "learning"
-                          ? "border-l-[var(--catalog-nav-selected-fg)] bg-[var(--catalog-nav-selected-bg)] text-[var(--catalog-nav-selected-fg)]"
-                          : active
-                            ? "border-l-accent bg-accent-muted text-accent"
-                            : "border-l-transparent text-foreground hover:bg-surface-muted",
+                        active
+                          ? "bg-[var(--catalog-nav-selected-bg)] text-[var(--catalog-nav-selected-fg)]"
+                          : "hover:bg-[var(--sidebar-search-bg)]",
+                        collapsed && "justify-center px-2",
                       )}
                     >
                       <DashboardModuleIcon
                         name={module.icon}
-                        className="size-4 shrink-0"
+                        className="size-[1.125rem] shrink-0"
                       />
-                      <span className="truncate">{module.label}</span>
+                      <span className={cn("truncate", collapsed && "sr-only")}>
+                        {module.label}
+                      </span>
                     </Link>
                   ) : (
                     <span
                       title="This module has no destination yet"
-                      className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground"
+                      className={cn(
+                        "flex items-center gap-2.5 rounded-full px-3 py-2.5 text-sm font-medium text-muted-foreground",
+                        collapsed && "justify-center px-2",
+                      )}
                     >
                       <DashboardModuleIcon
                         name={module.icon}
-                        className="size-4 shrink-0"
+                        className="size-[1.125rem] shrink-0"
                       />
-                      <span className="truncate">{module.label}</span>
+                      <span className={cn("truncate", collapsed && "sr-only")}>
+                        {module.label}
+                      </span>
                     </span>
                   )}
                 </li>
