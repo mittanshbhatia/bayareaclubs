@@ -42,7 +42,9 @@ export default async function StartAClubIdeaPage({
 
   const schools = memberships
     .map((m) => m.schools)
-    .filter((school): school is { id: string; name: string } => Boolean(school));
+    .filter((school): school is { id: string; name: string } =>
+      Boolean(school),
+    );
 
   const timeline = (idea.club_idea_status_history ?? [])
     .slice()
@@ -68,6 +70,10 @@ export default async function StartAClubIdeaPage({
         readOnly={!["draft", "changes_requested"].includes(idea.status)}
         initial={{
           ideaId: idea.id,
+          applicationKind:
+            idea.application_kind === "existing_club"
+              ? "existing_club"
+              : "new_idea",
           draftStep: idea.draft_step,
           schoolId: idea.school_id,
           title: idea.title,
@@ -93,18 +99,21 @@ export default async function StartAClubIdeaPage({
         }}
       />
       <PageContainer className="pb-12">
-        <h2 className="mb-4 font-semibold text-foreground">Application timeline</h2>
+        <h2 className="text-foreground mb-4 font-semibold">
+          Application timeline
+        </h2>
         <ActivityTimeline items={timeline} />
         {(idea.club_idea_versions ?? []).length > 0 ? (
           <div className="mt-8">
             <h2 className="mb-3 font-semibold">Frozen versions</h2>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+            <ul className="text-muted-foreground space-y-2 text-sm">
               {(idea.club_idea_versions ?? [])
                 .slice()
                 .sort((a, b) => b.version_number - a.version_number)
                 .map((version) => (
                   <li key={version.id}>
-                    Version {version.version_number} · {version.status_at_freeze} ·{" "}
+                    Version {version.version_number} ·{" "}
+                    {version.status_at_freeze} ·{" "}
                     {new Date(version.created_at).toLocaleString()}
                   </li>
                 ))}

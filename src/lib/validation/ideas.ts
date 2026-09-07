@@ -10,6 +10,8 @@ export const ideaCategories = [
   "Other",
 ] as const;
 
+export const clubApplicationKindSchema = z.enum(["new_idea", "existing_club"]);
+
 export const IDEA_STEPS = [
   { id: 1, key: "idea", label: "Idea" },
   { id: 2, key: "school", label: "School" },
@@ -51,6 +53,7 @@ export const ideaLinkSchema = z.object({
 
 export const ideaDraftSchema = z.object({
   ideaId: z.string().uuid().optional(),
+  applicationKind: clubApplicationKindSchema.default("new_idea"),
   draftStep: z.number().int().min(1).max(10).default(1),
   schoolId: z.string().uuid().optional().nullable(),
   title: z.string().trim().max(160).default(""),
@@ -88,7 +91,8 @@ export const ideaSubmitSchema = ideaDraftSchema
       ctx.addIssue({
         code: "custom",
         path: ["gradeMax"],
-        message: "Maximum grade must be greater than or equal to minimum grade.",
+        message:
+          "Maximum grade must be greater than or equal to minimum grade.",
       });
     }
   });
@@ -112,7 +116,8 @@ export const decideIdeaSchema = z
   })
   .superRefine((value, ctx) => {
     if (
-      (value.decision === "changes_requested" || value.decision === "rejected") &&
+      (value.decision === "changes_requested" ||
+        value.decision === "rejected") &&
       value.applicantFeedback.trim().length < 12
     ) {
       ctx.addIssue({
@@ -132,7 +137,10 @@ export const convertIdeaSchema = z.object({
   slug: z
     .string()
     .trim()
-    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use lowercase letters, numbers, and hyphens."),
+    .regex(
+      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+      "Use lowercase letters, numbers, and hyphens.",
+    ),
 });
 
 export type IdeaDraftInput = z.infer<typeof ideaDraftSchema>;

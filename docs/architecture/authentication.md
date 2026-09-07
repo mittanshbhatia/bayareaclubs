@@ -16,6 +16,12 @@ Google OAuth is displayed only when `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true` and
 the provider is configured in Supabase. A new OAuth identity must complete the
 same governed profile before dashboard access.
 
+Supabase owns the OAuth exchange. Configure the Google provider with
+`SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID` and
+`SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET`; never expose the client secret to the
+browser. Authorized application callbacks include production
+`/auth/callback` and the local development callbacks on ports 3000 and 3100.
+
 ## Account activation
 
 The only age bands are `under_13`, `age_13_17`, and `adult`. Precise birth dates

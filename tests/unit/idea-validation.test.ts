@@ -25,11 +25,29 @@ const baseDraft = {
   proposedMeetingCadence: "Wednesdays 3:30-4:30 PM",
   gradeMin: 9,
   gradeMax: 12,
-  officers: [{ proposedName: "Alex Rivera", proposedRole: "president" as const }],
+  officers: [
+    { proposedName: "Alex Rivera", proposedRole: "president" as const },
+  ],
   links: [],
 };
 
 describe("idea validation", () => {
+  it("supports new-idea and existing-club onboarding paths", () => {
+    expect(
+      ideaDraftSchema.parse({
+        ...baseDraft,
+        applicationKind: "existing_club",
+      }).applicationKind,
+    ).toBe("existing_club");
+    expect(ideaDraftSchema.parse(baseDraft).applicationKind).toBe("new_idea");
+    expect(
+      ideaDraftSchema.safeParse({
+        ...baseDraft,
+        applicationKind: "unsupported",
+      }).success,
+    ).toBe(false);
+  });
+
   it("accepts draft saves with partial content", () => {
     const parsed = ideaDraftSchema.safeParse({
       draftStep: 2,

@@ -1496,6 +1496,7 @@ export type Database = {
       }
       club_ideas: {
         Row: {
+          application_kind: string
           category: string
           converted_at: string | null
           created_at: string
@@ -1520,6 +1521,7 @@ export type Database = {
           withdrawn_at: string | null
         }
         Insert: {
+          application_kind?: string
           category?: string
           converted_at?: string | null
           created_at?: string
@@ -1544,6 +1546,7 @@ export type Database = {
           withdrawn_at?: string | null
         }
         Update: {
+          application_kind?: string
           category?: string
           converted_at?: string | null
           created_at?: string

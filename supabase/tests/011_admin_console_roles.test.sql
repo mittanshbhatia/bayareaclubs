@@ -15,6 +15,13 @@ select set_config(
 
 select plan(6);
 
+-- Isolate final-administrator assertions from persistent demo or production
+-- assignments. The surrounding transaction restores every row on rollback.
+update public.platform_role_assignments
+set revoked_at = statement_timestamp()
+where role = 'platform_admin'
+  and revoked_at is null;
+
 insert into auth.users (
   id, instance_id, aud, role, email, encrypted_password, email_confirmed_at,
   raw_app_meta_data, raw_user_meta_data, created_at, updated_at

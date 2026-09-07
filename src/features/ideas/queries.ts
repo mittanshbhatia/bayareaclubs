@@ -8,6 +8,7 @@ export type ClubIdeaStatus = Database["public"]["Enums"]["club_idea_status"];
 
 export type IdeaListItem = {
   id: string;
+  application_kind: "new_idea" | "existing_club";
   title: string;
   category: string;
   status: ClubIdeaStatus;
@@ -25,7 +26,7 @@ export async function listMyIdeas(userId: string) {
   const { data, error } = await supabase
     .from("club_ideas")
     .select(
-      "id, title, category, status, school_id, submitter_id, submitted_at, created_at, updated_at, draft_step, schools(name)",
+      "id, application_kind, title, category, status, school_id, submitter_id, submitted_at, created_at, updated_at, draft_step, schools(name)",
     )
     .eq("submitter_id", userId)
     .order("updated_at", { ascending: false });
@@ -135,7 +136,9 @@ export async function listCommitteeReviewers() {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("platform_role_assignments")
-    .select("user_id, profiles!platform_role_assignments_user_id_fkey(id, display_name)")
+    .select(
+      "user_id, profiles!platform_role_assignments_user_id_fkey(id, display_name)",
+    )
     .eq("role", "committee_reviewer")
     .is("revoked_at", null);
   if (error) throw error;

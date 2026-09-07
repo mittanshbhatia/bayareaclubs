@@ -49,7 +49,10 @@ async function replaceOfficersAndLinks(
   links: IdeaDraftInput["links"],
 ) {
   const supabase = await createClient();
-  await supabase.from("club_idea_proposed_officers").delete().eq("idea_id", ideaId);
+  await supabase
+    .from("club_idea_proposed_officers")
+    .delete()
+    .eq("idea_id", ideaId);
   await supabase.from("club_idea_links").delete().eq("idea_id", ideaId);
 
   if (officers.length) {
@@ -94,6 +97,7 @@ export async function saveIdeaDraftAction(
     }
 
     const values = {
+      application_kind: payload.applicationKind,
       school_id: payload.schoolId,
       title: payload.title,
       category: payload.category,
@@ -146,7 +150,10 @@ export async function saveIdeaDraftAction(
         .single();
       if (error || !data) {
         logger.error("idea.draft.create_failed", { message: error?.message });
-        return failure("SAVE_FAILED", error?.message ?? "Could not create draft.");
+        return failure(
+          "SAVE_FAILED",
+          error?.message ?? "Could not create draft.",
+        );
       }
       ideaId = data.id;
     }
@@ -193,7 +200,10 @@ export async function submitIdeaAction(
     const nextStatus =
       idea.status === "changes_requested" ? "resubmitted" : "submitted";
     if (!["draft", "changes_requested"].includes(idea.status)) {
-      return failure("INVALID_TRANSITION", "This idea cannot be submitted now.");
+      return failure(
+        "INVALID_TRANSITION",
+        "This idea cannot be submitted now.",
+      );
     }
 
     const { error } = await supabase
@@ -218,7 +228,8 @@ export async function submitIdeaAction(
 
 export async function assignReviewerAction(input: unknown) {
   const parsed = assignReviewerSchema.safeParse(input);
-  if (!parsed.success) return validationFailure(parsed.error.flatten().fieldErrors);
+  if (!parsed.success)
+    return validationFailure(parsed.error.flatten().fieldErrors);
 
   try {
     const actor = await requireCommitteeReviewer();
@@ -242,7 +253,8 @@ export async function assignReviewerAction(input: unknown) {
 
 export async function startReviewAction(input: unknown) {
   const parsed = startReviewSchema.safeParse(input);
-  if (!parsed.success) return validationFailure(parsed.error.flatten().fieldErrors);
+  if (!parsed.success)
+    return validationFailure(parsed.error.flatten().fieldErrors);
 
   try {
     await requireCommitteeReviewer();
@@ -280,7 +292,8 @@ export async function decideIdeaAction(
   input: DecideIdeaInput,
 ): Promise<ActionResult<{ status: string }>> {
   const parsed = decideIdeaSchema.safeParse(input);
-  if (!parsed.success) return validationFailure(parsed.error.flatten().fieldErrors);
+  if (!parsed.success)
+    return validationFailure(parsed.error.flatten().fieldErrors);
 
   try {
     const user = await requireCommitteeReviewer();
@@ -291,7 +304,8 @@ export async function decideIdeaAction(
       .eq("id", parsed.data.reviewId)
       .eq("idea_id", parsed.data.ideaId)
       .maybeSingle();
-    if (reviewError || !review) return failure("NOT_FOUND", "Review assignment not found.");
+    if (reviewError || !review)
+      return failure("NOT_FOUND", "Review assignment not found.");
     if (review.reviewer_id !== user.id) {
       return failure("FORBIDDEN", "Only the assigned reviewer can decide.");
     }
@@ -327,7 +341,8 @@ export async function convertIdeaToClubAction(
   input: ConvertIdeaInput,
 ): Promise<ActionResult<{ clubId: string }>> {
   const parsed = convertIdeaSchema.safeParse(input);
-  if (!parsed.success) return validationFailure(parsed.error.flatten().fieldErrors);
+  if (!parsed.success)
+    return validationFailure(parsed.error.flatten().fieldErrors);
 
   try {
     await requireActiveUser();

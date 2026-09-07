@@ -44,12 +44,14 @@ function Field({
   registration,
   type = "text",
   autoComplete,
+  placeholder,
 }: {
   error?: string;
   label: string;
   registration: UseFormRegisterReturn;
   type?: "email" | "password" | "text";
   autoComplete?: string;
+  placeholder?: string;
 }) {
   const errorId = `${registration.name}-error`;
   return (
@@ -65,12 +67,13 @@ function Field({
         id={registration.name}
         type={type}
         autoComplete={autoComplete}
+        placeholder={placeholder}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? errorId : undefined}
-        className="bg-surface min-h-11 w-full rounded-md border px-3 py-2 text-base shadow-sm sm:text-sm"
+        className="min-h-12 w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-base text-slate-950 shadow-sm transition outline-none placeholder:text-slate-400 focus:border-sky-600 focus:ring-3 focus:ring-sky-100 sm:text-sm"
       />
       {error ? (
-        <p id={errorId} className="mt-1.5 text-sm text-danger">
+        <p id={errorId} className="text-danger mt-1.5 text-sm">
           {error}
         </p>
       ) : null}
@@ -92,11 +95,67 @@ function FormMessage({
       className={
         success
           ? "border-primary text-foreground border-l-2 pl-3 text-sm"
-          : "border-l-2 border-danger pl-3 text-sm text-danger"
+          : "border-danger text-danger border-l-2 pl-3 text-sm"
       }
     >
       {message}
     </p>
+  );
+}
+
+function GoogleMark() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5">
+      <path
+        fill="#4285F4"
+        d="M21.6 12.23c0-.71-.06-1.4-.18-2.06H12v3.9h5.38a4.6 4.6 0 0 1-2 3.01v2.53h3.24c1.9-1.75 2.98-4.33 2.98-7.38Z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 22c2.7 0 4.97-.9 6.62-2.39l-3.24-2.53c-.9.6-2.05.96-3.38.96-2.61 0-4.82-1.76-5.61-4.13H3.04v2.6A10 10 0 0 0 12 22Z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M6.39 13.91A6.02 6.02 0 0 1 6.08 12c0-.66.11-1.3.31-1.91v-2.6H3.04A10 10 0 0 0 2 12c0 1.62.39 3.15 1.04 4.51l3.35-2.6Z"
+      />
+      <path
+        fill="#EA4335"
+        d="M12 5.96c1.47 0 2.79.5 3.83 1.5l2.87-2.87A9.63 9.63 0 0 0 12 2a10 10 0 0 0-8.96 5.49l3.35 2.6C7.18 7.72 9.39 5.96 12 5.96Z"
+      />
+    </svg>
+  );
+}
+
+function OAuthChoice({ enabled }: { enabled: boolean }) {
+  return (
+    <>
+      {enabled ? (
+        <Link
+          href="/auth/google"
+          className="flex min-h-12 w-full items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:border-sky-400 hover:bg-sky-50 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-sky-600"
+        >
+          <GoogleMark />
+          Continue with Google
+        </Link>
+      ) : (
+        <button
+          type="button"
+          disabled
+          title="Google sign-in is not yet configured"
+          className="flex min-h-12 w-full cursor-not-allowed items-center justify-center gap-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-500"
+        >
+          <GoogleMark />
+          Google sign-in unavailable
+        </button>
+      )}
+      <div className="flex items-center gap-4" aria-hidden="true">
+        <span className="h-px flex-1 bg-slate-200" />
+        <span className="text-xs font-medium tracking-[0.08em] text-slate-500 uppercase">
+          or with email
+        </span>
+        <span className="h-px flex-1 bg-slate-200" />
+      </div>
+    </>
   );
 }
 
@@ -121,11 +180,13 @@ export function SignInForm({ googleEnabled }: { googleEnabled: boolean }) {
 
   return (
     <div className="space-y-6">
+      <OAuthChoice enabled={googleEnabled} />
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
         <Field
           label="Email"
           type="email"
           autoComplete="email"
+          placeholder="Enter your email"
           registration={form.register("email")}
           error={form.formState.errors.email?.message}
         />
@@ -133,24 +194,19 @@ export function SignInForm({ googleEnabled }: { googleEnabled: boolean }) {
           label="Password"
           type="password"
           autoComplete="current-password"
+          placeholder="Enter your password"
           registration={form.register("password")}
           error={form.formState.errors.password?.message}
         />
         <FormMessage message={message} />
         <Button
           type="submit"
-          className="w-full"
+          className="min-h-12 w-full bg-sky-700 text-white hover:bg-sky-800"
           disabled={form.formState.isSubmitting}
         >
           {form.formState.isSubmitting ? "Signing in…" : "Sign in"}
         </Button>
       </form>
-
-      {googleEnabled ? (
-        <Button asChild variant="outline" className="w-full">
-          <Link href="/auth/google">Continue with Google</Link>
-        </Button>
-      ) : null}
 
       <div className="flex flex-wrap justify-between gap-3 text-sm">
         <Link
@@ -224,9 +280,7 @@ function ProfileFields({
           <option value="adult">Adult</option>
         </select>
         {errors.ageBand?.message ? (
-          <p className="mt-1.5 text-sm text-danger">
-            {errors.ageBand.message}
-          </p>
+          <p className="text-danger mt-1.5 text-sm">{errors.ageBand.message}</p>
         ) : null}
       </div>
 
@@ -260,7 +314,7 @@ function ProfileFields({
               ))}
             </select>
             {errors.schoolId?.message ? (
-              <p className="mt-1.5 text-sm text-danger">
+              <p className="text-danger mt-1.5 text-sm">
                 {errors.schoolId.message}
               </p>
             ) : null}
@@ -287,7 +341,7 @@ function ProfileFields({
               <option value="other">Other</option>
             </select>
             {errors.gradeBand?.message ? (
-              <p className="mt-1.5 text-sm text-danger">
+              <p className="text-danger mt-1.5 text-sm">
                 {errors.gradeBand.message}
               </p>
             ) : null}
@@ -298,7 +352,13 @@ function ProfileFields({
   );
 }
 
-export function SignUpForm({ schools }: { schools: SchoolOption[] }) {
+export function SignUpForm({
+  schools,
+  googleEnabled,
+}: {
+  schools: SchoolOption[];
+  googleEnabled: boolean;
+}) {
   const router = useRouter();
   const [message, setMessage] = useState<string>();
   const form = useForm<SignUpInput>({
@@ -326,55 +386,61 @@ export function SignUpForm({ schools }: { schools: SchoolOption[] }) {
   }
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-      <Field
-        label="Email"
-        type="email"
-        autoComplete="email"
-        registration={form.register("email")}
-        error={form.formState.errors.email?.message}
-      />
-      <Field
-        label="Password"
-        type="password"
-        autoComplete="new-password"
-        registration={form.register("password")}
-        error={form.formState.errors.password?.message}
-      />
-      <ProfileFields
-        registrations={{
-          firstName: form.register("firstName"),
-          lastInitial: form.register("lastInitial"),
-          ageBand: form.register("ageBand"),
-          schoolId: form.register("schoolId"),
-          gradeBand: form.register("gradeBand"),
-        }}
-        errors={form.formState.errors}
-        schools={schools}
-        ageBand={ageBand}
-      />
-      <p className="text-muted-foreground text-sm leading-6">
-        Signup creates a standard account only. Officer, advisor, reviewer, and
-        administrator access is assigned separately by authorized institutions.
-      </p>
-      <FormMessage message={message} />
-      <Button
-        type="submit"
-        className="w-full"
-        disabled={form.formState.isSubmitting || ageBand === "under_13"}
-      >
-        {form.formState.isSubmitting ? "Creating account…" : "Create account"}
-      </Button>
-      <p className="text-center text-sm">
-        Already registered?{" "}
-        <Link
-          href="/sign-in"
-          className="text-primary underline-offset-4 hover:underline"
+    <div className="space-y-6">
+      <OAuthChoice enabled={googleEnabled} />
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+        <Field
+          label="Email"
+          type="email"
+          autoComplete="email"
+          placeholder="Enter your email"
+          registration={form.register("email")}
+          error={form.formState.errors.email?.message}
+        />
+        <Field
+          label="Password"
+          type="password"
+          autoComplete="new-password"
+          placeholder="Create a secure password"
+          registration={form.register("password")}
+          error={form.formState.errors.password?.message}
+        />
+        <ProfileFields
+          registrations={{
+            firstName: form.register("firstName"),
+            lastInitial: form.register("lastInitial"),
+            ageBand: form.register("ageBand"),
+            schoolId: form.register("schoolId"),
+            gradeBand: form.register("gradeBand"),
+          }}
+          errors={form.formState.errors}
+          schools={schools}
+          ageBand={ageBand}
+        />
+        <p className="text-muted-foreground text-sm leading-6">
+          Signup creates a standard account only. Officer, advisor, reviewer,
+          and administrator access is assigned separately by authorized
+          institutions.
+        </p>
+        <FormMessage message={message} />
+        <Button
+          type="submit"
+          className="min-h-12 w-full bg-sky-700 text-white hover:bg-sky-800"
+          disabled={form.formState.isSubmitting || ageBand === "under_13"}
         >
-          Sign in
-        </Link>
-      </p>
-    </form>
+          {form.formState.isSubmitting ? "Creating account…" : "Create account"}
+        </Button>
+        <p className="text-center text-sm">
+          Already registered?{" "}
+          <Link
+            href="/sign-in"
+            className="text-primary underline-offset-4 hover:underline"
+          >
+            Sign in
+          </Link>
+        </p>
+      </form>
+    </div>
   );
 }
 

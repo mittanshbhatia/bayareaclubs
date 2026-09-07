@@ -24,14 +24,16 @@ export default async function SignInPage({
 
   return (
     <>
-      <h1 className="font-display text-2xl font-semibold tracking-tight">Sign in</h1>
-      <p className="mt-2 mb-6 text-sm leading-6 text-muted-foreground">
-        Access your clubs, reviews, events, and learning resources.
+      <h1 className="font-display text-center text-3xl font-semibold tracking-tight text-slate-950">
+        Welcome back
+      </h1>
+      <p className="mt-2 mb-7 text-center text-sm leading-6 text-slate-600">
+        Sign in with Google or your BayAreaClubs email.
       </p>
       {notice ? (
         <p
           role="status"
-          className="mb-5 border-l-2 border-primary pl-3 text-sm"
+          className="border-primary mb-5 border-l-2 pl-3 text-sm"
         >
           {notice}
         </p>
@@ -39,7 +41,7 @@ export default async function SignInPage({
       {error ? (
         <p
           role="alert"
-          className="mb-5 border-l-2 border-danger pl-3 text-sm text-danger"
+          className="border-danger text-danger mb-5 border-l-2 pl-3 text-sm"
         >
           {error}
         </p>
