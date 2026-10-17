@@ -29,6 +29,7 @@ import re
 import shutil
 import struct
 import sys
+import time
 
 try:
     import maya.cmds as cmds
@@ -44,6 +45,7 @@ RENDER_WIDTH = 1920
 RENDER_HEIGHT = 1080
 DO_RENDER = True             # set False to build + save without rendering
 DO_REOPEN_CHECK = True       # re-open the saved .mb and look for missing files
+LIVE_DELAY = 0.0             # seconds to pause after each step so you can watch the viewport build
 CAMERA_AZIMUTH_DEG = 38.0    # three-quarter angle (0 = straight on, + = toward +X)
 CAMERA_ELEVATION_DEG = 9.0
 CAMERA_FOCAL_MM = 85.0       # long lens = little perspective distortion
@@ -1424,14 +1426,40 @@ def reopen_check(path):
 # ---------------------------------------------------------------------------
 
 
+def live_tick():
+    """Redraw the viewport and pause, so a person watching Maya sees each step appear."""
+    if LIVE_DELAY > 0 and not cmds.about(batch=True):
+        cmds.refresh(force=True)
+        time.sleep(LIVE_DELAY)
+
+
+def focus_viewport():
+    """Point the perspective view at the mascot with smooth shading (viewport only, not the render camera)."""
+    try:
+        target = (0.0, 7.4, 0.0)
+        pos = (30.0, 14.0, 44.0)
+        rx, ry = aim_angles(vsub(target, pos))
+        cmds.xform("persp", worldSpace=True, translation=pos)
+        cmds.setAttr("persp.rotateX", rx)
+        cmds.setAttr("persp.rotateY", ry)
+        cmds.setAttr("persp.rotateZ", 0)
+        panel = cmds.getPanel(withFocus=True)
+        if panel and cmds.getPanel(typeOf=panel) == "modelPanel":
+            cmds.modelEditor(panel, edit=True, displayAppearance="smoothShaded", displayTextures=True)
+    except Exception as exc:
+        warn("Could not frame the viewport: %s" % exc)
+
+
 def step(label, fn, *args):
     log("== %s ==" % label)
     try:
-        return fn(*args)
+        result = fn(*args)
     except BuildError:
         raise
     except Exception as exc:
         raise BuildError("Step '%s' failed: %s: %s" % (label, type(exc).__name__, exc))
+    live_tick()
+    return result
 
 
 def build_character(mats):
@@ -1467,6 +1495,7 @@ def main():
     root = resolve_project_root()
     setup_project(root)
     start_clean_scene()
+    focus_viewport()
     step("Reference image planes + guides", build_references, root)
     mats = step("Materials", build_materials)
     char = build_character(mats)

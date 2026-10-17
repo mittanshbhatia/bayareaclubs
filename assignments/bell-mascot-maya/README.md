@@ -51,6 +51,33 @@ If the render step cannot write the PNG itself, the script says so. Then use the
 **File > Save Image...** and name it exactly `Bhatia Mittansh -Bell Character-final.png` inside `images/`.
 If the scene ever ends up as `.ma`, use **File > Save Scene As...** and choose type **Maya Binary**.
 
+## Option: watch it build live in your open Maya
+
+The script can pause after each step (body, sculpt, rim, arms, handle, face, stage...) and redraw the
+viewport, so you see the mascot grow. The perspective view is pointed at it automatically.
+
+1. In Maya's Script Editor (Python tab) run once. It listens on your own computer only:
+
+   ```python
+   import maya.cmds as cmds
+   if not cmds.commandPort("127.0.0.1:7001", query=True):
+       cmds.commandPort(name="127.0.0.1:7001", sourceType="python")
+   ```
+
+2. In a Terminal on the same computer, from the project folder:
+
+   ```bash
+   python3 tools/maya_live.py --delay 0.8
+   ```
+
+3. When finished, close the port in Maya:
+   `cmds.commandPort(name="127.0.0.1:7001", close=True)`
+
+Or skip the Terminal: set `LIVE_DELAY = 0.8` at the top of the script and run it from the Script Editor as
+described above. Safety: a command port has no password and runs any text sent to it as Python, so keep it
+on `127.0.0.1`, never expose it through a tunnel, and close it afterwards. The client refuses non-local hosts.
+`python3 tools/test_maya_live.py` checks the client against a fake port (no Maya).
+
 ## Option: run without opening Maya (Terminal)
 
 Maya 2027 includes `mayapy`, Maya's own Python. From the project folder (adjust the Maya path if yours differs):
