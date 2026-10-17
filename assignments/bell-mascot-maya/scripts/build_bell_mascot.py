@@ -1320,12 +1320,16 @@ def render_png(root, camera, prefix, renderer):
     archive_if_exists(target)
     if not os.path.isdir(os.path.join(images, "_archive")):
         pass
+    batch = bool(cmds.about(batch=True))
     if renderer == "arnold":
-        cmds.arnoldRender(camera=camera, width=RENDER_WIDTH, height=RENDER_HEIGHT)
+        try:
+            cmds.arnoldRender(camera=camera, width=RENDER_WIDTH, height=RENDER_HEIGHT, batch=batch)
+        except TypeError:
+            cmds.render(camera)
     else:
         cmds.render(camera, x=RENDER_WIDTH, y=RENDER_HEIGHT)
     produced = find_render_output(images, prefix)
-    if produced is None and not cmds.about(batch=True):
+    if produced is None and not batch:
         cmds.renderWindowEditor("renderView", edit=True, writeImage=target)
         produced = target if os.path.isfile(target) else None
     if produced is None:

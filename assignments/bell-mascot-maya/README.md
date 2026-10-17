@@ -51,6 +51,17 @@ If the render step cannot write the PNG itself, the script says so. Then use the
 **File > Save Image...** and name it exactly `Bhatia Mittansh -Bell Character-final.png` inside `images/`.
 If the scene ever ends up as `.ma`, use **File > Save Scene As...** and choose type **Maya Binary**.
 
+## Option: run without opening Maya (Terminal)
+
+Maya 2027 includes `mayapy`, Maya's own Python. From the project folder (adjust the Maya path if yours differs):
+
+```bash
+/Applications/Autodesk/maya2027/Maya.app/Contents/bin/mayapy scripts/run_headless.py
+```
+
+It runs the same build and exits with code 0 only if the scene and render were written with no problems.
+This path is also unverified in Maya; batch rendering in particular may need a different Arnold call.
+
 ## Submit (manual, nothing is uploaded for you)
 
 Copy into the shared OneDrive Maya Projects folder:
