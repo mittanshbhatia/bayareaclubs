@@ -1,0 +1,159 @@
+{
+  "mesh_reports": [
+    {
+      "mesh": "bell_body_geo",
+      "verts": 3000,
+      "faces": 2998,
+      "open_edges": 0,
+      "nonmanifold_edges": 0,
+      "duplicate_faces": 0,
+      "degenerate_faces": 0,
+      "signed_volume": 262.53204959596496
+    },
+    {
+      "mesh": "bell_handle_geo",
+      "verts": 94,
+      "faces": 92,
+      "open_edges": 0,
+      "nonmanifold_edges": 0,
+      "duplicate_faces": 0,
+      "degenerate_faces": 0,
+      "signed_volume": 25.50812399131648
+    },
+    {
+      "mesh": "bell_text_decal_geo",
+      "verts": 217,
+      "faces": 180,
+      "open_edges": 72,
+      "nonmanifold_edges": 0,
+      "duplicate_faces": 0,
+      "degenerate_faces": 0,
+      "signed_volume": 9.1499502922484
+    },
+    {
+      "mesh": "bell_brow_L_geo",
+      "verts": 122,
+      "faces": 120,
+      "open_edges": 0,
+      "nonmanifold_edges": 0,
+      "duplicate_faces": 0,
+      "degenerate_faces": 0,
+      "signed_volume": 0.8333136015781941
+    },
+    {
+      "mesh": "bell_brow_R_geo",
+      "verts": 122,
+      "faces": 120,
+      "open_edges": 0,
+      "nonmanifold_edges": 0,
+      "duplicate_faces": 0,
+      "degenerate_faces": 0,
+      "signed_volume": 0.8411230686810113
+    },
+    {
+      "mesh": "bell_eye_R_geo",
+      "verts": 178,
+      "faces": 192,
+      "open_edges": 0,
+      "nonmanifold_edges": 0,
+      "duplicate_faces": 0,
+      "degenerate_faces": 0,
+      "signed_volume": 0.38471005896999333
+    },
+    {
+      "mesh": "bell_iris_R_geo",
+      "verts": 178,
+      "faces": 192,
+      "open_edges": 0,
+      "nonmanifold_edges": 0,
+      "duplicate_faces": 0,
+      "degenerate_faces": 0,
+      "signed_volume": 0.043867699986640446
+    },
+    {
+      "mesh": "bell_pupil_R_geo",
+      "verts": 178,
+      "faces": 192,
+      "open_edges": 0,
+      "nonmanifold_edges": 0,
+      "duplicate_faces": 0,
+      "degenerate_faces": 0,
+      "signed_volume": 0.005424780973358638
+    },
+    {
+      "mesh": "bell_eye_L_geo",
+      "verts": 178,
+      "faces": 192,
+      "open_edges": 0,
+      "nonmanifold_edges": 0,
+      "duplicate_faces": 0,
+      "degenerate_faces": 0,
+      "signed_volume": 0.3847100589699886
+    },
+    {
+      "mesh": "bell_iris_L_geo",
+      "verts": 178,
+      "faces": 192,
+      "open_edges": 0,
+      "nonmanifold_edges": 0,
+      "duplicate_faces": 0,
+      "degenerate_faces": 0,
+      "signed_volume": 0.043867699986637296
+    },
+    {
+      "mesh": "bell_pupil_L_geo",
+      "verts": 178,
+      "faces": 192,
+      "open_edges": 0,
+      "nonmanifold_edges": 0,
+      "duplicate_faces": 0,
+      "degenerate_faces": 0,
+      "signed_volume": 0.005424780973375179
+    },
+    {
+      "mesh": "stage_platform_geo",
+      "verts": 128,
+      "faces": 66,
+      "open_edges": 0,
+      "nonmanifold_edges": 0,
+      "duplicate_faces": 0,
+      "degenerate_faces": 0,
+      "signed_volume": 49.1810803317603
+    },
+    {
+      "mesh": "stage_backdrop_geo",
+      "verts": 74,
+      "faces": 36,
+      "open_edges": 74,
+      "nonmanifold_edges": 0,
+      "duplicate_faces": 0,
+      "degenerate_faces": 0,
+      "signed_volume": -325777.96008333325
+    }
+  ],
+  "closed_mesh_problems": [],
+  "silhouette_iou_front": 0.9387,
+  "silhouette_iou_side": 0.8947,
+  "body_height": 12.1,
+  "lowest_point": 0.0,
+  "handle_top": 14.83922,
+  "materials": [
+    "mtl_backdrop_softGrey_lambert",
+    "mtl_band_skyBlue_lambert",
+    "mtl_body_navy_lambert",
+    "mtl_brow_black_lambert",
+    "mtl_hand_tan_lambert",
+    "mtl_handle_olive_lambert",
+    "mtl_iris_blue_lambert",
+    "mtl_platform_whiteBlue_lambert",
+    "mtl_pupil_black_lambert",
+    "mtl_teeth_eyeWhite_lambert",
+    "mtl_text_goBells_lambert"
+  ],
+  "frame_margin_px": {
+    "left": 701.0252391515949,
+    "right": 784.7865995570701,
+    "top": 133.27698128712018,
+    "bottom": 112.87043610479441
+  }
+}

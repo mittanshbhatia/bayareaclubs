@@ -1,0 +1,10 @@
+//Maya Project Definition
+workspace -fr "scene" "scenes";
+workspace -fr "images" "images";
+workspace -fr "sourceImages" "sourceimages";
+workspace -fr "renderData" "renderData";
+workspace -fr "scripts" "scripts";
+workspace -fr "mayaAscii" "scenes";
+workspace -fr "mayaBinary" "scenes";
+workspace -fr "templates" "assets";
+workspace -fr "furImages" "renderData/fur/furImages";
